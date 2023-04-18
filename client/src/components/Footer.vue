@@ -9,6 +9,7 @@
                     <a href="https://www.facebook.com/messages/t/100012917022374"><img src="../assets/img/face.png" class="fab"></a>
                     <a href="#"><img src="../assets/img/twitter.png" class="fab"></a>
                     <a href="#"><img src="../assets/img/youtube.png" class="fab"></a>
+                    <a href="#"><img src="../assets/img/insta.png" class="fab"></a>
                 </div>
             </div>
         </div>
@@ -65,14 +66,14 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 @font-face {
    font-family: myFirstFont;
    src: url(../assets/font/Vollkorn-VariableFont_wght.ttf);
 }
 * {
     margin: 0;
-    pading: 0;
+    padding: 0;
     color: #d9d9d9;
     box-sizing: border-box;
     font-family: myFirstFont;
@@ -210,10 +211,11 @@ footer {
     border:none;
     outline: none;
     background: #f12020;
-    font-size: 1.0625rem;
+    font-size: 1.25rem;
     font-weight: 500;
     cursor: pointer;
     transition: 0.3s;
+
 }
 .right form .btn button:hover {
     background: #000;
