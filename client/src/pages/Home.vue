@@ -50,17 +50,23 @@
 
     </div>
 </div>
-
-<Footer/>
 </template>
 
 <script>    
 import Footer from '../components/Footer.vue'
 export default {
     name: 'Home',
-    components: {
-        Footer
-    }
+    // data() {
+	// 	return {
+
+	// 	}
+	// },
+	// methods: {
+	// 	...mapMutations(['scrollToTop'])
+	// },
+	// computed: {
+	// 	...mapState(['user'])
+	// }
 }
 
 // Logic do in here
