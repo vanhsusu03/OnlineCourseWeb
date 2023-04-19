@@ -120,7 +120,7 @@ footer {
     top: -10px;
     height: 2px;
     width: 15%;
-    background: #f12020;
+    background: white;
 }
 .left .content p {
     text-align: justify;
