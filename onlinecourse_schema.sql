@@ -2,8 +2,8 @@ DROP SCHEMA IF EXISTS onlinecourse;
 CREATE SCHEMA onlinecourse;
 USE onlinecourse;
 
-CREATE TABLE user (
-  user_id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE student (
+  student_id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
   first_name VARCHAR(45) NOT NULL,
   last_name VARCHAR(45) NOT NULL,
   email VARCHAR(60) NOT NULL,
@@ -13,8 +13,10 @@ CREATE TABLE user (
   username VARCHAR(50) NOT NULL,
   password VARCHAR(50) NOT NULL,
   registration_date DATE NOT NULL,
+  coin INT UNSIGNED DEFAULT 0,
   is_instructor BOOLEAN DEFAULT FALSE,
-  PRIMARY KEY (user_id)
+  PRIMARY KEY (student_id),
+  UNIQUE(username)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE instructor (
@@ -23,14 +25,7 @@ CREATE TABLE instructor (
   introduction_brief VARCHAR(3000) NOT NULL,
   transfer_info VARCHAR(200) NOT NULL, -- BankName_AccountNumber_NameOfBankAccount
   PRIMARY KEY (instructor_id),
-  CONSTRAINT fk_instructor_user FOREIGN KEY (instructor_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE student (
-  student_id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  coin INT UNSIGNED DEFAULT 0,
-  PRIMARY KEY (student_id),
-  CONSTRAINT fk_student_user FOREIGN KEY (student_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT fk_instructor_student FOREIGN KEY (instructor_id) REFERENCES student (student_id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE course (
@@ -39,8 +34,6 @@ CREATE TABLE course (
   title VARCHAR(128) NOT NULL,
   description TEXT DEFAULT NULL,
   release_date DATE NOT NULL,
-  length SMALLINT UNSIGNED NOT NULL,
-  rating FLOAT UNSIGNED DEFAULT NULL,
   course_fee MEDIUMINT UNSIGNED NOT NULL,
   is_closed BOOLEAN NOT NULL DEFAULT FALSE,
   PRIMARY KEY (course_id),

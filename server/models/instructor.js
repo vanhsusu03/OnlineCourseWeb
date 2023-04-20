@@ -6,8 +6,8 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true,
       references: {
-        model: 'user',
-        key: 'user_id'
+        model: 'student',
+        key: 'student_id'
       }
     },
     qualification: {
