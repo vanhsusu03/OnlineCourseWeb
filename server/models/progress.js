@@ -1,31 +1,33 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('deposit', {
-    deposit_id: {
+  return sequelize.define('progress', {
+    progress_id: {
       autoIncrement: true,
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       primaryKey: true
     },
-    customer_id: {
-      type: DataTypes.MEDIUMINT.UNSIGNED,
+    enrollment_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       references: {
-        model: 'student',
-        key: 'student_id'
-      }
+        model: 'enrollment',
+        key: 'enrollment_id'
+      },
+      unique: "fk_progress_enrollment"
     },
-    amount: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false
-    },
-    deposit_time: {
+    last_time_access: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: true
+    },
+    is_completed: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: 0
     }
   }, {
     sequelize,
-    tableName: 'deposit',
+    tableName: 'progress',
     timestamps: false,
     indexes: [
       {
@@ -33,14 +35,15 @@ module.exports = function(sequelize, DataTypes) {
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "deposit_id" },
+          { name: "progress_id" },
         ]
       },
       {
-        name: "fk_deposit_order",
+        name: "enrollment_id",
+        unique: true,
         using: "BTREE",
         fields: [
-          { name: "customer_id" },
+          { name: "enrollment_id" },
         ]
       },
     ]

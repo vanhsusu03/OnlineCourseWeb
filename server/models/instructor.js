@@ -1,8 +1,7 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('student', {
-    student_id: {
-      autoIncrement: true,
+  return sequelize.define('instructor', {
+    instructor_id: {
       type: DataTypes.MEDIUMINT.UNSIGNED,
       allowNull: false,
       primaryKey: true,
@@ -11,14 +10,21 @@ module.exports = function(sequelize, DataTypes) {
         key: 'user_id'
       }
     },
-    coin: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: true,
-      defaultValue: 0
+    qualification: {
+      type: DataTypes.STRING(300),
+      allowNull: false
+    },
+    introduction_brief: {
+      type: DataTypes.STRING(3000),
+      allowNull: false
+    },
+    transfer_info: {
+      type: DataTypes.STRING(200),
+      allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'student',
+    tableName: 'instructor',
     timestamps: false,
     indexes: [
       {
@@ -26,7 +32,7 @@ module.exports = function(sequelize, DataTypes) {
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "student_id" },
+          { name: "instructor_id" },
         ]
       },
     ]

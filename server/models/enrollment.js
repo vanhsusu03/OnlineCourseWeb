@@ -1,13 +1,13 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('deposit', {
-    deposit_id: {
+  return sequelize.define('enrollment', {
+    enrollment_id: {
       autoIncrement: true,
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       primaryKey: true
     },
-    customer_id: {
+    student_id: {
       type: DataTypes.MEDIUMINT.UNSIGNED,
       allowNull: false,
       references: {
@@ -15,17 +15,21 @@ module.exports = function(sequelize, DataTypes) {
         key: 'student_id'
       }
     },
-    amount: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false
+    course_id: {
+      type: DataTypes.SMALLINT.UNSIGNED,
+      allowNull: false,
+      references: {
+        model: 'course',
+        key: 'course_id'
+      }
     },
-    deposit_time: {
-      type: DataTypes.DATE,
+    enrollment_date: {
+      type: DataTypes.DATEONLY,
       allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'deposit',
+    tableName: 'enrollment',
     timestamps: false,
     indexes: [
       {
@@ -33,14 +37,21 @@ module.exports = function(sequelize, DataTypes) {
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "deposit_id" },
+          { name: "enrollment_id" },
         ]
       },
       {
-        name: "fk_deposit_order",
+        name: "fk_enrollment_course",
         using: "BTREE",
         fields: [
-          { name: "customer_id" },
+          { name: "course_id" },
+        ]
+      },
+      {
+        name: "fk_enrollment_student",
+        using: "BTREE",
+        fields: [
+          { name: "student_id" },
         ]
       },
     ]

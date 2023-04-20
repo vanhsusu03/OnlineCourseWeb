@@ -1,31 +1,27 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('deposit', {
-    deposit_id: {
+  return sequelize.define('chapter', {
+    chapter_id: {
       autoIncrement: true,
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.MEDIUMINT.UNSIGNED,
       allowNull: false,
       primaryKey: true
     },
-    customer_id: {
-      type: DataTypes.MEDIUMINT.UNSIGNED,
+    course_id: {
+      type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false,
       references: {
-        model: 'student',
-        key: 'student_id'
+        model: 'course',
+        key: 'course_id'
       }
     },
-    amount: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false
-    },
-    deposit_time: {
-      type: DataTypes.DATE,
+    title: {
+      type: DataTypes.STRING(200),
       allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'deposit',
+    tableName: 'chapter',
     timestamps: false,
     indexes: [
       {
@@ -33,14 +29,14 @@ module.exports = function(sequelize, DataTypes) {
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "deposit_id" },
+          { name: "chapter_id" },
         ]
       },
       {
-        name: "fk_deposit_order",
+        name: "fk_chapter_course",
         using: "BTREE",
         fields: [
-          { name: "customer_id" },
+          { name: "course_id" },
         ]
       },
     ]
