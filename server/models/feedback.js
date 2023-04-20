@@ -1,46 +1,46 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('deposit', {
-    deposit_id: {
+  return sequelize.define('feedback', {
+    feedback_id: {
       autoIncrement: true,
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       primaryKey: true
     },
-    customer_id: {
-      type: DataTypes.MEDIUMINT.UNSIGNED,
+    enrollment_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       references: {
-        model: 'student',
-        key: 'student_id'
+        model: 'enrollment',
+        key: 'enrollment_id'
       }
     },
-    amount: {
-      type: DataTypes.INTEGER.UNSIGNED,
+    rating: {
+      type: DataTypes.FLOAT,
       allowNull: false
     },
-    deposit_time: {
-      type: DataTypes.DATE,
-      allowNull: false
+    detail: {
+      type: DataTypes.STRING(3000),
+      allowNull: true
     }
   }, {
     sequelize,
-    tableName: 'deposit',
-    timestamps: false,
+    tableName: 'feedback',
+    timestamps: true,
     indexes: [
       {
         name: "PRIMARY",
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "deposit_id" },
+          { name: "feedback_id" },
         ]
       },
       {
-        name: "fk_deposit_order",
+        name: "fk_feedback_enrollment",
         using: "BTREE",
         fields: [
-          { name: "customer_id" },
+          { name: "enrollment_id" },
         ]
       },
     ]

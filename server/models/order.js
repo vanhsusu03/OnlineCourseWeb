@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('deposit', {
-    deposit_id: {
+  return sequelize.define('order', {
+    order_id: {
       autoIncrement: true,
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
@@ -14,18 +14,10 @@ module.exports = function(sequelize, DataTypes) {
         model: 'student',
         key: 'student_id'
       }
-    },
-    amount: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false
-    },
-    deposit_time: {
-      type: DataTypes.DATE,
-      allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'deposit',
+    tableName: 'order',
     timestamps: false,
     indexes: [
       {
@@ -33,11 +25,11 @@ module.exports = function(sequelize, DataTypes) {
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "deposit_id" },
+          { name: "order_id" },
         ]
       },
       {
-        name: "fk_deposit_order",
+        name: "fk_order_student",
         using: "BTREE",
         fields: [
           { name: "customer_id" },

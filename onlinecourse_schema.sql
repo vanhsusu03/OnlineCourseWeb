@@ -8,6 +8,7 @@ CREATE TABLE user (
   last_name VARCHAR(45) NOT NULL,
   email VARCHAR(60) NOT NULL,
   phone VARCHAR(20) NOT NULL,
+  birthday DATE NOT NULL,
   image VARCHAR(300) DEFAULT NULL,
   username VARCHAR(50) NOT NULL,
   password VARCHAR(50) NOT NULL,
@@ -20,6 +21,7 @@ CREATE TABLE instructor (
   instructor_id MEDIUMINT UNSIGNED NOT NULL,
   qualification VARCHAR(300) NOT NULL,
   introduction_brief VARCHAR(3000) NOT NULL,
+  transfer_info VARCHAR(200) NOT NULL, -- BankName_AccountNumber_NameOfBankAccount
   PRIMARY KEY (instructor_id),
   CONSTRAINT fk_instructor_user FOREIGN KEY (instructor_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
