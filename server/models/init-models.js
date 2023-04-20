@@ -14,7 +14,6 @@ var _order_detail = require("./order_detail");
 var _payment = require("./payment");
 var _progress = require("./progress");
 var _student = require("./student");
-var _user = require("./user");
 
 function initModels(sequelize) {
   var category = _category(sequelize, DataTypes);
@@ -32,7 +31,6 @@ function initModels(sequelize) {
   var payment = _payment(sequelize, DataTypes);
   var progress = _progress(sequelize, DataTypes);
   var student = _student(sequelize, DataTypes);
-  var user = _user(sequelize, DataTypes);
 
   category.belongsToMany(course, { as: 'course_id_courses', through: course_category, foreignKey: "category_id", otherKey: "course_id" });
   course.belongsToMany(category, { as: 'category_id_categories', through: course_category, foreignKey: "course_id", otherKey: "category_id" });
@@ -64,12 +62,10 @@ function initModels(sequelize) {
   student.hasMany(deposit, { as: "deposits", foreignKey: "customer_id"});
   enrollment.belongsTo(student, { as: "student", foreignKey: "student_id"});
   student.hasMany(enrollment, { as: "enrollments", foreignKey: "student_id"});
+  instructor.belongsTo(student, { as: "instructor", foreignKey: "instructor_id"});
+  student.hasOne(instructor, { as: "instructor", foreignKey: "instructor_id"});
   order.belongsTo(student, { as: "customer", foreignKey: "customer_id"});
   student.hasMany(order, { as: "orders", foreignKey: "customer_id"});
-  instructor.belongsTo(user, { as: "instructor", foreignKey: "instructor_id"});
-  user.hasOne(instructor, { as: "instructor", foreignKey: "instructor_id"});
-  student.belongsTo(user, { as: "student", foreignKey: "student_id"});
-  user.hasOne(student, { as: "student", foreignKey: "student_id"});
 
   return {
     category,
@@ -87,7 +83,6 @@ function initModels(sequelize) {
     payment,
     progress,
     student,
-    user,
   };
 }
 module.exports = initModels;

@@ -27,14 +27,6 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATEONLY,
       allowNull: false
     },
-    length: {
-      type: DataTypes.SMALLINT.UNSIGNED,
-      allowNull: false
-    },
-    rating: {
-      type: DataTypes.FLOAT,
-      allowNull: true
-    },
     course_fee: {
       type: DataTypes.MEDIUMINT.UNSIGNED,
       allowNull: false

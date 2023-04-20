@@ -18,17 +18,17 @@ const staticFolder = path.join(__dirname, 'public');
 app.use('/', express.static(staticFolder));
 
 app.use(
-session({
-    name: process.env.SES_NAME,
-    resave: false,
-    saveUninitialized: false,
-    secret: process.env.SES_SECRET,
-    store: new fileStore(),
-    cookie: {
-    maxAge: Date.now() + 1000 * 60 * 60,
-    sameSite: true,
-    },
-}),
+    session({
+        name: process.env.SES_NAME,
+        resave: false,
+        saveUninitialized: false,
+        secret: process.env.SES_SECRET,
+        store: new fileStore(),
+        cookie: {
+            maxAge: Date.now() + 1000 * 60 * 60,
+            sameSite: true,
+        }
+    })
 );
 
 app.use(
