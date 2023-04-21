@@ -1,4 +1,5 @@
 var DataTypes = require("sequelize").DataTypes;
+var _cart = require("./cart");
 var _category = require("./category");
 var _chapter = require("./chapter");
 var _content = require("./content");
@@ -16,6 +17,7 @@ var _progress = require("./progress");
 var _student = require("./student");
 
 function initModels(sequelize) {
+  var cart = _cart(sequelize, DataTypes);
   var category = _category(sequelize, DataTypes);
   var chapter = _chapter(sequelize, DataTypes);
   var content = _content(sequelize, DataTypes);
@@ -32,14 +34,18 @@ function initModels(sequelize) {
   var progress = _progress(sequelize, DataTypes);
   var student = _student(sequelize, DataTypes);
 
-  category.belongsToMany(course, { as: 'course_id_courses', through: course_category, foreignKey: "category_id", otherKey: "course_id" });
+  category.belongsToMany(course, { as: 'course_id_course_course_categories', through: course_category, foreignKey: "category_id", otherKey: "course_id" });
   course.belongsToMany(category, { as: 'category_id_categories', through: course_category, foreignKey: "course_id", otherKey: "category_id" });
+  course.belongsToMany(student, { as: 'student_id_students', through: cart, foreignKey: "course_id", otherKey: "student_id" });
+  student.belongsToMany(course, { as: 'course_id_courses', through: cart, foreignKey: "student_id", otherKey: "course_id" });
   course_category.belongsTo(category, { as: "category", foreignKey: "category_id"});
   category.hasMany(course_category, { as: "course_categories", foreignKey: "category_id"});
   content.belongsTo(chapter, { as: "chapter", foreignKey: "chapter_id"});
   chapter.hasMany(content, { as: "contents", foreignKey: "chapter_id"});
   content.belongsTo(content_type, { as: "content_type", foreignKey: "content_type_id"});
   content_type.hasMany(content, { as: "contents", foreignKey: "content_type_id"});
+  cart.belongsTo(course, { as: "course", foreignKey: "course_id"});
+  course.hasMany(cart, { as: "carts", foreignKey: "course_id"});
   chapter.belongsTo(course, { as: "course", foreignKey: "course_id"});
   course.hasMany(chapter, { as: "chapters", foreignKey: "course_id"});
   course_category.belongsTo(course, { as: "course", foreignKey: "course_id"});
@@ -49,7 +55,7 @@ function initModels(sequelize) {
   order_detail.belongsTo(course, { as: "course", foreignKey: "course_id"});
   course.hasMany(order_detail, { as: "order_details", foreignKey: "course_id"});
   feedback.belongsTo(enrollment, { as: "enrollment", foreignKey: "enrollment_id"});
-  enrollment.hasMany(feedback, { as: "feedbacks", foreignKey: "enrollment_id"});
+  enrollment.hasOne(feedback, { as: "feedback", foreignKey: "enrollment_id"});
   progress.belongsTo(enrollment, { as: "enrollment", foreignKey: "enrollment_id"});
   enrollment.hasOne(progress, { as: "progress", foreignKey: "enrollment_id"});
   course.belongsTo(instructor, { as: "instructor", foreignKey: "instructor_id"});
@@ -58,6 +64,8 @@ function initModels(sequelize) {
   order.hasMany(order_detail, { as: "order_details", foreignKey: "order_id"});
   payment.belongsTo(order_detail, { as: "order_detail", foreignKey: "order_detail_id"});
   order_detail.hasOne(payment, { as: "payment", foreignKey: "order_detail_id"});
+  cart.belongsTo(student, { as: "student", foreignKey: "student_id"});
+  student.hasMany(cart, { as: "carts", foreignKey: "student_id"});
   deposit.belongsTo(student, { as: "customer", foreignKey: "customer_id"});
   student.hasMany(deposit, { as: "deposits", foreignKey: "customer_id"});
   enrollment.belongsTo(student, { as: "student", foreignKey: "student_id"});
@@ -68,6 +76,7 @@ function initModels(sequelize) {
   student.hasMany(order, { as: "orders", foreignKey: "customer_id"});
 
   return {
+    cart,
     category,
     chapter,
     content,

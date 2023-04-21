@@ -17,11 +17,13 @@ module.exports = function(sequelize, DataTypes) {
     },
     email: {
       type: DataTypes.STRING(60),
-      allowNull: false
+      allowNull: false,
+      unique: "email"
     },
     phone: {
       type: DataTypes.STRING(20),
-      allowNull: false
+      allowNull: false,
+      unique: "phone"
     },
     birthday: {
       type: DataTypes.DATEONLY,
@@ -73,6 +75,22 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "username" },
+        ]
+      },
+      {
+        name: "email",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "email" },
+        ]
+      },
+      {
+        name: "phone",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "phone" },
         ]
       },
     ]

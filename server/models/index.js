@@ -26,6 +26,7 @@ const sequelize = new Sequelize(
 db.sequelize = sequelize;
 db.models = {};
 
+db.models.Cart = require('./cart')(sequelize, Sequelize.DataTypes);
 db.models.Category = require('./category')(sequelize, Sequelize.DataTypes);
 db.models.Chapter = require('./chapter')(sequelize, Sequelize.DataTypes);
 db.models.Content_type = require('./content_type')(sequelize, Sequelize.DataTypes);

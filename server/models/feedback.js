@@ -13,7 +13,8 @@ module.exports = function(sequelize, DataTypes) {
       references: {
         model: 'enrollment',
         key: 'enrollment_id'
-      }
+      },
+      unique: "fk_feedback_enrollment"
     },
     rating: {
       type: DataTypes.FLOAT,
@@ -37,7 +38,8 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "fk_feedback_enrollment",
+        name: "enrollment_id",
+        unique: true,
         using: "BTREE",
         fields: [
           { name: "enrollment_id" },
