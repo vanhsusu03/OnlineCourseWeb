@@ -17,7 +17,8 @@ CREATE TABLE student (
   is_instructor BOOLEAN DEFAULT FALSE,
   PRIMARY KEY (student_id),
   UNIQUE(username),
-  UNIQUE(email)
+  UNIQUE(email),
+  UNIQUE(phone)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE instructor (
