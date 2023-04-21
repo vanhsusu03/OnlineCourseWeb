@@ -1,15 +1,10 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('enrollment', {
-    enrollment_id: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
-      primaryKey: true
-    },
+  return sequelize.define('cart', {
     student_id: {
       type: DataTypes.MEDIUMINT.UNSIGNED,
       allowNull: false,
+      primaryKey: true,
       references: {
         model: 'student',
         key: 'student_id'
@@ -18,30 +13,19 @@ module.exports = function(sequelize, DataTypes) {
     course_id: {
       type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false,
+      primaryKey: true,
       references: {
         model: 'course',
         key: 'course_id'
       }
-    },
-    enrollment_date: {
-      type: DataTypes.DATEONLY,
-      allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'enrollment',
+    tableName: 'cart',
     timestamps: false,
     indexes: [
       {
         name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [
-          { name: "enrollment_id" },
-        ]
-      },
-      {
-        name: "student_id",
         unique: true,
         using: "BTREE",
         fields: [
@@ -50,7 +34,7 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "fk_enrollment_course",
+        name: "fk_cart_course",
         using: "BTREE",
         fields: [
           { name: "course_id" },

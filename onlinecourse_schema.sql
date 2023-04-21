@@ -16,7 +16,8 @@ CREATE TABLE student (
   coin INT UNSIGNED DEFAULT 0,
   is_instructor BOOLEAN DEFAULT FALSE,
   PRIMARY KEY (student_id),
-  UNIQUE(username)
+  UNIQUE(username),
+  UNIQUE(email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE instructor (
@@ -38,6 +39,14 @@ CREATE TABLE course (
   is_closed BOOLEAN NOT NULL DEFAULT FALSE,
   PRIMARY KEY (course_id),
   CONSTRAINT fk_course_instructor FOREIGN KEY (instructor_id) REFERENCES instructor (instructor_id) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE cart (
+  student_id MEDIUMINT UNSIGNED NOT NULL,
+  course_id SMALLINT UNSIGNED NOT NULL,
+  PRIMARY KEY (student_id, course_id),
+  CONSTRAINT fk_cart_student FOREIGN KEY (student_id) REFERENCES student (student_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_cart_course FOREIGN KEY (course_id) REFERENCES course (course_id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE deposit (
@@ -121,6 +130,7 @@ CREATE TABLE enrollment (
   course_id SMALLINT UNSIGNED NOT NULL,
   enrollment_date DATE NOT NULL,
   PRIMARY KEY (enrollment_id),
+  UNIQUE(student_id, course_id),
   CONSTRAINT fk_enrollment_course FOREIGN KEY (course_id) REFERENCES course (course_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT fk_enrollment_student FOREIGN KEY (student_id) REFERENCES student (student_id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -132,6 +142,7 @@ CREATE TABLE feedback (
   detail VARCHAR(3000) DEFAULT NULL,
   created_at DATETIME NOT NULL,
   PRIMARY KEY (feedback_id),
+  UNIQUE(enrollment_id),
   CONSTRAINT fk_feedback_enrollment FOREIGN KEY (enrollment_id) REFERENCES enrollment (enrollment_id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
