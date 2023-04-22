@@ -281,10 +281,11 @@ export default {
 
             .text {
                 position: relative;
+                // text-align: center;
 
                 .heading {
                     position: absolute;
-                    font-size: 225%;
+                    font-size: 2.6vw;
                     font-style: bold;
                     font-weight: 1000;
                     width: 100%;
@@ -293,7 +294,7 @@ export default {
 
                 .body {
                     position: absolute;
-                    font-size: 150%;
+                    font-size: 1.7vw;
                     font-style: bold;
                     font-weight: 500;
                     margin-top: 20%;
@@ -318,8 +319,8 @@ export default {
         .box {
             text-align: center;
             position: absolute;
-            top: 580px;
-            left: 750px;
+            top: 60%;
+            left: 50%;
             width: 35%;
             height: 20%;
             background-color: white;
@@ -330,7 +331,7 @@ export default {
 
                 .heading {
                     position: absolute;
-                    font-size: 225%;
+                    font-size: 2.4vw;
                     font-style: bold;
                     font-weight: 1000;
                     width: 100%;
@@ -340,11 +341,11 @@ export default {
 
                 .body {
                     position: absolute;
-                    font-size: 150%;
+                    font-size: 1.7vw;
                     font-style: bold;
                     font-weight: 500;
                     margin-top: 25%;
-                    margin-left: 100px;
+                    margin-left: 18%;
                 }
             }
         }
@@ -427,14 +428,13 @@ export default {
         text-align: center;
 
         .cate {
-            width: 230px;
-            height: 230px;
+            width: 80%;
+            height: 80%;
             display: inline-block;
             background-color: rgb(250, 250, 250);
             border: 1px solid black;
             cursor: pointer;
             border-radius: 10px;
-
             .cate-img {
                 width: 75%;
                 top: 10%;
@@ -448,7 +448,7 @@ export default {
 
         .cate-content {
             margin: 10px 0;
-            font-size: 1.2rem;
+            font-size: 1.3vw;
             font-weight: 600;
         }
     }
@@ -465,8 +465,8 @@ export default {
         text-align: center;
 
         .cate {
-            width: 230px;
-            height: 230px;
+            width: 18vw;
+            height: 18vw;
             display: inline-block;
             background-color: rgb(255,250,240);
             border: 1px solid rgb(207,207,207);
@@ -485,7 +485,7 @@ export default {
 
         .cate-content {
             margin: 10px 0;
-            font-size: 1.2rem;
+            font-size: 1.8vw;
             font-weight: 600;
         }
     }
