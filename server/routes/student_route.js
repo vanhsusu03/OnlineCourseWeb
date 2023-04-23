@@ -1,11 +1,9 @@
-const Student = require('../models/student');
-const studentController = require('../controllers/StudentController');
 const express = require('express');
+const studentController = require('../controllers/StudentController');
+const { isAlreadyLogin } = require('../middleware/Authentication');
 const router = express.Router();
 
-router.post('/api/#/signup',studentController.signup);
-router.post('/api/#/login',studentController.login);
+router.post('/signup', isAlreadyLogin, studentController.register);
+router.get("/signup", studentController.saaaaa);
 
-router.get('/',studentController.checkLoggedin);
-
-module.exports=router;
+module.exports = router;
