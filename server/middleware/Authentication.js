@@ -1,5 +1,5 @@
 const isAdmin = (req, res, next) => {
-    if (req.session.role == 1) {
+    if (req.session.role === 1) {
         next();
     } else {
         return res.status(401).json({
@@ -9,7 +9,7 @@ const isAdmin = (req, res, next) => {
 };
 
 const isAlreadyLogin = (req, res, next) => {
-    if (req.session.userId) {
+    if (req.session.student_id) {
         return res.status(200).json({
             msg: 'Already login!',
             redirect: '/info',
@@ -21,7 +21,7 @@ const isAlreadyLogin = (req, res, next) => {
 };
 
 const isAuth = (req, res, next) => {
-    if (!req.session.userId) {
+    if (!req.session.student_id) {
         return res.status(401).json({
             msg: 'You need to log in first',
             redirect: '/login',
