@@ -30,7 +30,7 @@ class StudentController {
         const student = await Student.findOne({where: {username: req.body.username}});
         if (!student) {
             res.status(401).json({error: 'Invalid username'});
-        } else if (student.password == req.body.password) {
+        } else if (student.password !== req.body.password) {
             res.status(401).json({error: 'Invalid password'});
         } else {
             res.status(200).json(student);
