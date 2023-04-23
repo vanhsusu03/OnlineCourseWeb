@@ -40,7 +40,7 @@
             <input type="date" class="sub" id="birth" v-model="form.birth" required>
             <p class="error" v-if="errorObj.firstnameError.length > 0">{{ errorObj.birthError[0] }}</p>
 
-            <button class="info btn" type="submit" >Sign Up</button>
+            <button v-on:click="signup" class="info btn" type="submit" >Sign Up</button>
 
         </form>
     </div>
@@ -73,7 +73,7 @@ export default {
     methods: {
         ...mapMutations(['scrollToTop', 'setStudent']),
         async signup() {
-            let data = await this.axios.post('/signup', this.form, { withCredentials: true });
+            let data = await axios.post('/signup', this.form, { withCredentials: true });
             let err = data.data.msg;
             console.log(data.data);
             if (err === 'Username is already exists') {
