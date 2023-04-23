@@ -40,7 +40,8 @@
     
 <script>
 export default {
-    name: "Register",
+    // eslint-disable-next-line vue/multi-word-component-names
+    name: "Login",
     data() {
         return {
             form: {

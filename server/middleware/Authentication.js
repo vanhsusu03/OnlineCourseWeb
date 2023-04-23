@@ -21,7 +21,7 @@ const isAlreadyLogin = (req, res, next) => {
 };
 
 const isAuth = (req, res, next) => {
-    if (!req.session.student_id) {
+    if (!req.student_id) {
         return res.status(401).json({
             msg: 'You need to log in first',
             redirect: '/login',

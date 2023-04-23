@@ -28,16 +28,13 @@ class StudentController {
 
     async logIn(req, res, next) {
         const student = await Student.findOne({where: {username: req.body.username}});
-        if (student) {
-            const password_valid = (student.password===req.body.password);
-            if (password_valid) {
-                res.status(200).json(req.body);
-            } else {
-                res.status(400).json({error: "Invalid password"});
-            }
-
+        if (!student) {
+            res.status(401).json({error: 'Invalid username'});
+        } else if (student.password == req.body.password) {
+            res.status(401).json({error: 'Invalid password'});
         } else {
-            res.status(404).json({error: "Invalid user"});
+            res.status(200).json(student);
+            req.session.isLogin = true;
         }
     }
 }
