@@ -7,16 +7,21 @@
     <br>
     <div class="login">
         <h1>Login</h1>
-        <form>
-            <label for="email" class="info">Email: <br /> </label>
+        <form @submit="handleSubmit" novalidate autocomplete="off">
+            <!-- <div v-if="errors.length" class="error-box">
+                <ul>
+                    <li v-for="error in errors" :key="error">{{ error }}</li>
+                </ul>
+            </div> -->
+
+            <label for="username" class="info">Username: <br /> </label>
             <br>
-            <input type="email" id="email" class="sub" placeholder="Enter email" v-model="form.email" required>
-            <br />
-            <br>
+            <input type="text" id="username" class="sub" placeholder="Enter username" v-model="form.username" required>
+            <p class="error" v-if="usernameError.length > 0">{{ usernameError[0] }}</p>
             <label for="password" class="info">Password: <br /></label>
             <br>
             <input type="password" id="password" class="sub" placeholder="Enter password" v-model="form.password" required>
-            <br />
+            <p class="error" v-if="passwordError.length > 0">{{ passwordError[0] }}</p>
             <p id="msg"></p>
             <br>
             <div class="ques">
@@ -27,7 +32,7 @@
                     </div>
                 </RouterLink>
             </div>
-            <button v-on:click="login" class="info btn" type="button">Login</button>
+            <button class="info btn" type="submit">Login</button>
         </form>
     </div>
     <br>
@@ -39,18 +44,55 @@ export default {
     data() {
         return {
             form: {
-                email: '',
-                password: '',
+                username: "",
+                password: "",
             },
-            check: false
+            matchStudent: undefined,
+            usernameError: [],
+            passwordError: []
         }
     },
     methods: {
-        login() {
-            if (!this.check) {
-                document.getElementById("msg").innerHTML = "Your email or password is invailded"
+        // ...mapMutations(['scrollToTop', 'setStudent', 'setAdmin', 'setLogged']),
+        async login() {
+            let data = await axios.post('/login', this.form, { withCredentials: true });
+            let err = data.data.msg;
+            if (err === 'Invalid username') {
+                this.usernameError.push(err);
+            } else if (err === 'Invalid password') {
+                this.passwordError.push(err);
+            }
+            else {
+                this.setUser(data.data);
+                this.setLogged(true);
+                this.$router.push('/');
+
+                // if (data.data.role) {
+                //     this.setAdmin("admin");
+                // }
+                // this.getCart();
+            }
+        },
+        async getCart() { },
+        async handleSubmit(event) {
+            this.errors = [];
+
+            //email validate
+            if (!this.form.username) {
+                this.usernameError.push('Please enter your username');
             }
 
+            //password validate
+            if (!this.form.password) {
+                this.passwordError.push('Please enter your password');
+            }
+            if (!this.errors.length == 0) {
+                event.preventDefault();
+            }
+            else {
+                event.preventDefault();
+                await this.login();
+            }
         }
     }
 }
@@ -72,21 +114,31 @@ export default {
 
 .logo {
     text-align: center;
+
     img {
         width: 15%;
     }
 }
 
+
 .login {
     position: relative;
     /* text-align: center; */
+    .error-box{
+        border: 1px solid red;
+        background-color: rgb(255,106,106);
+        position: absolute;
+        margin-top: -20%;
+        margin-left: 50%;
+        transform: translateX(-50%);
+    }
 }
 
 h1 {
     text-align: center;
     color: rgb(0, 128, 128);
     text-transform: uppercase;
-    margin-bottom: 20px;
+    margin-bottom: 21px;
     font-weight: 800;
 }
 
@@ -95,10 +147,21 @@ li {
 }
 
 form {
-    position: relative;
-    display: inline-block;
-    margin-left: 50%;
-    transform: translateX(-95%);
+    background-color: white;
+        top: 30%;
+        margin-left: 50%;
+        transform: translateX(-50%);
+        width: 30%;
+        box-shadow: -0.5rem -0.5rem 1rem rgba($color: #000000, $alpha: 0.1), 0.5rem 0.5rem 1rem rgba($color: #000000, $alpha: 0.1);
+        border: 0.1rem solid rgba($color: #000000, $alpha: 0.05);
+        padding: 2rem;
+        border-radius: 1rem;
+        animation: fadeUp 0.4s linear;
+        .error {
+          font-size: 1.1rem;
+          color: rgba($color: #f32f2f, $alpha: 1.0);
+          font-weight: 600;
+        }
 }
 
 .info {
@@ -110,7 +173,7 @@ form {
 .sub {
     margin-bottom: 10px;
     padding: 5px 5px;
-    width: 200%;
+    width: 24vw;
     border-radius: 5px;
 }
 
@@ -121,7 +184,7 @@ form {
     margin-left: 50%;
     border-style: none;
     border-radius: 10px;
-    transform: translateX(50%);
+    transform: translateX(-50%);
     background-color: rgb(0, 128, 128);
     color: white;
 }
@@ -142,7 +205,7 @@ form {
 }
 
 #msg {
-    text-align: center;
+    text-align: left;
     font-size: 15px;
     color: red;
 }
