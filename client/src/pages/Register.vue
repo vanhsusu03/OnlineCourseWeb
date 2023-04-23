@@ -79,18 +79,26 @@ export default {
     methods: {
         ...mapMutations(['scrollToTop', 'setStudent']),
         async signup() {
-            let data = await this.axios.post('/signup', this.form, {withCredentials: true});
-            let err = data.data.msg;
-            console.log(data.data);
-            if (err === 'Username is already exists') {
-                this.errorObj.usernameError.push(err);
-            } else if (err === 'Email is already exists') {
-                this.errorObj.emailError.push(err);
-            } else {
-                this.setStudent(data.data);
-                this.$router.push('/');
+            // let data = await axios.post('/signup', this.form, {withCredentials: true});
+            // let err = data.data.msg;
+            // console.log(data.data);
+            // if (err === 'Username is already exists') {
+            //     this.errorObj.usernameError.push(err);
+            // } else if (err === 'Email is already exists') {
+            //     this.errorObj.emailError.push(err);
+            // } else {
+            //     this.setStudent(data.data);
+            //     this.$router.push('/');
+            let data={
+                firstname: this.form.firstname,
+                lastname: this.form.lastname,
+                email: this.form.email,
+                username: this.form.username,
+                password: this.form.password,
+                phone: this.form.phone,
+                birth: this.form.birth,
             }
-            http.post("/register", data)
+            http.post("/#/signup", data)
                 .then(response => {
                     this.form.id = response.data.id;
                     console.log(response.data);
@@ -176,7 +184,7 @@ export default {
                 this.scrollToTop();
                 event.preventDefault();
             } else {
-                //event.preventDefault();
+                // event.preventDefault();
                 this.signup();
             }
         },

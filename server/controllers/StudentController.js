@@ -1,6 +1,6 @@
 const connection = require('../models');
 
-module.exports.register = function (req, res) {
+module.exports.signup = function (req, res) {
     let student = {
         'firstname': req.body.firstname,
         'lastname': req.body.lastname,

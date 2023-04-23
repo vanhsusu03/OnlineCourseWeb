@@ -23,15 +23,15 @@
         </div>
 
         <div class="login">
-            <RouterLink @click="scrollToTop()" to="/login">
+            <RouterLink @click="scrollToTop()" to="/login/">
                 <div class="text">
                     <div class="l">Log in</div>
                 </div>
             </RouterLink>
         </div>
         <div class="signup">
-            <RouterLink @click="scrollToTop()" to="/signup">
-                <div class="textt">
+            <RouterLink @click="scrollToTop()" to="/signup/">
+                <div class="text">
                     <div class="ll">Sign up</div>
                 </div>
             </RouterLink>
@@ -43,6 +43,7 @@
 import axios from 'axios';
 import { mapMutations, mapState } from 'vuex';
 export default {
+    // eslint-disable-next-line vue/multi-word-component-names
     name: 'Header',
     methods: {
         ...mapMutations(['setUser', 'setAdmin', 'setLogged']),
