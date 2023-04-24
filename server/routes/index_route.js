@@ -24,7 +24,7 @@ function routesInit(app) {
     // app.use('/', orderRoute);
     // app.use('/', paymentRoute);
     // app.use('/', searchingRoute);
-    // app.use('/', studentRoute);
+    app.use('/', studentRoute);
     // app.use('/', studyRoute);
 }
 

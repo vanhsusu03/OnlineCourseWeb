@@ -49,9 +49,9 @@ app.use(function (err, req, res, next) {
     res.status(500).send("Something broke!");
 });
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
-});
+// app.get('/', (req, res) => {
+//     res.sendFile(__dirname + '/index.html');
+// });
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => console.log(`Server running on PORT ${PORT}`));
