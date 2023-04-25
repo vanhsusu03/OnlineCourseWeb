@@ -35,6 +35,7 @@ class StudentController {
         } else {
             res.status(200).json(student);
             req.session.isLogin = true;
+            req.session.student_id=student.student_id;
         }
     }
 }
