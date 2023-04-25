@@ -40,7 +40,8 @@
     
 <script>
 export default {
-    name: "Register",
+    // eslint-disable-next-line vue/multi-word-component-names
+    name: "Login",
     data() {
         return {
             form: {
@@ -55,6 +56,7 @@ export default {
     methods: {
         // ...mapMutations(['scrollToTop', 'setStudent', 'setAdmin', 'setLogged']),
         async login() {
+            // eslint-disable-next-line no-undef
             let data = await axios.post('/login', this.form, { withCredentials: true });
             let err = data.data.msg;
             if (err === 'Invalid username') {
@@ -63,7 +65,7 @@ export default {
                 this.passwordError.push(err);
             }
             else {
-                this.setUser(data.data);
+                this.setStudent(data.data);
                 this.setLogged(true);
                 this.$router.push('/');
 

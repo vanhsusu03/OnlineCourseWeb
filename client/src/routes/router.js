@@ -7,9 +7,9 @@ import Register from '../pages/Register.vue';
 import store from '@/store/index';
 
 const routes = [
-    {  path: "/", name: "Home", component: Home, },
     {  path: "/login", name: "Login", component: Login,},
-    {  path: "/signup", name: "SignUp", component: Register ,}
+    {  path: "/signup", name: "SignUp", component: Register ,},
+    {  path: "/", name: "Home", component: Home, },
     //addition in here
 ]
 
