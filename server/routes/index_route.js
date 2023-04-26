@@ -18,11 +18,11 @@ function routesInit(app) {
     // app.use('/', categoryRoute);
     // app.use('/', courseRoute);
     // app.use('/', courselistRoute);
-    // app.use('/', depositRoute);
+    app.use('/', depositRoute);
     // app.use('/', instructorRoute);
     // app.use('/', mainRoute);
     // app.use('/', orderRoute);
-    // app.use('/', paymentRoute);
+    app.use('/', paymentRoute);
     // app.use('/', searchingRoute);
     app.use('/', studentRoute);
     // app.use('/', studyRoute);
