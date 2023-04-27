@@ -14,7 +14,7 @@ const studyRoute = require('./study_route');
 
 function routesInit(app) {
     // app.use('/admin', adminRoute);
-    // app.use('/', cartRoute);
+    app.use('/', cartRoute);
     // app.use('/', categoryRoute);
     // app.use('/', courseRoute);
     // app.use('/', courselistRoute);
