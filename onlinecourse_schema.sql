@@ -35,6 +35,7 @@ CREATE TABLE course (
   instructor_id MEDIUMINT UNSIGNED NOT NULL,
   title VARCHAR(128) NOT NULL,
   description TEXT DEFAULT NULL,
+  image VARCHAR(300) NOT NULL,
   release_date DATE NOT NULL,
   course_fee MEDIUMINT UNSIGNED NOT NULL,
   is_closed BOOLEAN NOT NULL DEFAULT FALSE,
