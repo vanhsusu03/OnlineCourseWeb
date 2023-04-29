@@ -3,7 +3,7 @@ export default {
       window.scrollTo(0, 0);
     },
     setStudent(state, matchStudent) {
-      state.user = matchStudent;
+      state.student = matchStudent;
     },
     setAdmin(state, admin) {
       state.admin = admin;

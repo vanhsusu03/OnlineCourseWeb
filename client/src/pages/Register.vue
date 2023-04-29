@@ -49,7 +49,7 @@
     
 <script>
 import { mapMutations } from 'vuex';
-import axios from 'axios';
+import axios from "axios";
 export default {
     name: "Register",
     data() {
@@ -157,8 +157,7 @@ export default {
     handleSubmit(event) {
         this.checkRegister();
 
-        if (!this.checkEmptyInput()) {
-            this.scrollToTop();
+        if (this.checkEmptyInput()) {
             event.preventDefault();
         } else {
             event.preventDefault();

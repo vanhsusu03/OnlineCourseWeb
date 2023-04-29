@@ -15,8 +15,34 @@
                 </div>
             </div>
         </div>
-        <div class="bottom">
+        <!-- <div class="middle">
             <img src="../assets/img/bgr2.jpg">
+            <div class="box">
+                <div class="text">
+                    <div class="heading">
+                        Empowering your skills
+                    </div>
+                    <div class="body">
+                        Best practice courses
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="middle2">
+            <img src="../assets/img/bgr4.jpg">
+            <div class="box">
+                <div class="text">
+                    <div class="heading">
+                        Learning your own courses
+                    </div>
+                    <div class="body">
+                        Unlock and try out our 1000+ courses
+                    </div>
+                </div>
+            </div>
+        </div> -->
+        <div class="bottom">
+            <img src="../assets/img/bg3.jpg">
             <div class="box">
                 <div class="text">
                     <div class="heading">
@@ -251,6 +277,11 @@ export default {
     margin-left: 30px;
 }
 
+.box {
+    border-radius: 10px;
+    box-shadow: -0.5rem -0.5rem 1rem rgba($color: #000000, $alpha: 0.1), 0.5rem 0.5rem 1rem rgba($color: #000000, $alpha: 0.1);
+    background-color: rgb(245,255,250) !important;
+}
 // BACKGROUND ANIMATION
 .bgr {
     position: relative;
@@ -304,6 +335,100 @@ export default {
         }
     }
 
+    // .middle {
+    //     position: absolute;
+    //     top: 0;
+    //     left: 0;
+
+    //     img {
+    //         clip-path: inset(40px);
+    //         width: 95%;
+    //         height: 70%;
+    //         margin-left: 30px;
+    //         // margin-right: 40px;
+    //     }
+
+    //     .box {
+    //         text-align: center;
+    //         position: absolute;
+    //         top: 60%;
+    //         left: 50%;
+    //         width: 35%;
+    //         height: 20%;
+    //         background-color: white;
+    //         box-shadow: 0 1rem 1rem rgba(0, 0, 0, 0.5);
+
+    //         .text {
+    //             position: relative;
+
+    //             .heading {
+    //                 position: absolute;
+    //                 font-size: 2.4vw;
+    //                 font-style: bold;
+    //                 font-weight: 1000;
+    //                 width: 100%;
+    //                 height: 25%;
+    //                 margin-top: 8%;
+    //             }
+
+    //             .body {
+    //                 position: absolute;
+    //                 font-size: 1.7vw;
+    //                 font-style: bold;
+    //                 font-weight: 500;
+    //                 margin-top: 25%;
+    //                 margin-left: 18%;
+    //             }
+    //         }
+    //     }
+    // }
+    // .middle2 {
+    //     position: absolute;
+    //     top: 0;
+    //     left: 0;
+
+    //     img {
+    //         clip-path: inset(40px);
+    //         width: 95%;
+    //         height: 70%;
+    //         margin-left: 30px;
+    //         // margin-right: 40px;
+    //     }
+
+    //     .box {
+    //         text-align: center;
+    //         position: absolute;
+    //         top: 60%;
+    //         left: 50%;
+    //         width: 35%;
+    //         height: 20%;
+    //         background-color: white;
+    //         box-shadow: 0 1rem 1rem rgba(0, 0, 0, 0.5);
+
+    //         .text {
+    //             position: relative;
+
+    //             .heading {
+    //                 position: absolute;
+    //                 font-size: 2.4vw;
+    //                 font-style: bold;
+    //                 font-weight: 1000;
+    //                 width: 100%;
+    //                 height: 25%;
+    //                 margin-top: 8%;
+    //             }
+
+    //             .body {
+    //                 position: absolute;
+    //                 font-size: 1.7vw;
+    //                 font-style: bold;
+    //                 font-weight: 500;
+    //                 margin-top: 25%;
+    //                 margin-left: 18%;
+    //             }
+    //         }
+    //     }
+    // }
     .bottom {
         position: absolute;
         top: 0;
@@ -320,8 +445,8 @@ export default {
         .box {
             text-align: center;
             position: absolute;
-            top: 60%;
-            left: 50%;
+            top: 10%;
+            left: 55%;
             width: 35%;
             height: 20%;
             background-color: white;
@@ -403,6 +528,58 @@ export default {
         animation-duration: 5s;
         animation-direction: alternate;
     }
+
+//     @keyframes FadeMiddle {
+//         0% {
+//             opacity: 0;
+//         }
+
+//         45% {
+//             opacity: 0;
+//         }
+
+//         55% {
+//             opacity: 1
+
+//         100% {
+//             opacity: 0;
+//         }
+//     }
+// }
+
+    // .middle {
+    //     animation-name: FadeMiddle;
+    //     animation-timing-function: ease-in-out;
+    //     animation-iteration-count: infinite;
+    //     animation-duration: 10s;
+    //     animation-direction: alternate;
+    // }
+
+    // @keyframes FadeMiddle2 {
+    //     0% {
+    //         opacity: 0;
+    //     }
+
+    //     45% {
+    //         opacity: 0;
+    //     }
+
+    //     55% {
+    //         opacity: 0;
+    //     }
+
+    //     100% {
+    //         opacity: 1;
+    //     }
+    // }
+
+    // .middle2 {
+    //     animation-name: FadeMiddle2;
+    //     animation-timing-function: ease-in-out;
+    //     animation-iteration-count: infinite;
+    //     animation-duration: 10s;
+    //     animation-direction: alternate;
+    // }
 }
 
 .line-1,
@@ -436,6 +613,7 @@ export default {
             border: 1px solid black;
             cursor: pointer;
             border-radius: 10px;
+
             .cate-img {
                 width: 75%;
                 top: 10%;
@@ -469,10 +647,11 @@ export default {
             width: 18vw;
             height: 18vw;
             display: inline-block;
-            background-color: rgb(255,250,240);
-            border: 1px solid rgb(207,207,207);
+            background-color: rgb(255, 250, 240);
+            border: 1px solid rgb(207, 207, 207);
             cursor: pointer;
             border-radius: 50%;
+
             .cate-img {
                 width: 75%;
                 top: 10%;
@@ -497,5 +676,4 @@ export default {
 }
 
 
-// Style css in here
 </style>

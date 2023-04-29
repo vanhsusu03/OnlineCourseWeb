@@ -1,4 +1,4 @@
-import { createWebHashHistory, createRouter } from "vue-router";
+import { createWebHistory, createRouter } from "vue-router";
 
 // import pages and components
 import Home from '../pages/Home.vue';
@@ -7,14 +7,14 @@ import Register from '../pages/Register.vue';
 import store from '@/store/index';
 
 const routes = [
-    {  path: "/login", name: "Login", component: Login,},
-    {  path: "/signup", name: "SignUp", component: Register ,},
-    {  path: "/", name: "Home", component: Home, },
+    {  path: "/", name: "Home", component: Home},
+    {  path: "/login", name: "Login", component: Login},
+    {  path: "/signup", name: "SignUp", component: Register}
     //addition in here
 ]
 
 const router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHistory(),
     routes
 });
 
