@@ -88,7 +88,7 @@ export default {
             if (!this.form.password) {
                 this.passwordError.push('Please enter your password');
             }
-            if (!this.errors.length == 0) {
+            if (!this.errors.length === 0) {
                 event.preventDefault();
             }
             else {
