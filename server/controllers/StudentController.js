@@ -23,6 +23,7 @@ class StudentController {
                 })
                 .catch((err) => {
                 });
+                res.status(200).json({msg: 'Success'});
         }
     }
 

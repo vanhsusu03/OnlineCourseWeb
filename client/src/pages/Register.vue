@@ -82,6 +82,7 @@ export default {
                 this.errorObj.emailError.push(err);
             } else {
                 this.setStudent(data.data);
+                this.scrollToTop();
                 this.$router.push('/');
             }
         },

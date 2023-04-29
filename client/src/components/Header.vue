@@ -204,7 +204,7 @@ export default {
         position: absolute;
         margin-left: 88%;
         margin-top: 16px;
-        .textt {
+        .text {
             border: 2px inset black;
             padding: 5px;
             border-radius: 10px;
