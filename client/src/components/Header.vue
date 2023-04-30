@@ -8,47 +8,74 @@
         </RouterLink>
         <div class="search">
             <form ref="anyName">
-                <input type="text" id="searching" class="sub" placeholder="Searching for everything ..."
-                    @keyup.enter="redirectToLogin()" />
+                <input type="text" id="searching" class="sub" placeholder="Search for everything ..."
+                    @keydown.enter="redirectToLogin()" />
             </form>
             <RouterLink @click="scrollToTop()" to="/searching"><img src="../assets/img/lookup.png" id="lookup" />
             </RouterLink>
         </div>
 
-        <div class="icons">
-            <RouterLink @click="scrollToTop()" to="/login" v-if="!student.userName"><img src="../assets/img/cart.png" id="cart"></RouterLink>
-            <RouterLink @click="scrollToTop()" to="/cart" v-if="student.userName"><img src="../assets/img/cart.png" id="mycart"></RouterLink>
-            <div v-if="student.userName" class="logged" >
-                <img src="../assets/img/user.png" id="user" @click.prevent="showDropDown" >
-                <div v-if="dropdownselect" class="drop-down-select" @mouseleave="unshowDropDown">
-                    <div>
-                        <RouterLink  @click.prevent="unshowDropDown" to="/login">Account Settings</RouterLink>
-                    </div>
-                    <div>
-                        <RouterLink @click.prevent="unshowDropDown" to="/searching">Quản lý</RouterLink>
-                    </div>
-                    <div>
-                        <RouterLink to="/signup" @click.prevent="unshowDropDown">Đơn hàng</RouterLink>
-                    </div>
-                    <div>
-                        <RouterLink @click="handleLogout" to="/">Đăng xuất</RouterLink>
-                    </div>
+        <RouterLink v-if="!student.userName" @click="scrollToTop" to="/aboutus">
+            <div class="aboutus"> About us</div>
+        </RouterLink>
+        <RouterLink v-if="student.userName" @click="scrollToTop" to="/mycourses">
+            <div class="mycourse">My courses</div>
+        </RouterLink>
+
+        <RouterLink @click="scrollToTop" to="/become/instructor">
+            <div class="become">Become instructor</div>
+        </RouterLink>
+        <div v-if="student.userName" class="logged">
+            <img src="../assets/img/user.png" id="user" @click.prevent="showDropDown">
+            <div v-if="dropdownselect" class="drop-down-select" @mouseleave="unshowDropDown">
+                <div>
+                    <RouterLink @click.prevent="unshowDropDown" to="/account/info">Account Settings</RouterLink>
+                </div>
+                <div>
+                    <RouterLink @click.prevent="unshowDropDown" to="/cart">My Cart</RouterLink>
+                </div>
+                <div>
+                    <RouterLink to="/mycourses" @click.prevent="unshowDropDown">My Courses</RouterLink>
+                </div>
+                <div>
+                    <RouterLink to="/purchase/history" @click.prevent="unshowDropDown">Purchase History</RouterLink>
+                </div>
+                <div>
+                    <RouterLink to="/help" @click.prevent="unshowDropDown">Help</RouterLink>
+                </div>
+                <div>
+                    <RouterLink @click="handleLogout" to="/">Log out</RouterLink>
                 </div>
             </div>
         </div>
+
+        <div class="icons">
+            <div class="new">
+                <img src="../assets/img/new.png" id="new">
+            </div>
+            <RouterLink @click="scrollToTop()" to="/login" v-if="!student.userName"><img src="../assets/img/cart.png"
+                    id="cart"></RouterLink>
+            <RouterLink @click="scrollToTop()" to="/cart" v-if="student.userName"><img src="../assets/img/cart.png"
+                    id="mycart"></RouterLink>
+
+        </div>
         <div v-if="!student.userName" class="login">
-            <RouterLink @click="scrollToTop()" to="/login/">
+            <RouterLink @click="scrollToTop()" to="/login">
                 <div class="text">
-                    <div class="l">Log in</div>
+                    <div class="l">Log in </div>
                 </div>
             </RouterLink>
         </div>
         <div v-if="!student.userName" class="signup">
-            <RouterLink @click="scrollToTop()" to="/signup/">
+            <RouterLink @click="scrollToTop()" to="/signup">
                 <div class="text">
                     <div class="ll">Sign up</div>
                 </div>
             </RouterLink>
+        </div>
+
+        <div v-if="student.userName" class="hello">
+            Hello, {{ ' ' + student.lastName }}
         </div>
 
     </div>
@@ -93,11 +120,10 @@ export default {
         },
         redirectToLogin() {
             this.$router.push('/login');
-            this.submitForm();
-        },
-        submitForm() {
             this.$refs.anyName.reset();
+            event.preventDefault();
         },
+
     },
     computed: {
         ...mapState(['student', 'admin'])
@@ -114,7 +140,9 @@ export default {
 
     .logo {
         height: 50px;
-        margin: 5px 5px;
+        margin-top: 2.5px;
+        margin-bottom: 5px;
+        margin-left: 3px;
     }
 
     a {
@@ -125,24 +153,50 @@ export default {
 
         &:hover {
             color: rgb(52, 73, 94);
+
         }
     }
 
+
     .cate {
+        position: absolute;
         font-weight: 500;
-        margin-top: 50%;
+        margin-top: 38px;
+        margin-left: 2%;
         transform: translateY(-80%);
     }
 
+    .aboutus {
+        position: absolute;
+        font-weight: 500;
+        margin-top: 15px;
+        margin-left: 4.25%;
+    }
+
+    .mycourse {
+        position: absolute;
+        font-weight: 500;
+        margin-top: 15px;
+        margin-left: 3.7%;
+    }
+
+    .become {
+        position: absolute;
+        font-weight: 500;
+        margin-top: 15px;
+        margin-left: 12.25%;
+    }
+
     .search {
+        position: absolute;
         margin-top: 18px;
-        margin-left: 5%;
+        margin-left: 10%;
+        transform: translateY(-6px);
         position: relative;
         width: 40%;
 
         .sub {
             border: 1px solid #000;
-            border-radius: 10px;
             padding: 5px 0;
             width: 100%;
             padding-left: 10px;
@@ -157,61 +211,60 @@ export default {
         }
     }
 
-    .icons {
-        .logged {
-            display: inline-block;
-            position: relative;
+    .logged {
+        display: inline-block;
+        position: relative;
+        width: 1%;
 
-            // margin-left: 95%;
-            // margin-right: 20%;
-            // width: 5%;
-            img {
-                width: 7%;
-                margin-left: 80%;
-                margin-top: 3.5%;
-            }
+        img {
+            width: 220%;
+            margin-left: 3030%;
+            margin-top: 95%;
+        }
 
-            .drop-down-select {
-                position: absolute;
-                margin-left: 80%;
-                top: 115%;
-                background-color: white;
-                padding: .5rem;
-                border-radius: 10px;
-                box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .3);
-                opacity: 1;
-                transform: translateY(0);
-                // text-align: center;
-                z-index: 3;
+        .drop-down-select {
+            position: absolute;
+            margin-left: 3030%;
+            top: 115%;
+            width: 1450%;
+            background-color: white;
+            padding: .3rem;
+            padding-bottom: .3rem;
+            padding-left: .5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .3);
+            opacity: 1;
+            transform: translateY(0);
+            z-index: 3;
 
-                div {
-                    cursor: pointer;
-                    width: 105%;
-                    border-bottom: 2px solid rgb(52, 73, 94);
-                    border-radius: .25rem;
-                    margin-top: 5px;
-                    margin-bottom: 5px;
+            div {
+                cursor: pointer;
+                width: 105%;
+                border-radius: .25rem;
+                margin-top: 5px;
+                margin-bottom: 5px;
 
-                    &:hover {
-                        font-weight: 500;
-                        //WHY IT DOESN"T WORK?
-                        color: white;
-                    }
+                &:hover {
+                    font-weight: 500;
                 }
             }
         }
+    }
+
+    .icons {
 
         #cart {
             position: absolute;
-            margin-left: 21%;
-            margin-top: 1.1%;
+            margin-left: 28%;
+            margin-top: 0.78%;
             margin-right: 24%;
             width: 2.5%;
         }
+
         #mycart {
             position: absolute;
-            margin-left: 33%;
-            margin-top: 1.15%;
+            margin-left: 25%;
+            margin-top: 0.75%;
             margin-right: 24%;
             width: 2.5%;
         }
@@ -225,88 +278,24 @@ export default {
             margin-right: 50%;
         }
 
-        // .user {
-        //     img {
-        //         border: 2px solid black;
-        //         border-radius: 10px;
-        //     }
-        //     .drop-down-select {
-        //         display: none;
-        // 		padding: 0;
-        // 		position: absolute;
-        // 		margin-left: 25%;
-        //         margin-top: 5%;
-        // 		list-style-type: none;
-        // 		border: 2px solid #27ae60;
-        // 		border-radius: 10px;
-        // 		a {
-        // 			text-decoration: none;
-        // 			color: #27ae60;
-        // 			font-size: 15px;
-        // 			font-weight: 300;
-        // 			float: left;
-        // 			width: 100px;
-        // 			border-radius: 8px;
-        // 		}
-        //     }
-        //     &:hover {
-        // 		border:2px solid #27ae60;
-        // 		.drop-down-select {
-        //             position: absolute;
-        // 			display: block;
-        // 			a {
-        // 				background-color: #f7f7f7;
-        // 				&:hover {
-        // 					background-color: #f38609;
-        // 					color: white;
-        // 				}
-        // 			}
-        // 		}
-        // 	}
-        // }
-
+        #new {
+            position: absolute;
+            width: 2%;
+            margin-left: 21%;
+            margin-top: 0.8%;
+        }
     }
 
-    //         .login{
-    //             position: absolute;
-    //             margin-left: 119%;;
-    //             padding: 0;
-    //             // border: 2px inset black;
-    //             // border-width: 10px;;
-    //             .text {
-    //                 position: relative;
-    //                 width: 350%;
-    //                 height: 40px;
-    //                 border: 1px solid black;
-    //                 justify-content: center;
-    //                 align-items: center;
-    //                 border-radius: 10px 10px 10px 10px;
-    //                 &:hover {
-    //                     background-color: rgb(52,73,94);
-    //                     color: white;
-    //                 }
-    //                 .l {
-    //                     font-weight: 500;
-    //                     position: absolute;
-    //                     top: 15%;
-    //                     left: 20%;
-    //                 }
-    //             }
-    //         
     .login {
         position: absolute;
-        margin-left: 82%;
-        // margin-left: ;
-        margin-top: 16px;
+        margin-left: 87.25%;
+        margin-top: 11px;
+        text-align: center;
 
-        // margin-right: 7%;
-        // width: 6%;
-        // height: 5%;
-        // font-size: 100%;
         .text {
+            width: 116%;
             border: 2px inset black;
             padding: 5px;
-            border-radius: 10px;
 
             &:hover {
                 background-color: rgb(52, 73, 94);
@@ -316,19 +305,17 @@ export default {
 
         .l {
             font-weight: 500;
-            // margin: 0 8px;
         }
     }
 
     .signup {
         position: absolute;
-        margin-left: 88%;
-        margin-top: 16px;
+        margin-left: 93%;
+        margin-top: 10px;
 
         .text {
             border: 2px inset black;
             padding: 5px;
-            border-radius: 10px;
             background-color: #000;
             color: #fff;
 
@@ -341,6 +328,13 @@ export default {
             font-weight: 500;
 
         }
+    }
+
+    .hello {
+        font-weight: 600;
+        margin-left: 33.5%;
+        font-size: 0.9rem;
+        margin-top: 1.3%;
     }
 
 }</style> 

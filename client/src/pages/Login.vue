@@ -93,6 +93,7 @@ export default {
             }
             else {
                 event.preventDefault();
+                this.scrollToTop();
                 await this.login();
             }
         }
