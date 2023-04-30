@@ -12,7 +12,7 @@ const isAlreadyLogin = (req, res, next) => {
     if (req.session.student_id) {
         return res.status(200).json({
             msg: 'Already login!',
-            redirect: '/info',
+            redirect: '/',
             cookie: req.headers.cookie,
         });
     } else {

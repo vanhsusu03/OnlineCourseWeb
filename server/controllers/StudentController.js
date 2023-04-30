@@ -4,9 +4,17 @@ class StudentController {
     async signUp(req, res, next) {
         const {firstname, lastname, email, username, password, phone, birth} = req.body;
         if (await Student.findOne({where: {username: req.body.username}})) {
-            res.status(401).json({msg: 'Username is already exists'});
+            res.status(200).json({
+                error: "Username is already exists",
+            })
         } else if (await Student.findOne({where: {email: req.body.email}})) {
-            res.status(401).json({msg: 'Email is already exists'});
+            res.status(200).json({
+                error: "Email is already exists",
+            })
+        } else if (await Student.findOne({where: {phone: req.body.phone}})) {
+            res.status(200).json({
+                error: "Phone number is already exists",
+            })
         } else {
             // Need hash password
             await Student.create({
@@ -29,9 +37,9 @@ class StudentController {
     async logIn(req, res, next) {
         const student = await Student.findOne({where: {username: req.body.username}});
         if (!student) {
-            res.status(401).json({msg: 'Invalid username'});
+            res.status(200).data({msg: 'Invalid username'});
         } else if (student.password !== req.body.password) {
-            res.status(401).json({msg: 'Invalid password'});
+            res.status(200).data({msg: 'Invalid password'});
         } else {
             res.status(200).json({student,});
             // req.session.isLogin = true;
