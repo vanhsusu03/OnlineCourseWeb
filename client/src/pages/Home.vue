@@ -40,7 +40,7 @@
                     </div>
                 </div>
             </div>
-        </div> -->
+        </div>  -->
         <div class="bottom">
             <img src="../assets/img/bg3.jpg">
             <div class="box">

@@ -6,7 +6,6 @@ const routesInit = require('./routes/index_route');
 const path = require('path');
 
 const fileStore = require('session-file-store')(session);
-
 const db = require('./models');
 (async () => {
     await db.sequelize.sync();

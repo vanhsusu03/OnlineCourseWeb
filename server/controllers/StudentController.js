@@ -1,41 +1,59 @@
-const {models: {Student}} = require('../models/');
+const { models: { Student } } = require('../models/');
 
 class StudentController {
     async signUp(req, res, next) {
-        const {firstname, lastname, email, username, password, phone, birth} = req.body;
-        if (await Student.findOne({where: {username: req.body.username}})) {
-            res.status(401).json({error: 'Username is already exists'});
-        } else if (await Student.findOne({where: {email: req.body.email}})) {
-            res.status(401).json({error: 'Email is already exists'});
-        } else {
-            // Need hash password
-            await Student.create({
-                first_name: firstname,
-                last_name: lastname,
-                email: email,
-                phone: phone,
-                birthday: birth,
-                username: username,
-                password: password,
-                registration_date: "1111-11-11",
-            })
-                .then((data) => {
+        const { firstname, lastname, email, username, password, phone, birth } = req.body;
+        try {
+            if (await Student.findOne({ where: { username: req.body.username } })) {
+                return res.status(200).json({ msg: 'Username is already exists' });
+            } else if (await Student.findOne({ where: { email: req.body.email } })) {
+                return res.status(200).json({ msg: 'Email is already exists' });
+            } else {
+                // Need hash password
+                await Student.create({
+                    first_name: firstname,
+                    last_name: lastname,
+                    email: email,
+                    phone: phone,
+                    birthday: birth,
+                    username: username,
+                    password: password,
+                    registration_date: "2023-04-30",
                 })
-                .catch((err) => {
-                });
-                res.status(200).json({msg: 'Success'});
+                    .then((data) => {
+                        req.session.student_id = data.student_id;
+                        return res.status(200).json({ msg: 'Success' });
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            }
+        } catch (error) {
+            next(error);
         }
     }
 
     async logIn(req, res, next) {
-        const student = await Student.findOne({where: {username: req.body.username}});
-        if (!student) {
-            res.status(401).json({error: 'Invalid username'});
-        } else if (student.password !== req.body.password) {
-            res.status(401).json({error: 'Invalid password'});
-        } else {
-            res.status(200).json(student);
-            req.session.isLogin = true;
+        const student = await Student.findOne({ where: { username: req.body.username } });
+        try {
+            if (!student) {
+                return res.status(200).json({ msg: 'Invalid username' });
+            } else if (student.password !== req.body.password) {
+                return res.status(200).json({ msg: 'Invalid password' });
+            } else {
+                // req.session.isLogin = true;
+                req.session.student_id = student.student_id;
+
+                return res.status(200).json({
+                    msg: 'Successfully login',
+                    redirect: '/info',
+                    userName: student.username,
+                    lastName: student.last_name,
+                    cookie: req.headers.cookie,
+                });
+            }
+        } catch (error) {
+            next(error);
         }
     }
 }

@@ -8,7 +8,6 @@
         </RouterLink>
         <div class="search">
             <form ref="anyName">
-                <!-- <label for="searching" class="info"><br /></label> -->
                 <input type="text" id="searching" class="sub" placeholder="Searching for everything ..."
                     @keyup.enter="redirectToLogin()" />
             </form>
@@ -17,25 +16,41 @@
         </div>
 
         <div class="icons">
-            <RouterLink @click="scrollToTop()" to="/cart"><img src="../assets/img/cart.png" id="cart"></RouterLink>
-            <!-- <RouterLink @click="scrollToTop()" to="/searching"><img src="../assets/img/lookup.png" id="lookup" />
-            </RouterLink> -->
+            <RouterLink @click="scrollToTop()" to="/login" v-if="!student.userName"><img src="../assets/img/cart.png" id="cart"></RouterLink>
+            <RouterLink @click="scrollToTop()" to="/cart" v-if="student.userName"><img src="../assets/img/cart.png" id="mycart"></RouterLink>
+            <div v-if="student.userName" class="logged" >
+                <img src="../assets/img/user.png" id="user" @click.prevent="showDropDown" >
+                <div v-if="dropdownselect" class="drop-down-select" @mouseleave="unshowDropDown">
+                    <div>
+                        <RouterLink  @click.prevent="unshowDropDown" to="/login">Account Settings</RouterLink>
+                    </div>
+                    <div>
+                        <RouterLink @click.prevent="unshowDropDown" to="/searching">Quản lý</RouterLink>
+                    </div>
+                    <div>
+                        <RouterLink to="/signup" @click.prevent="unshowDropDown">Đơn hàng</RouterLink>
+                    </div>
+                    <div>
+                        <RouterLink @click="handleLogout" to="/">Đăng xuất</RouterLink>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="login">
+        <div v-if="!student.userName" class="login">
             <RouterLink @click="scrollToTop()" to="/login/">
                 <div class="text">
                     <div class="l">Log in</div>
                 </div>
             </RouterLink>
         </div>
-        <div class="signup">
+        <div v-if="!student.userName" class="signup">
             <RouterLink @click="scrollToTop()" to="/signup/">
                 <div class="text">
                     <div class="ll">Sign up</div>
                 </div>
             </RouterLink>
         </div>
+
     </div>
 </template> 
 
@@ -45,12 +60,24 @@ import { mapMutations, mapState } from 'vuex';
 export default {
     // eslint-disable-next-line vue/multi-word-component-names
     name: 'Header',
+    data() {
+        return {
+            dropdownselect: false
+        }
+    },
     methods: {
-        ...mapMutations(['setUser', 'setAdmin', 'setLogged']),
+        ...mapMutations(['setStudent', 'setLogged']),
 
         showMenu() {
             let nav_bar = document.querySelector('.header .navbar');
             nav_bar.classList.toggle('active');
+        },
+        showDropDown() {
+            this.dropdownselect = true
+        },
+        unshowDropDown() {
+            this.dropdownselect = false;
+            this.scrollToTop();
         },
         scrollToTop() {
             let nav_bar = document.querySelector('.header .navbar');
@@ -59,9 +86,10 @@ export default {
         },
         async handleLogout() {
             await axios.post('/logout', {}, { withCredentials: true });
-            this.setUser([]);
+            this.setStudent([]);
             this.setAdmin(null);
             this.setLogged(false);
+            this.unshowDropDown();
         },
         redirectToLogin() {
             this.$router.push('/login');
@@ -70,9 +98,9 @@ export default {
         submitForm() {
             this.$refs.anyName.reset();
         },
-        computed: {
-            ...mapState(['user', 'admin'])
-        }
+    },
+    computed: {
+        ...mapState(['student', 'admin'])
     }
 }
 </script>
@@ -82,7 +110,8 @@ export default {
     position: relative;
     display: flex;
     width: 100%;
-    box-shadow: 0 1rem 1rem rgba(0, 0,0, 0.065);
+    box-shadow: 0 1rem 1rem rgba(0, 0, 0, 0.065);
+
     .logo {
         height: 50px;
         margin: 5px 5px;
@@ -129,6 +158,48 @@ export default {
     }
 
     .icons {
+        .logged {
+            display: inline-block;
+            position: relative;
+
+            // margin-left: 95%;
+            // margin-right: 20%;
+            // width: 5%;
+            img {
+                width: 7%;
+                margin-left: 80%;
+                margin-top: 3.5%;
+            }
+
+            .drop-down-select {
+                position: absolute;
+                margin-left: 80%;
+                top: 115%;
+                background-color: white;
+                padding: .5rem;
+                border-radius: 10px;
+                box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .3);
+                opacity: 1;
+                transform: translateY(0);
+                // text-align: center;
+                z-index: 3;
+
+                div {
+                    cursor: pointer;
+                    width: 105%;
+                    border-bottom: 2px solid rgb(52, 73, 94);
+                    border-radius: .25rem;
+                    margin-top: 5px;
+                    margin-bottom: 5px;
+
+                    &:hover {
+                        font-weight: 500;
+                        //WHY IT DOESN"T WORK?
+                        color: white;
+                    }
+                }
+            }
+        }
 
         #cart {
             position: absolute;
@@ -137,14 +208,63 @@ export default {
             margin-right: 24%;
             width: 2.5%;
         }
+        #mycart {
+            position: absolute;
+            margin-left: 33%;
+            margin-top: 1.15%;
+            margin-right: 24%;
+            width: 2.5%;
+        }
+
 
         #lookup {
             width: 2%;
             position: absolute;
-            margin-left: 12%;   
+            margin-left: 12%;
             margin-top: 1.5%;
             margin-right: 50%;
         }
+
+        // .user {
+        //     img {
+        //         border: 2px solid black;
+        //         border-radius: 10px;
+        //     }
+        //     .drop-down-select {
+        //         display: none;
+        // 		padding: 0;
+        // 		position: absolute;
+        // 		margin-left: 25%;
+        //         margin-top: 5%;
+        // 		list-style-type: none;
+        // 		border: 2px solid #27ae60;
+        // 		border-radius: 10px;
+        // 		a {
+        // 			text-decoration: none;
+        // 			color: #27ae60;
+        // 			font-size: 15px;
+        // 			font-weight: 300;
+        // 			float: left;
+        // 			width: 100px;
+        // 			border-radius: 8px;
+        // 		}
+        //     }
+        //     &:hover {
+        // 		border:2px solid #27ae60;
+        // 		.drop-down-select {
+        //             position: absolute;
+        // 			display: block;
+        // 			a {
+        // 				background-color: #f7f7f7;
+        // 				&:hover {
+        // 					background-color: #f38609;
+        // 					color: white;
+        // 				}
+        // 			}
+        // 		}
+        // 	}
+        // }
+
     }
 
     //         .login{
@@ -172,13 +292,13 @@ export default {
     //                     left: 20%;
     //                 }
     //             }
-    //         }
-
+    //         
     .login {
         position: absolute;
         margin-left: 82%;
         // margin-left: ;
         margin-top: 16px;
+
         // margin-right: 7%;
         // width: 6%;
         // height: 5%;
@@ -204,6 +324,7 @@ export default {
         position: absolute;
         margin-left: 88%;
         margin-top: 16px;
+
         .text {
             border: 2px inset black;
             padding: 5px;
@@ -222,5 +343,4 @@ export default {
         }
     }
 
-}
-</style> 
+}</style> 
