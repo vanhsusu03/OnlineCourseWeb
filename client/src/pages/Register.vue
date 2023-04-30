@@ -18,29 +18,29 @@
             <p class="error" v-if="errorObj.lastnameError.length > 0">{{ errorObj.lastnameError[0] }}</p>
             <label for="email" class="info">Email: <br /> </label>
             <input type="email" id="email" class="sub" placeholder="Enter email" v-model="form.email" required>
-            <p class="error" v-if="errorObj.firstnameError.length > 0">{{ errorObj.emailError[0] }}</p>
+            <p class="error" v-if="errorObj.emailError.length > 0">{{ errorObj.emailError[0] }}</p>
 
             <label for="username" class="info">Username: <br /> </label>
 
             <input type="text" id="username" class="sub" placeholder="Enter username" v-model="form.username" required>
-            <p class="error" v-if="errorObj.firstnameError.length > 0">{{ errorObj.usernameError[0] }}</p>
+            <p class="error" v-if="errorObj.usernameError.length > 0">{{ errorObj.usernameError[0] }}</p>
 
             <label for="password" class="info">Password: <br /></label>
 
             <input type="password" id="password" class="sub" placeholder="Enter password" v-model="form.password" required>
-            <p class="error" v-if="errorObj.firstnameError.length > 0">{{ errorObj.passwordError[0] }}</p>
+            <p class="error" v-if="errorObj.passwordError.length > 0">{{ errorObj.passwordError[0] }}</p>
 
             <label for="phone" class="info">Phone number: <br /></label>
 
             <input type="text" class="sub" id="phone" placeholder="0987654321" v-model="form.phone" required>
-            <p class="error" v-if="errorObj.firstnameError.length > 0">{{ errorObj.phoneError[0] }}</p>
+            <p class="error" v-if="errorObj.phoneError.length > 0">{{ errorObj.phoneError[0] }}</p>
 
             <label for="birth" class="info">Date of birth: <br /></label>
 
             <input type="date" class="sub" id="birth" v-model="form.birth" required>
-            <p class="error" v-if="errorObj.firstnameError.length > 0">{{ errorObj.birthError[0] }}</p>
+            <p class="error" v-if="errorObj.birthError.length > 0">{{ errorObj.birthError[0] }}</p>
 
-            <button v-on:click="signup" class="info btn" type="submit" >Sign Up</button>
+            <button class="info btn" type="submit" >Sign Up</button>
 
         </form>
     </div>
@@ -49,7 +49,7 @@
     
 <script>
 import { mapMutations } from 'vuex';
-import axios from 'axios';
+import axios from "axios";
 export default {
     name: "Register",
     data() {
@@ -82,6 +82,7 @@ export default {
                 this.errorObj.emailError.push(err);
             } else {
                 this.setStudent(data.data);
+                this.scrollToTop();
                 this.$router.push('/');
             }
         },
@@ -109,7 +110,7 @@ export default {
         this.resetError();
 
         //name validate
-        if (this.form.firstname.length == 0) {
+        if (!this.form.firstname) {
             this.errorObj.firstnameError.push("Please enter your first name. Ex: Le, etc.");
         } else if (!/^[A-Za-z]+$/.test(this.form.firstname.replace(/\s/g, ""))) {
             this.errorObj.firstnameError.push("Your first name is only contains alphabetic characters!");
@@ -137,10 +138,11 @@ export default {
             this.errorObj.passwordError.push('Please enter your password');
         } else if (this.form.password.length < 8) {
             this.errorObj.passwordError.push('Minimum length of password is 8');
-        } else if (!/^[A-Z]+$/.test(this.form.password) || !/[a-z]+$/.test(this.form.password)
-            || !/[0-9]+$/.test(this.form.password)) {
-            this.errorObj.passwordError.push('Password requires at least one upcase character, one number and one lowcase');
-        }
+        } 
+        // else if (!/^[A-Z]+$/.test(this.form.password) || !/[a-z]+$/.test(this.form.password)
+        //     || !/[0-9]+$/.test(this.form.password)) {
+        //     this.errorObj.passwordError.push('Password requires at least one upcase character, one number and one lowcase');
+        // }
 
         //phone 
         if (!this.form.phone) {
@@ -158,7 +160,6 @@ export default {
         this.checkRegister();
 
         if (!this.checkEmptyInput()) {
-            this.scrollToTop();
             event.preventDefault();
         } else {
             event.preventDefault();
