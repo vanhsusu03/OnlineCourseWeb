@@ -16,8 +16,12 @@ class CartController {
     }
 
     async getInfo(req, res, next) {
-        if (!req.session.cart) {
-            const cart = await Cart.findAll({
+        const studentId = req.session.studentId;
+        
+        var cart = req.session.cart;
+
+        if (!cart) {
+            cart = await Cart.findAll({
                 attributes: [
                     [sequelize.col('Course.course_id'), 'courseId'],
                     [sequelize.col('Course.title'), 'courseTitle'],
@@ -28,7 +32,7 @@ class CartController {
                     [sequelize.col('last_name'), 'instructorLastName']
                 ],
                 where: {
-                    student_id: req.session.studentId,
+                    student_id: studentId,
                 },
                 include: {
                     model: Course,
@@ -48,25 +52,25 @@ class CartController {
                 raw: true,
                 nest: true,
             });
+
+            var totalPrice = 0;
+            for (let i = 0; i < cart.length; i++) {
+                totalPrice += cart[i].courseFee;
+            }
+
             req.session.cart = cart;
+            req.session.totalPrice = totalPrice;
         }
         
-        var cart = req.session.cart;
-        var totalPrice = 0;
-        for (let i = 0; i < cart.length; i++) {
-            totalPrice += cart[i].courseFee;
-        }
-
-        req.session.totalPrice = totalPrice;
-
         return res.status(200).json({
             numberOfCourses: cart.length,
             coursesInCart: cart,
-            totalPrice: totalPrice
+            totalPrice: req.session.totalPrice
         });
     }
 
     async addCourse(req, res, next) {
+        const studentId = req.session.studentId;
         const { 
             courseId, courseTitle, courseDescription, courseImage, courseFee,
             instructorFirstName, instructorLastName
@@ -76,12 +80,9 @@ class CartController {
             courseId, courseTitle, courseDescription, courseImage, courseFee,
             instructorFirstName, instructorLastName
         };
+        var cart = req.session.cart;
 
-        req.session.totalPrice += courseFee;
-
-        var cart;
-        if (req.session.cart) {
-            cart = req.session.cart;
+        if (cart) {
             if (this.isInCart(cart, courseId)) {
                 return res.status(400).json({
                     msg: 'The course already exists in the cart!',
@@ -94,7 +95,13 @@ class CartController {
             cart = [course];
         }
 
+        await Cart.create({
+            student_id: studentId,
+            course_id: courseId
+        });
+
         req.session.cart = cart;
+        req.session.totalPrice += courseFee;
 
         return res.status(200).json({
             msg: 'Add success!',
@@ -103,6 +110,7 @@ class CartController {
     }
 
     async removeCourse(req, res, next) {
+        const studentId = req.session.studentId;
         const courseId = req.body.courseId;
         
         var cart = req.session.cart;
@@ -110,9 +118,9 @@ class CartController {
 
         for (let i = 0; i < cart.length; i++) {
             if (courseId == cart[i].courseId) {
-                const deleteProduct = await Cart.destroy({
+                await Cart.destroy({
                     where: { 
-                        student_id: req.session.studentId,
+                        student_id: studentId,
                         course_id: courseId 
                     }
                 });
