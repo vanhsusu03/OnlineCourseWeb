@@ -39,6 +39,9 @@
 </template>
     
 <script>
+
+import { mapMutations } from 'vuex';
+import axios from 'axios';
 export default {
     // eslint-disable-next-line vue/multi-word-component-names
     name: "Login",
@@ -54,7 +57,7 @@ export default {
         }
     },
     methods: {
-        // ...mapMutations(['scrollToTop', 'setStudent', 'setAdmin', 'setLogged']),
+        ...mapMutations(['scrollToTop', 'setStudent', 'setLogged']),
         async login() {
             // eslint-disable-next-line no-undef
             let data = await axios.post('/login', this.form, { withCredentials: true });
@@ -68,16 +71,13 @@ export default {
                 this.setStudent(data.data);
                 this.setLogged(true);
                 this.$router.push('/');
-
-                // if (data.data.role) {
-                //     this.setAdmin("admin");
-                // }
-                // this.getCart();
             }
         },
         async getCart() { },
         async handleSubmit(event) {
-            this.errors = [];
+    
+            this.usernameError = [];
+            this.passwordError = [];
 
             //email validate
             if (!this.form.username) {
@@ -88,7 +88,7 @@ export default {
             if (!this.form.password) {
                 this.passwordError.push('Please enter your password');
             }
-            if (!this.errors.length == 0) {
+            if (!this.usernameError.length == 0 || !this.passwordError.length == 0) {  
                 event.preventDefault();
             }
             else {
