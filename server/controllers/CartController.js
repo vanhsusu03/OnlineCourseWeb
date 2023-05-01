@@ -20,7 +20,7 @@ class CartController {
         
         var cart = req.session.cart;
 
-        if (!cart) {
+        if (typeof cart === 'undefined') {
             cart = await Cart.findAll({
                 attributes: [
                     [sequelize.col('Course.course_id'), 'courseId'],
