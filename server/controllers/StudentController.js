@@ -48,6 +48,7 @@ class StudentController {
                     msg: 'Successfully login',
                     redirect: '/info',
                     userName: student.username,
+                    firstName: student.first_name,
                     lastName: student.last_name,
                     cookie: req.headers.cookie,
                 });
