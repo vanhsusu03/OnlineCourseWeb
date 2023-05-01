@@ -5,8 +5,6 @@ const {
 
 class OrderController {
     async getByStudent(req, res, next) {
-        req.session.studentId = 2;
-        
         const studentId = req.session.studentId;
         const orders = await Order.findAll({
             attributes: [ 
