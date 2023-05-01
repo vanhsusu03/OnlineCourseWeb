@@ -1,13 +1,15 @@
-const { models: { Student } } = require('../models/');
+const {models: {Student}} = require('../models/');
 
 class StudentController {
     async signUp(req, res, next) {
-        const { firstname, lastname, email, username, password, phone, birth } = req.body;
+        const {firstname, lastname, email, username, password, phone, birth} = req.body;
         try {
-            if (await Student.findOne({ where: { username: req.body.username } })) {
-                return res.status(200).json({ msg: 'Username is already exists' });
-            } else if (await Student.findOne({ where: { email: req.body.email } })) {
-                return res.status(200).json({ msg: 'Email is already exists' });
+            if (await Student.findOne({where: {username: req.body.username}})) {
+                return res.status(200).json({msg: 'Username is already exists'});
+            } else if (await Student.findOne({where: {email: req.body.email}})) {
+                return res.status(200).json({msg: 'Email is already exists'});
+            } else if (await Student.findOne({where: {phone: req.body.phone}})) {
+                return res.status(200).json({msg: 'Phone number is already exists'});
             } else {
                 // Need hash password
                 await Student.create({
@@ -22,7 +24,7 @@ class StudentController {
                 })
                     .then((data) => {
                         req.session.student_id = data.student_id;
-                        return res.status(200).json({ msg: 'Success' });
+                        return res.status(200).json({msg: 'Success'});
                     })
                     .catch((err) => {
                         console.log(err);
@@ -34,12 +36,12 @@ class StudentController {
     }
 
     async logIn(req, res, next) {
-        const student = await Student.findOne({ where: { username: req.body.username } });
+        const student = await Student.findOne({where: {username: req.body.username}});
         try {
             if (!student) {
-                return res.status(200).json({ msg: 'Invalid username' });
+                return res.status(200).json({msg: 'Invalid username'});
             } else if (student.password !== req.body.password) {
-                return res.status(200).json({ msg: 'Invalid password' });
+                return res.status(200).json({msg: 'Invalid password'});
             } else {
                 // req.session.isLogin = true;
                 req.session.student_id = student.student_id;
