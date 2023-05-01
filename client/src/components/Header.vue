@@ -4,7 +4,7 @@
         </RouterLink>
 
         <RouterLink @click="scrollToTop()" to="/catergories">
-            <div class="cate">Categories</div>
+            <Categories class="cate"></Categories>
         </RouterLink>
         <div class="search">
             <form ref="anyName">
@@ -84,6 +84,7 @@
 <script>
 import axios from 'axios';
 import { mapMutations, mapState } from 'vuex';
+import Categories from './Categories.vue';
 export default {
     // eslint-disable-next-line vue/multi-word-component-names
     name: 'Header',
@@ -91,6 +92,9 @@ export default {
         return {
             dropdownselect: false
         }
+    },
+    components: {
+        Categories
     },
     methods: {
         ...mapMutations(['setStudent', 'setLogged']),
@@ -161,7 +165,7 @@ export default {
     .cate {
         position: absolute;
         font-weight: 500;
-        margin-top: 38px;
+        margin-top: 50px;
         margin-left: 2%;
         transform: translateY(-80%);
     }
