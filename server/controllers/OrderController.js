@@ -5,19 +5,20 @@ const {
 
 class OrderController {
     async getByStudent(req, res, next) {
-        req.session.studentId = 1;
+        req.session.studentId = 2;
+        
         const studentId = req.session.studentId;
         const orders = await Order.findAll({
-            attributes: [ [sequelize.col('Order.order_id'), 'orderId'] ],
+            attributes: [ 
+                [sequelize.col('Order.order_id'), 'orderId'],
+                [sequelize.col('Order.order_time'), 'orderTime'] ],
             include: {
                 model: Order_detail,
                 attributes: [ [sequelize.col('order_detail_id'), 'orderDetailId'] ],
-                include: [{
+                include: [
+                {
                     model: Payment,
-                    attributes: [ 
-                        'amount',
-                        [sequelize.col('payment_time'), 'paymentTime']
-                    ]
+                    attributes: [ 'amount' ]
                 },
                 {
                     model: Course,
@@ -34,9 +35,9 @@ class OrderController {
                         attributes: [ [sequelize.col('instructor_id'), 'instructorId'] ],
                         include: {
                             model: Student,
-                            attributes: [ 
-                                [sequelize.fn('concat', sequelize.col('first_name'), ' ',
-                                sequelize.col('last_name')), 'instructorFullName']
+                            attributes: [
+                                [sequelize.col('first_name'), 'instructorFirstName'],
+                                [sequelize.col('last_name'), 'instructorLastName']
                             ]
                         }
                     }
@@ -54,7 +55,7 @@ class OrderController {
             });
         } else {
             return res.status(200).json({
-                msg: 'Your order is empty!'
+                msg: "You haven't purchased any courses yet!"
             });
         }
     }
