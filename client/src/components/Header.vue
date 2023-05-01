@@ -53,10 +53,8 @@
             <div class="new">
                 <img src="../assets/img/new.png" id="new">
             </div>
-            <RouterLink @click="scrollToTop()" to="/login" v-if="!student.userName"><img src="../assets/img/cart.png"
-                    id="cart"></RouterLink>
-            <RouterLink @click="scrollToTop()" to="/cart" v-if="student.userName"><img src="../assets/img/cart.png"
-                    id="mycart"></RouterLink>
+            <RouterLink @click="scrollToTop()" to="/login" v-if="!student.userName"><Cart id="cart"></Cart></RouterLink>
+            <RouterLink @click="scrollToTop()" to="/cart" v-if="student.userName"><Cart></Cart></RouterLink>
 
         </div>
         <div v-if="!student.userName" class="login">
@@ -85,6 +83,7 @@
 import axios from 'axios';
 import { mapMutations, mapState } from 'vuex';
 import Categories from './Categories.vue';
+import Cart from '@/pages/Cart.vue';
 export default {
     // eslint-disable-next-line vue/multi-word-component-names
     name: 'Header',
@@ -94,7 +93,8 @@ export default {
         }
     },
     components: {
-        Categories
+        Categories,
+        Cart
     },
     methods: {
         ...mapMutations(['setStudent', 'setLogged']),
@@ -262,7 +262,9 @@ export default {
             margin-left: 28%;
             margin-top: 0.78%;
             margin-right: 24%;
-            width: 2.5%;
+            cursor: auto;
+            width: 300px;
+            color: black;
         }
 
         #mycart {
