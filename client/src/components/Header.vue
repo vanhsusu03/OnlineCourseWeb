@@ -38,6 +38,9 @@
                     <RouterLink to="/mycourses" @click.prevent="unshowDropDown">My Courses</RouterLink>
                 </div>
                 <div>
+                    <RouterLink @click.prevent="unshowDropDown" to="/deposit">Deposit</RouterLink>
+                </div>
+                <div>
                     <RouterLink to="/purchase/history" @click.prevent="unshowDropDown">Purchase History</RouterLink>
                 </div>
                 <div>
@@ -54,7 +57,7 @@
                 <img src="../assets/img/new.png" id="new">
             </div>
             <RouterLink @click="scrollToTop()" to="/login" v-if="!student.userName"><img id="cart" style="width: 40px; cursor: pointer;" src="../assets/img/cart.png" alt=""></RouterLink>
-            <RouterLink @click="scrollToTop()" to="/cart" v-if="student.userName"><Cart id="cart"></Cart></RouterLink>
+            <RouterLink @click="scrollToTop()" to="/cart" v-if="student.userName"><MiniCart id="cart"></MiniCart></RouterLink>
 
         </div>
         <div v-if="!student.userName" class="login">
@@ -83,7 +86,7 @@
 import axios from 'axios';
 import { mapMutations, mapState } from 'vuex';
 import Categories from './Categories.vue';
-import Cart from '@/pages/Cart.vue';
+import MiniCart from './MiniCart.vue';
 export default {
     // eslint-disable-next-line vue/multi-word-component-names
     name: 'Header',
@@ -94,7 +97,7 @@ export default {
     },
     components: {
         Categories,
-        Cart
+        MiniCart
     },
     methods: {
         ...mapMutations(['setStudent', 'setLogged']),

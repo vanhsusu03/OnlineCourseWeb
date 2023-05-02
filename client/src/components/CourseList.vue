@@ -25,7 +25,7 @@
 </ul>
 
 <ul class="listPage" >
-    <li v-for="page in pages" class="pagelinks" :class="{active:page.status}" v-on:click="this.begin = false; openCity(page.value)">
+    <li v-for="page in pages" class="pagelinks" :class="{active:page.status}" v-on:click="scrollToTop() ;this.begin = false; openCity(page.value)">
         {{ page.value }}
     </li>
 </ul>
@@ -54,12 +54,11 @@ export default {
         }
     },
     methods: {
-        async retrieveCourses() {
-            let data = await axios.get('/courses')
-            this.courses = data.data
-            .catch(e => {
-            console.log(e);
-            });
+        // async retrieveCourses() {
+        //     let data = await 
+        // },
+        scrollToTop() {
+            window.scrollTo(0, 0);
         },
         openCity(page) {
             var tabcontent;
@@ -115,14 +114,21 @@ export default {
 
     // lấy dữ liệu khi component được tạo thành công
     created() {
-        axios.get(`https://my-json-server.typicode.com/minhdatuet/testdb/courses`)
+        // axios.get(`https://my-json-server.typicode.com/minhdatuet/testdb/courses`)
+        //     .then(response => {
+        //         this.courses = response.data
+        //     })
+        //     .catch(e => {
+        //         this.errors.push(e)
+        //     })
+        // this.retrieveCourses();
+        axios.get('/courses')
             .then(response => {
                 this.courses = response.data
             })
             .catch(e => {
                 this.errors.push(e)
-            })
-        // this.retrieveCourses();
+            });
     }
 }
 </script>

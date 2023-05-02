@@ -69,10 +69,12 @@ class StudentController {
                     cookie: req.headers.cookie,
                 });
             }
-        } catch (error) {
-            next(error);
         }
     }
+         catch (error) {
+            next(error);
+        }
+}
 
     async logOut(req, res, next) {
         //store session cart in DB
