@@ -41,9 +41,10 @@ class CourseController {
         }
     }
 
-    //POST /courses/edit
+    //POST /courses/:courseId/edit
     async editCourse(req, res, next) {
         let instructorId = req.session.instructorId;
+        let courseId = req.params.courseId;
         if (instructorId) {
             await Course.update({
                 title: req.body.title,
@@ -70,19 +71,18 @@ class CourseController {
                     [sequelize.col('Course.image'), 'courseImage'],
                     [sequelize.col('Course.course_fee'), 'courseFee'],
                 ],
-                where: {
-                    studentId: studentId,
-                },
-                include: {
-                    model: Course,
-                    attributes: [],
-                    required: true,
-                    include: {
+                include: [
+                    {
                         model: Enrollment,
-                        attributes: [],
-                        required: true,
+                    },
+                    {
+                        model: Student,
+                        where: {
+                            student_id: studentId,
+                        }
                     }
-                }
+
+                ]
             })
             return res.status(200).json(courses);
         }
@@ -92,6 +92,9 @@ class CourseController {
     async showCourseDetail(req, res, next) {
         let courseId = req.params.courseId;
         let details = await Course.findAll({
+                include: {
+                    model: Instructor,
+                },
                 attributes: [
                     Course.courseId,
                     Course.title,
@@ -105,16 +108,6 @@ class CourseController {
                 where: {
                     courseId: courseId,
                 },
-                include: {
-                    model: Course,
-                    attributes: [],
-                    required: true,
-                    include: {
-                        model: Instructor,
-                        attributes: [],
-                        required: true,
-                    }
-                },
                 raw: true,
                 nest: true,
             }
@@ -124,19 +117,17 @@ class CourseController {
 
     //GET /courses/:categoryId
     async showCoursesByCategoryId(req, res, next) {
-        let categoryId = req.params.category_id;
+        let categoryId = req.params.categoryId;
         let courses = await Course.findAll({
-            where: {categoryId: categoryId},
-            include: {
-                model: Course,
-                attributes: [],
-                required: true,
-                include: {
-                    model: Course_category,
-                    attributes: [],
-                    required: true,
+            include: [
+                {model: Course_category},
+                {
+                    model: Category,
+                    where: {
+                        category_id: categoryId,
+                    }
                 }
-            },
+            ],
             raw: true,
             nest: true,
         });
@@ -145,24 +136,17 @@ class CourseController {
 
     //GET /courses/:categoryName
     async showCoursesByCategoryName(req, res, next) {
-        let categoryName = req.params.name;
+        let categoryName = req.params.categoryName;
         let courses = await Course.findAll({
-            where: {name: categoryName},
-            include: {
-                model: Course,
-                attributes: [],
-                required: true,
-                include: {
-                    model: Course_category,
-                    attributes: [],
-                    required: true,
-                    include: {
-                        model: Category,
-                        attributes: [],
-                        required: true,
+            include: [
+                {model: Course_category,},
+                {
+                    model: Category,
+                    where: {
+                        name: categoryName,
                     }
-                },
-            },
+                }
+            ],
             raw: true,
             nest: true,
         });
