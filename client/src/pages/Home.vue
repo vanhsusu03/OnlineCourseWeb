@@ -3,11 +3,16 @@
     <!-- BACK GR -->
     <div class="bgr">
         <div class="top">
-            <img src="../assets/img/bgr1.jpg">
+            <img src="../assets/img/bgr6.jpg">
             <div class="box">
                 <div class="text">
                     <div class="heading">
-                        Learning your own courses
+                        <!-- <div v-if="student.userName"> Hi, {{student.lastName}}</div>
+
+                        <div v-else>  -->
+                        Learning your own course
+                        <!-- </div> -->
+
                     </div>
                     <div class="body">
                         Unlock and try out our 1000+ courses
@@ -16,7 +21,7 @@
             </div>
         </div>
         <div class="bottom">
-            <img src="../assets/img/bgr2.jpg">
+            <img src="../assets/img/bgr5.jpg">
             <div class="box">
                 <div class="text">
                     <div class="heading">
@@ -31,9 +36,27 @@
     </div>
     <br>
     <br>
+
+    <!-- INTRO -->
+    <div class="intro">
+        <div v-if="student.userName" class="hello">
+            <div class="hi">Hi,</div>
+            <div class="body">
+                {{ student.lastName + ' ' + student.firstName + '!' }}
+            </div>
+        </div>
+        <!-- <div class="content">
+            Choose from 10000+ online courses with new additions published every month
+        </div>
+
+        <div class="ins">
+
+        </div> -->
+    </div>
+
     <!-- TOP CATE -->
     <div class="top-cate">
-        <h2 class="top-title">EXPLORE 1000+ COURSES IN DNA</h2>
+        <h2 class="top-title">Explore 1000+ courses in DNA</h2>
         <div class="underline"></div>
         <br>
         <div class="line-1">
@@ -71,7 +94,7 @@
                     <!-- </div> -->
                     <br />
                 </div>
-                <p class="cate-content">Psycology</p>
+                <p class="cate-content">Psychology</p>
             </div>
             <div class="sub">
                 <div class="cate">
@@ -209,34 +232,35 @@
     <br>
 </template>
 
+
 <script>
+import axios from 'axios';
+import { mapMutations, mapState } from 'vuex';
 export default {
     // eslint-disable-next-line vue/multi-word-component-names
     name: 'Home',
-    // data() {
-    // 	return {
+    data() {
+        return {
 
-    // 	}
-    // },
-    // methods: {
-    // 	...mapMutations(['scrollToTop'])
-    // },
-    // computed: {
-    // 	...mapState(['user'])
-    // }
+        }
+    },
+    methods: {
+        ...mapMutations(['scrollToTop'])
+    },
+    computed: {
+        ...mapState(['student'])
+    }
 }
-
 
 // Logic do in here
 </script>
 
 <style lang = "scss" scoped>
 @font-face {
-    // `   @import url(https://www.myfonts.com/products/headline-bold-sole-serif-73078);
     font-family: fontt;
     src: url(../assets/font/Novecento\ WideDemiBold.ttf);
-    //    font-family: myFirstFont;
-    //    src: url(../assets/font/Vollkorn-VariableFont_wght.ttf);
+    // font-family: font_text;
+    // src: url(../assets/font/Georgia.ttf);
 }
 
 * {
@@ -249,6 +273,12 @@ export default {
 
 .top-title {
     margin-left: 30px;
+}
+
+.box {
+    border-radius: 5px;
+    box-shadow: -0.5rem -0.5rem 1rem rgba($color: #000000, $alpha: 0.1), 0.5rem 0.5rem 1rem rgba($color: #000000, $alpha: 0.1);
+    background-color: rgb(245, 255, 250);
 }
 
 // BACKGROUND ANIMATION
@@ -265,19 +295,19 @@ export default {
 
         img {
             clip-path: inset(40px);
-            width: 95%;
-            height: 70%;
-            margin-left: 30px;
+            width: 75%;
+            height: 50%;
+            margin-left: 180px;
         }
 
         .box {
             text-align: center;
             position: absolute;
-            top: 150px;
-            left: 170px;
+            top: 90px;
+            left: 290px;
             width: 35%;
             height: 20%;
-            background-color: white;
+            background-color: #fff;
             box-shadow: 0 1rem 1rem rgba(0, 0, 0, 0.5);
 
             .text {
@@ -286,7 +316,7 @@ export default {
 
                 .heading {
                     position: absolute;
-                    font-size: 2.6vw;
+                    font-size: 1.6vw;
                     font-style: bold;
                     font-weight: 1000;
                     width: 100%;
@@ -298,7 +328,7 @@ export default {
                     font-size: 1.7vw;
                     font-style: bold;
                     font-weight: 500;
-                    margin-top: 20%;
+                    margin-top: 10%;
                 }
             }
         }
@@ -311,17 +341,17 @@ export default {
 
         img {
             clip-path: inset(40px);
-            width: 95%;
-            height: 70%;
-            margin-left: 30px;
+            width: 75%;
+            height: 50%;
+            margin-left: 180px;
             // margin-right: 40px;
         }
 
         .box {
             text-align: center;
             position: absolute;
-            top: 60%;
-            left: 50%;
+            top: 10%;
+            left: 45%;
             width: 35%;
             height: 20%;
             background-color: white;
@@ -332,12 +362,12 @@ export default {
 
                 .heading {
                     position: absolute;
-                    font-size: 2.4vw;
+                    font-size: 1.4vw;
                     font-style: bold;
                     font-weight: 1000;
                     width: 100%;
                     height: 25%;
-                    margin-top: 8%;
+                    margin-top: 5%;
                 }
 
                 .body {
@@ -345,7 +375,7 @@ export default {
                     font-size: 1.7vw;
                     font-style: bold;
                     font-weight: 500;
-                    margin-top: 25%;
+                    margin-top: 17%;
                     margin-left: 18%;
                 }
             }
@@ -403,6 +433,7 @@ export default {
         animation-duration: 5s;
         animation-direction: alternate;
     }
+
 }
 
 .line-1,
@@ -415,14 +446,53 @@ export default {
     justify-content: space-evenly;
 }
 
+.intro {
+    color: rgb(52, 73, 94);
+    margin-bottom: 8%;
+    margin-left: 7%;
+    margin-top: -3%;
+    .hello {
+        display: flex;
+
+        .hi {
+            font-weight: 550;
+            font-size: 2.2rem;
+            left: 50px;
+
+        }
+
+        .body {
+            font-weight: 600;
+            font-size: 2.2rem;
+            margin-left: 5px;
+            left: 50px;
+            color: rgb(160, 82, 45);
+        }
+    }
+
+    // .content {
+    //     margin-top: 18px;
+    //     font-size: 1.5rem;
+    // }
+
+    // .ins {
+    //     position: absolute;
+    //     border: 2px solid black;
+    //     height: 200%;
+    //     width: 94.5%;
+    // }
+}
 
 .top-cate {
-    margin-left: 15px;
-
+    margin-left: 80px;
+    margin-right: 50px;
+    margin-top: -90px;
     .top-title {
         font-size: 1.8rem;
-        font-weight: 800;
+        font-weight: 600;
         color: rgb(52, 73, 94);
+        // div {border-bottom: 2px solid rgb(52,73,94);}
+        // font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
     }
 
     .sub {
@@ -436,6 +506,7 @@ export default {
             border: 1px solid black;
             cursor: pointer;
             border-radius: 10px;
+
             .cate-img {
                 width: 75%;
                 top: 10%;
@@ -456,6 +527,9 @@ export default {
 }
 
 .reasons {
+    margin-left: 80px;
+    margin-right: 50px;
+
     .top-title {
         font-size: 1.8rem;
         font-weight: 800;
@@ -466,13 +540,14 @@ export default {
         text-align: center;
 
         .cate {
-            width: 18vw;
-            height: 18vw;
+            width: 14vw;
+            height: 14vw;
             display: inline-block;
-            background-color: rgb(255,250,240);
-            border: 1px solid rgb(207,207,207);
+            background-color: rgb(255, 250, 240);
+            border: 1px solid rgb(207, 207, 207);
             cursor: pointer;
             border-radius: 50%;
+
             .cate-img {
                 width: 75%;
                 top: 10%;
@@ -486,8 +561,8 @@ export default {
 
         .cate-content {
             margin: 10px 0;
-            font-size: 1.8vw;
-            font-weight: 600;
+            font-size: 1.4vw;
+            font-weight: 300;
         }
     }
 }
@@ -495,7 +570,4 @@ export default {
 .space {
     min-height: 100px;
 }
-
-
-// Style css in here
 </style>
