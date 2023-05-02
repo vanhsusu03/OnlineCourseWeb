@@ -1,36 +1,13 @@
 const sequelize = require('sequelize');
-const moment = require('moment-timezone');
+const { format } = require('date-fns');
 const {
-    models: { Student, Cart, Course, Enrollment, Progress, Payment, Order, Order_detail },
+    models: { Student, Cart, Enrollment, Progress, Payment, Order, Order_detail },
 } = require('../models');
 
 class PaymentController {
     constructor() {
-        this.getAmountToPay = this.getAmountToPay.bind(this);
         this.purchaseWithoutCart = this.purchaseWithoutCart.bind(this);
-        this.purchaseFromCart = this.purchaseFromCart.bind(this);
-    }
-
-    async getAmountOfID(id) {
-        const ans = await Cart.findAll({
-            where: { student_id: id },
-            attributes: [
-                [sequelize.fn('sum', sequelize.col('course.course_fee')), 'total_fee']
-            ],
-            include: [{
-                model: Course,
-                attributes: []
-            }],
-            group: ['cart.student_id']
-        });
-        return ans[0];
-    }
-
-    async getCoinOfStudent(id) {
-        const coin = await Student.findByPk(id, {
-            attributes: [ 'coin' ]
-        });
-        return coin;
+        this.purchaseWithCart = this.purchaseWithCart.bind(this);
     }
 
     async updateCoin(id, value) {
@@ -44,109 +21,151 @@ class PaymentController {
         );
     }
 
-    async updDatabaseAfterBuyACrouse(studentId, courseId) {
-        const now = moment().tz('Asia/Hanoi');
-
-        const orderId = await Order.findOne({
-            order: [[ 'createdAt', 'DESC' ]],
-            attributes: ['order_id']
-        }).dataValues.order_id;
-        await Order_detail.create({
+    async updDatabaseAfterBuyACrouse(orderId, studentId, courseId, courseFee) {
+        const orderDetail = await Order_detail.create({
             order_id: orderId,
             course_id: courseId
         });
 
-        const orderDetailId = await Order_detail.findOne({
-            order: [[ 'createdAt', 'DESC' ]],
-            attributes: ['order_detail_id']
-        }).dataValues.order_detail_id;
-        const price = (await Course.findByPk(courseId, {
-            attributes: [ 'course_fee' ]
-        })).dataValues.course_fee;
         await Payment.create({
-            order_detail_id: orderDetailId,
-            amount: price,
-            payment_time: now.format('YYYY-MM-DD HH:mm:ss')
+            order_detail_id: orderDetail.order_detail_id,
+            amount: courseFee
         });
 
-        await Enrollment.create({  
+        const now = new Date();
+        const vietnamDate = format(now, 'yyyy-MM-dd', { timeZone: 'Asia/Ho_Chi_Minh' });
+        const enrollment = await Enrollment.create({  
             student_id: studentId,
             course_id: courseId,
-            enrollment_date: now.format('YYYY-MM-DD')
+            enrollment_date: vietnamDate
         });
 
-        const enrollmentId = await Enrollment.findOne({
-            order: [[ 'createdAt', 'DESC' ]],
-            attributes: ['enrollment_id']
-        }).dataValues.enrollment_id;
-        await Progress.create({  
-            enrollment_id: enrollmentId,
+        await Progress.create({
+            enrollment_id: enrollment.enrollment_id,
         });
     }
 
-    async getAmountToPay(req, res, next) {
-        const ans = await this.getAmountOfID(req.session.studentId);
-        return res.status(200).json(ans);
+    async getCoinOfStudent(req, res, next) {
+        req.session.studentId = 5;
+
+        if (typeof req.session.coin === 'undefined') {
+            req.session.coin = (await Student.findByPk(req.session.studentId,
+                { attributes: [ 'coin' ] }
+            )).dataValues.coin;
+        }
+
+        return res.status(200).json({
+            coinOfStudent: req.session.coin
+        });
     }
 
     async purchaseWithoutCart(req, res, next) {
-        const studentId = req.session.studentId;
+        req.body.courseId = 2;
+        req.body.courseFee = 15;
+
         const courseId = req.body.courseId;
+        const courseFee = req.body.courseFee;
 
-        const coin = (await this.getCoinOfStudent(studentId)).dataValues.coin;
-        const price = (await Course.findByPk(courseId, {
-            attributes: [ 'course_fee' ]
-        })).dataValues.course_fee;
+        const studentId = req.session.studentId;
+        
+        var coin = req.session.coin;
 
-        if (coin < price) {
+        if (coin < courseFee) {
             return res.status(400).json({
-                msg: price - coin
+                msg: 'Not enough coin!',
+                coinShortage: courseFee - coin
             });
         }
 
-        await this.updateCoin(studentId, coin - price);
-        await Order.create({
-            customer_id: studentId
+        coin -= courseFee;
+        await this.updateCoin(studentId, coin);
+        req.session.coin = coin;
+
+        const now = new Date();
+        const vietnamTime = format(now, 'yyyy-MM-dd HH:mm:ss', { timeZone: 'Asia/Ho_Chi_Minh' });
+        const order = await Order.create({
+            customer_id: studentId,
+            order_time: vietnamTime
         });
-        await this.updDatabaseAfterBuyACrouse(studentId, courseId);
+        await this.updDatabaseAfterBuyACrouse(order.order_id, studentId, courseId, courseFee);
 
         return res.status(200).json({
-            msg: 'Purchase success!'
+            msg: 'Purchase success!',
+            coinOfStudent: req.session.coin
         });
     }
 
-    async purchaseFromCart(req, res, next) {
+    async purchaseWithCart(req, res, next) {
+        req.body.savingCourseIds = [];
+
+        const savingCourseIds = req.body.savingCourseIds;
+
         const studentId = req.session.studentId;
         const cart = req.session.cart;
 
-        const coin = (await this.getCoinOfStudent(studentId)).dataValues.coin;
-        const price = (await this.getAmountOfID(studentId)).dataValues.total_fee;
+        var coin = req.session.coin;
+
+        var boughtCourses = [];
+        var totalPrice = 0;
+        var finalCart = [];
+
+        for (let i = 0; i < cart.length; i++) {
+            var isBought = true;
+            for (let j = 0; j < savingCourseIds.length; j++) {
+                if (savingCourseIds[j] == cart[i].courseId) {
+                    isBought = false;
+                    break;
+                }
+            }
+            if (isBought) {
+                boughtCourses.push({
+                    courseId: cart[i].courseId,
+                    courseFee: cart[i].courseFee
+                });
+                totalPrice += cart[i].courseFee;
+            } else {
+                finalCart.push(cart[i]);
+            }
+        }
         
-        if (coin < price) {
+        if (coin < totalPrice) {
             return res.status(400).json({
-                msg: price - coin
+                msg: 'Not enough coin!',
+                coinShortage: totalPrice - coin
             });
         }
 
-        await this.updateCoin(studentId, coin - price);
-        await Order.create({  
-            customer_id: studentId
+        coin -= totalPrice;
+        await this.updateCoin(studentId, coin);
+        req.session.coin = coin;
+
+        const now = new Date();
+        const vietnamTime = format(now, 'yyyy-MM-dd HH:mm:ss', { timeZone: 'Asia/Ho_Chi_Minh' });
+        const order = await Order.create({
+            customer_id: studentId,
+            order_time: vietnamTime
         });
-        for (let i = 0; i < cart.length; i++) {
-            await this.updDatabaseAfterBuyACrouse(studentId, cart[i].courseId);
+        for (let i = 0; i < boughtCourses.length; i++) {
+            await this.updDatabaseAfterBuyACrouse(order.order_id, studentId,
+                boughtCourses[i].courseId, boughtCourses[i].courseFee);
         }
 
+        const courseIds = boughtCourses.map(course => course.courseId);
         await Cart.destroy(
             {
                 where: {
-                    student_id: studentId
+                    student_id: studentId,
+                    course_id: courseIds 
                 },
             },
         );
-        req.session.cart = [];
+
+        req.session.cart = finalCart;
+        req.session.totalPrice -= totalPrice;
 
         return res.status(200).json({
-            msg: 'Purchase success!'
+            msg: 'Purchase success!',
+            coinOfStudent: req.session.coin
         });
     }
 }
