@@ -8,7 +8,7 @@ class CartController {
 
     isInCart(cart, id) {
         for (let i = 0; i < cart.length; i++) {
-            if (id == cart[i].courseId) {
+            if (id === cart[i].courseId) {
                 return true;
             }
         }
@@ -117,7 +117,7 @@ class CartController {
         var isRemoved = false;
 
         for (let i = 0; i < cart.length; i++) {
-            if (courseId == cart[i].courseId) {
+            if (courseId === cart[i].courseId) {
                 await Cart.destroy({
                     where: { 
                         student_id: studentId,

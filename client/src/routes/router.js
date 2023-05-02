@@ -10,13 +10,13 @@ import Register from '../pages/Register.vue';
 // import PurchaseHistory from '../pages/PurchaseHistory.vue';
 //create a page called MyCourses
 import store from '@/store/index';
-import Searching from "@/pages/Searching.vue";
+// import Searching from "@/pages/Searching.vue";
 
 const routes = [
     {path: "/", name: "Home", component: Home},
     {path: "/login", name: "Login", component: Login},
     {path: "/signup", name: "SignUp", component: Register},
-    {path: "/searching/:slug", name: "Searching", component: Searching},
+    // {path: "/searching/:slug", name: "Searching", component: Searching},
     // {  path: "/student/info", name: "StudentInfo", component: StudentInfo},
     // {  path: "/cart", name: "Cart", component: Cart},
     // {  path: "/editinfo", name: "EditInfo", component: EditInfo},
