@@ -5,7 +5,6 @@ const bodyParser = require('body-parser');
 const routesInit = require('./routes/index_route');
 const path = require('path');
 
-const fileStore = require('session-file-store')(session);
 const db = require('./models');
 (async () => {
     await db.sequelize.sync();
@@ -21,12 +20,7 @@ app.use(
         name: process.env.SES_NAME,
         resave: false,
         saveUninitialized: false,
-        secret: process.env.SES_SECRET,
-        store: new fileStore(),
-        cookie: {
-            maxAge: Date.now() + 1000 * 60 * 60,
-            sameSite: true,
-        }
+        secret: process.env.SES_SECRET
     })
 );
 
@@ -47,10 +41,6 @@ app.use(function (err, req, res, next) {
     console.error(err.stack);
     res.status(500).send("Something broke!");
 });
-
-// app.get('/', (req, res) => {
-//     res.sendFile(__dirname + '/index.html');
-// });
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => console.log(`Server running on PORT ${PORT}`));

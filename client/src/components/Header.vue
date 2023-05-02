@@ -8,10 +8,10 @@
         </RouterLink>
         <div class="search">
             <form ref="anyName">
-                <input type="text" id="searching" class="sub" placeholder="Search for everything ..."
+                <input type="text" id="searching" name="search" class="sub" placeholder="Search for everything ..."
                     @keydown.enter="redirectToLogin()" />
             </form>
-            <RouterLink @click="scrollToTop()" to="/searching"><img src="../assets/img/lookup.png" id="lookup" />
+            <RouterLink @click="scrollToTop()" to="/searching/"><img src="../assets/img/lookup.png" id="lookup" />
             </RouterLink>
         </div>
 

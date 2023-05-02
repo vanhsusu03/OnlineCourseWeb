@@ -1,4 +1,4 @@
-import { createWebHistory, createRouter } from "vue-router";
+import {createWebHistory, createRouter} from "vue-router";
 
 // import pages and components
 import Home from '../pages/Home.vue';
@@ -12,6 +12,7 @@ import CourseList from '../components/CourseList.vue'
 // import PurchaseHistory from '../pages/PurchaseHistory.vue';
 //create a page called MyCourses
 import store from '@/store/index';
+// import Searching from "@/pages/Searching.vue";
 
 const routes = [
     {  path: "/", name: "Home", component: Home},
