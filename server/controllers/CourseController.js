@@ -99,9 +99,8 @@ class CourseController {
                     Course.image,
                     Course.course_fee,
                     Instructor.instructorId,
-                    Instructor.first_name,
-                    Instructor.last_name,
-
+                    [sequelize.fn('concat', sequelize.col('first_name'), ' ',
+                        sequelize.col('last_name')), 'instructorFullName']
                 ],
                 where: {
                     courseId: courseId,
