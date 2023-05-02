@@ -46,8 +46,6 @@ class PaymentController {
     }
 
     async getCoinOfStudent(req, res, next) {
-        req.session.studentId = 5;
-
         if (typeof req.session.coin === 'undefined') {
             req.session.coin = (await Student.findByPk(req.session.studentId,
                 { attributes: [ 'coin' ] }
@@ -60,9 +58,6 @@ class PaymentController {
     }
 
     async purchaseWithoutCart(req, res, next) {
-        req.body.courseId = 2;
-        req.body.courseFee = 15;
-
         const courseId = req.body.courseId;
         const courseFee = req.body.courseFee;
 
@@ -96,8 +91,6 @@ class PaymentController {
     }
 
     async purchaseWithCart(req, res, next) {
-        req.body.savingCourseIds = [];
-
         const savingCourseIds = req.body.savingCourseIds;
 
         const studentId = req.session.studentId;
