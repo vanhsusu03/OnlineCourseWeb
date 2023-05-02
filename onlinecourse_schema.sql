@@ -11,7 +11,7 @@ CREATE TABLE student (
   birthday DATE NOT NULL,
   image VARCHAR(300) DEFAULT NULL,
   username VARCHAR(50) NOT NULL,
-  password VARCHAR(50) NOT NULL,
+  password TEXT NOT NULL,
   registration_date DATE NOT NULL,
   coin INT UNSIGNED DEFAULT 0,
   is_instructor BOOLEAN DEFAULT FALSE,
