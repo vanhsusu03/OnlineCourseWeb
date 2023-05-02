@@ -3,10 +3,13 @@ const {models: {Course, Course_category, Category, Instructor, Enrollment, Stude
 const {where} = require("sequelize");
 
 class CourseController {
+
+    //GET /courses
     async showAllCourses(req, res, next) {
         return await Course.findAll();
     }
 
+    //POST /courses/create
     async addCourse(req, res, next) {
         let instructorId = req.session.instructorId;
         if (instructorId) {
@@ -23,19 +26,22 @@ class CourseController {
         }
     }
 
+    //DELETE /courses/:courseId
     async deleteCourse(req, res, next) {
         let instructorId = req.session.instructorId;
+        let courseId = req.body.courseId;
         if (instructorId) {
             await Course.destroy({
                 where: {
                     instructorId: instructorId,
-                    courseId: req.body.courseId,
+                    courseId: courseId,
                 }
             })
             return res.status(200).json('Delete successfully');
         }
     }
 
+    //POST /courses/edit
     async editCourse(req, res, next) {
         let instructorId = req.session.instructorId;
         if (instructorId) {
@@ -51,6 +57,7 @@ class CourseController {
         }
     }
 
+    //GET /mycourses
     async showYourCourses(req, res, next) {
         let studentId = req.session.studentId;
 
@@ -81,8 +88,9 @@ class CourseController {
         }
     }
 
+    //GET /courses/:courseId
     async showCourseDetail(req, res, next) {
-        let courseId = req.session.courseId;
+        let courseId = req.params.courseId;
         let details = await Course.findAll({
                 attributes: [
                     Course.courseId,
@@ -107,9 +115,60 @@ class CourseController {
                         attributes: [],
                         required: true,
                     }
-                }
+                },
+                raw: true,
+                nest: true,
             }
         )
         return res.status(200).json(details);
     }
+
+    //GET /courses/:categoryId
+    async showCoursesByCategoryId(req, res, next) {
+        let categoryId = req.params.category_id;
+        let courses = await Course.findAll({
+            where: {categoryId: categoryId},
+            include: {
+                model: Course,
+                attributes: [],
+                required: true,
+                include: {
+                    model: Course_category,
+                    attributes: [],
+                    required: true,
+                }
+            },
+            raw: true,
+            nest: true,
+        });
+        return res.status(200).json(courses);
+    }
+
+    //GET /courses/:categoryName
+    async showCoursesByCategoryName(req, res, next) {
+        let categoryName = req.params.name;
+        let courses = await Course.findAll({
+            where: {name: categoryName},
+            include: {
+                model: Course,
+                attributes: [],
+                required: true,
+                include: {
+                    model: Course_category,
+                    attributes: [],
+                    required: true,
+                    include: {
+                        model: Category,
+                        attributes: [],
+                        required: true,
+                    }
+                },
+            },
+            raw: true,
+            nest: true,
+        });
+        return res.status(200).json(courses);
+    }
 }
+
+module.exports = new CourseController();

@@ -32,4 +32,21 @@ const isAuth = (req, res, next) => {
     }
 };
 
-module.exports = { isAdmin, isAlreadyLogin, isAuth };
+const isInstructor = (req, res, next) => {
+    if (!req.student_id) {
+        return res.status(401).json({
+            msg: 'You need to log in first',
+            redirect: '/login',
+        });
+    } else if (!req.is_instructor) {
+        return res.status(401).json({
+            msg: 'You must be an instructor',
+            redirect: '/login',
+        })
+    } else {
+        console.log(req.session.cookie);
+        next();
+    }
+}
+
+module.exports = {isAdmin, isAlreadyLogin, isAuth, isInstructor};
