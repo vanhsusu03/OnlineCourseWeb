@@ -142,7 +142,7 @@ CREATE TABLE feedback (
   enrollment_id INT UNSIGNED NOT NULL,
   rating FLOAT UNSIGNED NOT NULL,
   detail VARCHAR(3000) DEFAULT NULL,
-  created_at DATETIME NOT NULL,
+  last_update DATETIME NOT NULL,
   PRIMARY KEY (feedback_id),
   UNIQUE(enrollment_id),
   CONSTRAINT fk_feedback_enrollment FOREIGN KEY (enrollment_id) REFERENCES enrollment (enrollment_id) ON DELETE RESTRICT ON UPDATE CASCADE
