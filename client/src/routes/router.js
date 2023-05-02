@@ -7,6 +7,7 @@ import Register from '../pages/Register.vue';
 import Deposit from '../pages/Deposit.vue';
 import Cart from '../pages/Cart.vue';
 import StudentInfo from '../pages/StudentInfo.vue';
+import CourseList from '../components/CourseList.vue'
 // import EditInfo from '../components/EditInfo.vue';
 // import PurchaseHistory from '../pages/PurchaseHistory.vue';
 //create a page called MyCourses
@@ -17,8 +18,9 @@ const routes = [
     {  path: "/login", name: "Login", component: Login},
     {  path: "/signup", name: "SignUp", component: Register},
     {  path: "/deposit", name: "Deposit", component: Deposit},
-    {  path: "/student/info", name: "StudentInfo", component: StudentInfo},
+    {  path: "/account/info", name: "StudentInfo", component: StudentInfo},
     {  path: "/cart", name: "Cart", component: Cart},
+    {  path: "/courses", name: "CourseList", component: CourseList},
     // {  path: "/editinfo", name: "EditInfo", component: EditInfo},
     // {  path: "/purchase/history", name: "PurchaseHistory", component: PurchaseHistory},
     // {  path: "/signup", name: "SignUp", component: Register},

@@ -9,32 +9,22 @@
     <div id="profile" class="tabcontent">
         <img src="https://www.pngitem.com/pimgs/m/150-1503945_transparent-user-png-default-user-image-png-png.png">
         <div id="firstname" class="profilecontent">
-            First Name: <span v-if="!change">{{ firstname }} </span>
-            <input v-else type="text" v-model="firstname">
-            <!-- <button v-on:click="change.changeFirstName=!change.changeFirstName">Change</button> -->
+            First Name: <span>{{ student.firstName }} </span>
         </div>
         <div id="lastname" class="profilecontent">
-            Last Name: <span v-if="!change">{{ lastname }} </span>
-            <input v-else type="text" v-model="lastname">
-            <!-- <button v-on:click="change.changeLastName=!change.changeLastName">Change</button> -->
+            Last Name: <span>{{ student.lastName }} </span>
         </div>
         <div id="email" class="profilecontent">
-            Email: <span v-if="!change">{{ email }}</span>
-            <input v-else type="text" v-model="email">
-            <!-- <button v-on:click="change.changeEmail=!change.changeEmail">Change</button> -->
+            Email: <span>{{ student.email }}</span>
         </div>
         <div id="username" class="profilecontent">
-            Username: <span>{{ username }}</span> 
+            Username: <span>{{ student.userName }}</span> 
         </div>
         <div id="phone" class="profilecontent">
-            Phone: <span v-if="!change">{{ phone }}</span>
-            <input v-else type="text" v-model="phone">
-            <!-- <button v-on:click="change.changePhone=!change.changePhone">Change</button> -->
+            Phone: <span>{{ student.phone }}</span>
         </div>
         <div id="birth" class="profilecontent">
-            Date of birth: <span v-if="!change">{{ birth.getDate() + '/' + birth.getMonth() + '/' + birth.getFullYear() }}</span>
-            <input type="text" v-else v-model="birth">
-            <!-- <button v-on:click="change.changeBirth=!change.changeBirth">Change</button> -->
+            Date of birth: <span>{{ student.birth }}</span>
         </div>
         <button v-on:click="change=!change">
             <div v-if="!change">Change</div>
@@ -55,6 +45,8 @@
 
 <script>
 import ChangePass from '@/components/ChangePass.vue';
+import axios from 'axios';
+import { mapMutations, mapState } from 'vuex';
 export default {
     name: 'StudentInfo',
     components: {
@@ -100,7 +92,12 @@ export default {
             // Show the current tab, and add an "active" class to the button that opened the tab
             document.getElementById(cityName).style.display = "block";
             evt.target.classList.add('active');
-        }
+        },
+        ...mapMutations(['setStudent']),
+        
+    },
+    computed: {
+        ...mapState(['student'])
     }
 }
 </script>

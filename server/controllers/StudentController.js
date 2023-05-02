@@ -50,6 +50,9 @@ class StudentController {
                     userName: student.username,
                     firstName: student.first_name,
                     lastName: student.last_name,
+                    email: student.email,
+                    phone: student.phone,
+                    birth: student.birthday,
                     cookie: req.headers.cookie,
                 });
             }

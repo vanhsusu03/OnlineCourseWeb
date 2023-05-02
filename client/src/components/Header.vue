@@ -3,7 +3,7 @@
         <RouterLink to="/" @click="scrollToTop()" class="logo"> <img src="../assets/img/logo.png" class="logo" />
         </RouterLink>
 
-        <RouterLink @click="scrollToTop()" to="/catergories">
+        <RouterLink @click="scrollToTop()" to="/courses">
             <Categories class="cate"></Categories>
         </RouterLink>
         <div class="search">
@@ -53,8 +53,8 @@
             <div class="new">
                 <img src="../assets/img/new.png" id="new">
             </div>
-            <RouterLink @click="scrollToTop()" to="/login" v-if="!student.userName"><Cart id="cart"></Cart></RouterLink>
-            <RouterLink @click="scrollToTop()" to="/cart" v-if="student.userName"><Cart></Cart></RouterLink>
+            <RouterLink @click="scrollToTop()" to="/login" v-if="!student.userName"><img id="cart" style="width: 40px; cursor: pointer;" src="../assets/img/cart.png" alt=""></RouterLink>
+            <RouterLink @click="scrollToTop()" to="/cart" v-if="student.userName"><Cart id="cart"></Cart></RouterLink>
 
         </div>
         <div v-if="!student.userName" class="login">
@@ -259,7 +259,7 @@ export default {
 
         #cart {
             position: absolute;
-            margin-left: 28%;
+            margin-left: 24%;
             margin-top: 0.78%;
             margin-right: 24%;
             cursor: auto;

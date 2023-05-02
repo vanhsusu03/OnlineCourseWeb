@@ -4,11 +4,11 @@
     <div class="cart-content">
         <ul>
             <li v-for="course in courses">
-                <img :src="course.imgSrc" alt="">
+                <img :src="course.img_url" alt="">
                 <div class="course-content">
-                    <h3>{{ course.name }}</h3>
-                    <div>{{ course.courseInstructor }}</div>
-                    <div>{{ course.cost + ' vnd' }}</div>
+                    <h3>{{ course.title }}</h3>
+                    <div>{{ course.instructor }}</div>
+                    <div>{{ course.course_fee + ' vnd' }}</div>
                 </div>
             </li>
         </ul>
@@ -44,17 +44,27 @@ export default {
         getTotal() {
             let sum = 0;
             for (let i = 0; i < this.courses.length; i++) {
-                sum += this.courses[i].cost;
+                sum += this.courses[i].course_fee;
             }
             return sum;
         }
+    },
+    created() {
+        axios.get(`https://my-json-server.typicode.com/minhdatuet/testdb/cart`)
+            .then(response => {
+                this.courses = response.data
+            })
+            .catch(e => {
+                this.errors.push(e)
+            })
     }
 }
+
 </script>
 
 <style scoped lang="scss">
 .cart {
-    width: 300px;
+    max-width: 40px;
     position: relative;
     &:hover {
         .cart-content {
@@ -72,9 +82,9 @@ export default {
         z-index: 1;
         display: none;
         background-color: white;
-        left: -100px;
+        left: -200px;
         // margin: 10px 0;
-        max-width: 300px;
+        min-width: 300px;
         padding: 5px 10px;
         box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
         ul {
