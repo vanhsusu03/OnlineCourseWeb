@@ -1,3 +1,183 @@
-const {
-    models: { chapter, content, progress }
-} = require('../models');
+const { format } = require('date-fns');
+const { models: { Chapter, Content, Content_type,Feedback, Enrollment, Progress } } = require('../models');
+
+class StudyController {
+    constructor() {
+        this.addFeedback = this.addFeedback.bind(this);
+        this.updateLastTimeAccess = this.updateLastTimeAccess.bind(this);
+        this.getLastTimeAccess = this.getLastTimeAccess.bind(this);
+    }
+
+    async getEnrollmentId(studentId, courseId) {
+        const enrollment = await Enrollment.findOne({
+            attributes: ['enrollment_id'],
+            where: {
+                student_id: studentId,
+                course_id: courseId
+            }
+        });
+
+        if (enrollment) {
+            return enrollment.dataValues.enrollment_id;
+        }
+        return null;
+    }
+
+    async addFeedback(req, res, next) {
+        const courseId = req.body.courseId;
+        const rating = req.body.rating;
+        const detail = req.body.detail;
+
+        const studentId = req.session.studentId;
+
+        if (typeof detail === 'undefined') {
+            detail = null;
+        }
+
+        const enrollmentId = await this.getEnrollmentId(studentId, courseId);
+
+        await Feedback.create({
+            enrollment_id: enrollmentId,
+            rating: rating,
+            detail: detail,
+            last_update: format(new Date(), 'yyyy-MM-dd HH:mm:ss')
+        });
+
+        return res.status(200).json({
+            msg: 'Add success!'
+        });
+    }
+
+    async modifyFeedbackOfAStudent(req, res, next) {
+        const feedbackId = req.body.feedbackId;
+        const rating = req.body.rating;
+        const detail = req.body.detail;
+
+        if (typeof detail === 'undefined') {
+            detail = null;
+        }
+
+        await Feedback.update({
+                rating: rating,
+                detail: detail,
+                last_update: format(new Date(), 'yyyy-MM-dd HH:mm:ss')
+            },
+            { where: { feedback_id: feedbackId } }
+        );
+
+        return res.status(200).json({
+            msg: 'Modify success!'
+        });
+    }
+
+    async getFeedbacksOfACourse(req, res, next) {
+        const courseId = req.body.courseId;
+
+        const enrollment = await Enrollment.findAll({
+            attributes: [ 
+                [sequelize.col('Enrollment.enrollment_id'), 'enrollmentId'],
+                [sequelize.fn('CONVERT_TZ', sequelize.col('Enrollment.enrollment_date'), '+00:00', '+07:00'), 'enrollmentDate']
+                [sequelize.col('feedback_id'), 'feedbackId'],
+                [sequelize.col('rating'), 'feedbackRating'],
+                [sequelize.col('detail'), 'feedbackDetail'],
+                [sequelize.fn('CONVERT_TZ', sequelize.col('last_update'), '+00:00', '+07:00'), 'feedbackLastUpdateTime']
+            ],
+            where: {
+                course_id: courseId
+            },
+            include: {
+                model: Feedback,
+                attributes: [],
+                required: true
+            }
+        });
+
+        return res.status(200).json({
+            enrollmentDate: enrollment.dataValues.enrollmentDate,
+            feedback: feedback
+        });
+    }
+
+    async updateLastTimeAccess(req, res, next) {
+        const courseId = req.body.courseId;
+        const lastTimeAccess = req.body.lastTimeAccess;
+
+        const studentId = req.session.studentId;
+
+        const enrollmentId = await this.getEnrollmentId(studentId, courseId);
+
+        await Progress.update({
+            last_time_access: lastTimeAccess
+        },
+            { where: { enrollment_id: enrollmentId } }
+        );
+
+        return res.status(200).json({
+            msg: 'Update last time access success!'
+        });
+    }
+
+    async getLastTimeAccess(req, res, next) {
+        const courseId = req.body.courseId;
+
+        const studentId = req.session.studentId;
+
+        const enrollmentId = await this.getEnrollmentId(studentId, courseId);
+
+        const lastTimeAccess = await Progress.findOne({
+            attributes: [
+                [sequelize.fn('CONVERT_TZ', sequelize.col('last_time_access'), '+00:00', '+07:00'), 'lastTimeAccess']
+            ],
+            where: { enrollment_id: enrollmentId }
+        });
+
+        return res.status(200).json({
+            lastTimeAccess: lastTimeAccess
+        });
+    }
+
+    async getContent(req, res, next) {
+        const courseId = req.body.courseId;
+        
+        const studentId = req.session.studentId;
+
+        const enrollmentId = await this.getEnrollmentId(studentId, courseId);
+        if (!enrollmentId) {
+            return res.status(400).json({
+                msg: 'You have not enrolled in this course yet!'
+            });
+        }
+
+        const contents = await Chapter.findAll({
+            attributes: [ 
+                [sequelize.col('chapter_id'), 'chapterId'],
+                [sequelize.col('title'), 'chapterTitle']
+            ],
+            include: {
+                model: Content,
+                attributes: [
+                    [sequelize.col('type_id'), 'contentTypeId'],
+                    [sequelize.col('content_type'), 'contentType'],
+                    [sequelize.col('content_id'), 'contentId'],
+                    [sequelize.col('time_required_in_sec'), 'timeRequiredInSec'],
+                    'link'
+                ],
+                required: true,
+                include: {
+                    model: Content_type,
+                    attributes: [],
+                    required: true
+                }
+            },
+            where: { 
+                course_id: courseId 
+            },
+        });
+
+        return res.status(200).json({
+            contents: contents
+        });
+    }
+}
+
+module.exports = new StudyController();
