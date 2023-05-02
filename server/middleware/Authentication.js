@@ -9,11 +9,10 @@ const isAdmin = (req, res, next) => {
 };
 
 const isAlreadyLogin = (req, res, next) => {
-    if (req.session.student_id) {
+    if (typeof req.session.studentId !== 'undefined') {
         return res.status(200).json({
             msg: 'Already login!',
-            redirect: '/info',
-            cookie: req.headers.cookie,
+            redirect: '/info'
         });
     } else {
         next();
@@ -21,13 +20,12 @@ const isAlreadyLogin = (req, res, next) => {
 };
 
 const isAuth = (req, res, next) => {
-    if (!req.student_id) {
+    if (typeof req.session.studentId === 'undefined') {
         return res.status(401).json({
             msg: 'You need to log in first',
             redirect: '/login',
         });
     } else {
-        console.log(req.session.cookie);
         next();
     }
 };
