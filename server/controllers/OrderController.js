@@ -9,7 +9,8 @@ class OrderController {
         const orders = await Order.findAll({
             attributes: [ 
                 [sequelize.col('Order.order_id'), 'orderId'],
-                [sequelize.col('Order.order_time'), 'orderTime'] ],
+                [sequelize.fn('CONVERT_TZ', sequelize.col('Order.order_time'), '+00:00', '+07:00'), 'orderTime']
+            ],
             include: {
                 model: Order_detail,
                 attributes: [ [sequelize.col('order_detail_id'), 'orderDetailId'] ],
