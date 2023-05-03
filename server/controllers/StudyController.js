@@ -1,11 +1,15 @@
+const sequelize = require('sequelize');
 const { format } = require('date-fns');
-const { models: { Chapter, Content, Content_type,Feedback, Enrollment, Progress } } = require('../models');
+const {
+    models: { Chapter, Content, Content_type, Feedback, Enrollment, Progress }
+} = require('../models');
 
 class StudyController {
     constructor() {
         this.addFeedback = this.addFeedback.bind(this);
         this.updateLastTimeAccess = this.updateLastTimeAccess.bind(this);
         this.getLastTimeAccess = this.getLastTimeAccess.bind(this);
+        this.getContent = this.getContent.bind(this);
     }
 
     async getEnrollmentId(studentId, courseId) {
@@ -26,7 +30,7 @@ class StudyController {
     async addFeedback(req, res, next) {
         const courseId = req.body.courseId;
         const rating = req.body.rating;
-        const detail = req.body.detail;
+        var detail = req.body.detail;
 
         const studentId = req.session.studentId;
 
@@ -35,6 +39,11 @@ class StudyController {
         }
 
         const enrollmentId = await this.getEnrollmentId(studentId, courseId);
+        if (!enrollmentId) {
+            return res.status(400).json({
+                msg: 'You have not enrolled in this course yet!'
+            });
+        }
 
         await Feedback.create({
             enrollment_id: enrollmentId,
@@ -51,7 +60,7 @@ class StudyController {
     async modifyFeedbackOfAStudent(req, res, next) {
         const feedbackId = req.body.feedbackId;
         const rating = req.body.rating;
-        const detail = req.body.detail;
+        var detail = req.body.detail;
 
         if (typeof detail === 'undefined') {
             detail = null;
@@ -71,12 +80,12 @@ class StudyController {
     }
 
     async getFeedbacksOfACourse(req, res, next) {
-        const courseId = req.body.courseId;
+        const courseId = req.params.courseId;
 
-        const enrollment = await Enrollment.findAll({
+        const feedbacks = await Enrollment.findAll({
             attributes: [ 
                 [sequelize.col('Enrollment.enrollment_id'), 'enrollmentId'],
-                [sequelize.fn('CONVERT_TZ', sequelize.col('Enrollment.enrollment_date'), '+00:00', '+07:00'), 'enrollmentDate']
+                [sequelize.col('Enrollment.enrollment_date'), 'enrollmentDate'],
                 [sequelize.col('feedback_id'), 'feedbackId'],
                 [sequelize.col('rating'), 'feedbackRating'],
                 [sequelize.col('detail'), 'feedbackDetail'],
@@ -89,12 +98,11 @@ class StudyController {
                 model: Feedback,
                 attributes: [],
                 required: true
-            }
+            },
         });
 
         return res.status(200).json({
-            enrollmentDate: enrollment.dataValues.enrollmentDate,
-            feedback: feedback
+            feedbacks: feedbacks
         });
     }
 
@@ -105,6 +113,11 @@ class StudyController {
         const studentId = req.session.studentId;
 
         const enrollmentId = await this.getEnrollmentId(studentId, courseId);
+        if (!enrollmentId) {
+            return res.status(400).json({
+                msg: 'You have not enrolled in this course yet!'
+            });
+        }
 
         await Progress.update({
             last_time_access: lastTimeAccess
@@ -118,11 +131,16 @@ class StudyController {
     }
 
     async getLastTimeAccess(req, res, next) {
-        const courseId = req.body.courseId;
+        const courseId = req.params.courseId;
 
         const studentId = req.session.studentId;
 
         const enrollmentId = await this.getEnrollmentId(studentId, courseId);
+        if (!enrollmentId) {
+            return res.status(400).json({
+                msg: 'You have not enrolled in this course yet!'
+            });
+        }
 
         const lastTimeAccess = await Progress.findOne({
             attributes: [
@@ -137,7 +155,7 @@ class StudyController {
     }
 
     async getContent(req, res, next) {
-        const courseId = req.body.courseId;
+        const courseId = req.params.courseId;
         
         const studentId = req.session.studentId;
 
@@ -150,14 +168,12 @@ class StudyController {
 
         const contents = await Chapter.findAll({
             attributes: [ 
-                [sequelize.col('chapter_id'), 'chapterId'],
-                [sequelize.col('title'), 'chapterTitle']
+                [sequelize.col('Chapter.chapter_id'), 'chapterId'],
+                [sequelize.col('Chapter.title'), 'chapterTitle']
             ],
             include: {
                 model: Content,
                 attributes: [
-                    [sequelize.col('type_id'), 'contentTypeId'],
-                    [sequelize.col('content_type'), 'contentType'],
                     [sequelize.col('content_id'), 'contentId'],
                     [sequelize.col('time_required_in_sec'), 'timeRequiredInSec'],
                     'link'
@@ -165,13 +181,17 @@ class StudyController {
                 required: true,
                 include: {
                     model: Content_type,
-                    attributes: [],
+                    attributes: [
+                        [sequelize.col('type_id'), 'contentTypeId'],
+                        [sequelize.col('content_type'), 'contentType']
+                    ],
                     required: true
                 }
             },
+            required: true,
             where: { 
                 course_id: courseId 
-            },
+            }
         });
 
         return res.status(200).json({
