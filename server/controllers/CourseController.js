@@ -6,13 +6,24 @@ class CourseController {
 
     //GET /courses
     async showAllCourses(req, res, next) {
-        return await Course.findAll();
+        return res.status(200).json(await Course.findAll());
     }
 
     //POST /courses/create
     async addCourse(req, res, next) {
         let instructorId = req.session.instructorId;
         if (instructorId) {
+            let instructor = await Student.findOne({
+                    include: {
+                        model: Instructor,
+                        where: {
+                            instructor_id: instructorId,
+                        },
+                    },
+                }
+            );
+            let instructorFirstName = instructor.first_name;
+            let instructorLastName = instructor.last_name;
             await Course.create({
                 instructorId: instructorId,
                 title: req.body.title,
@@ -94,19 +105,21 @@ class CourseController {
         let details = await Course.findAll({
                 include: {
                     model: Instructor,
+                    attributes: [
+                        Instructor.instructor_id,
+                        [sequelize.fn('concat', sequelize.col('first_name'), ' ',
+                            sequelize.col('last_name')), 'instructorFullName']
+                    ]
                 },
                 attributes: [
-                    Course.courseId,
+                    Course.course_id,
                     Course.title,
                     Course.description,
                     Course.image,
                     Course.course_fee,
-                    Instructor.instructorId,
-                    [sequelize.fn('concat', sequelize.col('first_name'), ' ',
-                        sequelize.col('last_name')), 'instructorFullName']
                 ],
                 where: {
-                    courseId: courseId,
+                    course_id: courseId,
                 },
                 raw: true,
                 nest: true,
@@ -126,6 +139,14 @@ class CourseController {
                     where: {
                         category_id: categoryId,
                     }
+                },
+                {
+                    model: Instructor,
+                    attributes: [
+                        Instructor.instructor_id,
+                        [sequelize.fn('concat', sequelize.col('first_name'), ' ',
+                            sequelize.col('last_name')), 'instructorFullName']
+                    ]
                 }
             ],
             raw: true,
@@ -145,6 +166,14 @@ class CourseController {
                     where: {
                         name: categoryName,
                     }
+                },
+                {
+                    model: Instructor,
+                    attributes: [
+                        Instructor.instructor_id,
+                        [sequelize.fn('concat', sequelize.col('first_name'), ' ',
+                            sequelize.col('last_name')), 'instructorFullName']
+                    ]
                 }
             ],
             raw: true,

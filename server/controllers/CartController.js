@@ -1,5 +1,5 @@
 const sequelize = require('sequelize');
-const { models: { Cart, Course, Instructor, Student } } = require('../models');
+const {models: {Cart, Course, Instructor, Student}} = require('../models');
 
 class CartController {
     constructor() {
@@ -17,7 +17,7 @@ class CartController {
 
     async getInfo(req, res, next) {
         const studentId = req.session.studentId;
-        
+
         var cart = req.session.cart;
 
         if (!cart) {
@@ -61,7 +61,7 @@ class CartController {
             req.session.cart = cart;
             req.session.totalPrice = totalPrice;
         }
-        
+
         return res.status(200).json({
             numberOfCourses: cart.length,
             coursesInCart: cart,
@@ -71,7 +71,7 @@ class CartController {
 
     async addCourse(req, res, next) {
         const studentId = req.session.studentId;
-        const { 
+        const {
             courseId, courseTitle, courseDescription, courseImage, courseFee,
             instructorFirstName, instructorLastName
         } = req.body;
@@ -112,16 +112,16 @@ class CartController {
     async removeCourse(req, res, next) {
         const studentId = req.session.studentId;
         const courseId = req.body.courseId;
-        
+
         var cart = req.session.cart;
         var isRemoved = false;
 
         for (let i = 0; i < cart.length; i++) {
             if (courseId === cart[i].courseId) {
                 await Cart.destroy({
-                    where: { 
+                    where: {
                         student_id: studentId,
-                        course_id: courseId 
+                        course_id: courseId
                     }
                 });
                 req.session.totalPrice -= cart[i].courseFee;
