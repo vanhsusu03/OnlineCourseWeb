@@ -79,6 +79,35 @@ class StudyController {
         });
     }
 
+    async getFeedbackOfAStudent(req, res, next) {
+        const courseId = req.params.courseId;
+        const studentId = req.params.studentId;
+
+        const feedback = await Enrollment.findOne({
+            attributes: [ 
+                [sequelize.col('Enrollment.enrollment_id'), 'enrollmentId'],
+                [sequelize.col('Enrollment.enrollment_date'), 'enrollmentDate'],
+                [sequelize.col('feedback_id'), 'feedbackId'],
+                [sequelize.col('rating'), 'feedbackRating'],
+                [sequelize.col('detail'), 'feedbackDetail'],
+                [sequelize.fn('CONVERT_TZ', sequelize.col('last_update'), '+00:00', '+07:00'), 'feedbackLastUpdateTime']
+            ],
+            where: {
+                student_id: studentId,
+                course_id: courseId
+            },
+            include: {
+                model: Feedback,
+                attributes: [],
+                required: true
+            }
+        });
+
+        return res.status(200).json({
+            feedback: feedback
+        });
+    }
+
     async getFeedbacksOfACourse(req, res, next) {
         const courseId = req.params.courseId;
 
