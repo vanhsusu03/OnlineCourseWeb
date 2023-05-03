@@ -6,7 +6,16 @@ class CourseController {
 
     //GET /courses
     async showAllCourses(req, res, next) {
-        return res.status(200).json(await Course.findAll());
+        return res.status(200).json(await Course.findAll({
+            include:{
+                model: Instructor,
+                attributes: [
+                    Instructor.instructor_id,
+                    [sequelize.fn('concat', sequelize.col('first_name'), ' ',
+                        sequelize.col('last_name')), 'instructorFullName']
+                ],
+            }
+        }));
     }
 
     //POST /courses/create
