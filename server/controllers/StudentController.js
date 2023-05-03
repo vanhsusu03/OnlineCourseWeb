@@ -57,19 +57,24 @@ class StudentController {
                     // req.session.isLogin = true;
                     req.session.student_id = student.student_id;
 
-                    return res.status(200).json({
-                        msg: 'Successfully login',
-                        userName: student.username,
-                        firstName: student.first_name,
-                        lastName: student.last_name,
-                        cookie: req.headers.cookie,
-                    });
-                }
+                return res.status(200).json({
+                    msg: 'Successfully login',
+                    redirect: '/info',
+                    userName: student.username,
+                    firstName: student.first_name,
+                    lastName: student.last_name,
+                    email: student.email,
+                    phone: student.phone,
+                    birth: student.birthday,
+                    cookie: req.headers.cookie,
+                });
             }
-        } catch (error) {
-            next(error);
         }
     }
+         catch (error) {
+            next(error);
+        }
+}
 
     async logOut(req, res, next) {
         //store session cart in DB
