@@ -1,12 +1,12 @@
 <template>
-<h1>Course List</h1>
+<h1>Course List {{ student.id }} </h1>
 <ul v-if="courses && courses.length" class="listCourse">
     <li v-for="course of courses" class="item">
-        <img v-bind:src="course.img_url" alt="" class="course-img">
+        <img v-bind:src="course.image" alt="" class="course-img">
         <div class="course-content">
-            <h2>{{ course.title }}</h2>
-            <div>{{ course.instructor }}</div>
-            <h4>{{ course.course_fee + ' VND' }}</h4>
+            <h4>{{ course.title }}</h4>
+            <!-- <div>{{ course.instructor }}</div> -->
+            <h5>{{ course.course_fee + ' VND' }}</h5>
             <button v-on:click="addToCart(course.id - 1)">Add To Cart</button>
         </div>
     </li>
@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import { mapMutations, mapState } from 'vuex';
 import axios from 'axios';
 import { onBeforeMount } from 'vue';
 export default {
@@ -95,7 +96,7 @@ export default {
             return numPages;
         },
         addToCart(id) {
-            axios.post(`https://my-json-server.typicode.com/minhdatuet/testdb/cart`, {
+            axios.post(`/students/` + this.student.id + '/cart/' + id, {
                 id: this.courses[id].id,
                 title: this.courses[id].title,
                 instructor: this.courses[id].instructor,
@@ -109,7 +110,11 @@ export default {
             .catch(e => {
                 this.errors.push(e)
             })
-        }
+        },
+        ...mapMutations(['setStudent']),
+    },
+    computed: {
+        ...mapState(['student'])
     },
 
     // lấy dữ liệu khi component được tạo thành công
@@ -122,7 +127,7 @@ export default {
         //         this.errors.push(e)
         //     })
         // this.retrieveCourses();
-        axios.get('/courses')
+        axios.get('/courses', {withCredentials: true})
             .then(response => {
                 this.courses = response.data
             })
@@ -134,8 +139,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+h1 {
+    margin-left: 50px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
 .listCourse {
+    margin-left: 30px;
+    position: relative;
+    width: 90%;
     display: flex;
+    // width: 100%;
     flex-wrap: wrap;
     // margin-right: 50px;
     justify-content: space-between;
@@ -147,22 +161,31 @@ export default {
         padding: 0 30px;
         box-sizing: border-box;
         margin-bottom: 30px;
-
+        border-radius: 10px;
+        padding-top: 10px;
+        padding-bottom: 100px;
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
         .course-img {
-            max-width: 100%;
+            // position: relative;
+            width: 90%;
+            margin-left: 50%;
+            transform: translateX(-50%);
             height: auto;
         }
 
         .course-content {
             display: block;
-
+            position: relative;
+            
             button {
+                position: absolute;
                 font-size: 1.5vw;
                 font-weight: 500;
                 background-color: rgb(0, 128, 128);
                 padding: 10px;
                 color: #fff;
                 width: 100%;
+                top: 150px;
                 border: none;
                 border-radius: 30px;
             }
