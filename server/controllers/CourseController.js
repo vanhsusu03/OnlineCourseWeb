@@ -106,7 +106,7 @@ class CourseController {
                         sequelize.col('last_name')), 'instructorFullName']
                 ],
                 where: {
-                    courseId: courseId,
+                    course_id: courseId,
                 },
                 raw: true,
                 nest: true,
