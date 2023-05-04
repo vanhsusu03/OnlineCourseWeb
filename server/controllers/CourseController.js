@@ -11,9 +11,12 @@ class CourseController {
                 model: Instructor,
                 attributes: [
                     'instructor_id',
-                    [sequelize.fn('concat', sequelize.col('first_name'), ' ',
-                        sequelize.col('last_name')), 'instructorFullName']
                 ],
+                include: {
+                    model: Student,
+                    attributes: [sequelize.fn('concat', sequelize.col('first_name'), ' ',
+                        sequelize.col('last_name')), 'instructorFullName'],
+                }
             },
                 {
                     model: Enrollment,
@@ -62,7 +65,7 @@ class CourseController {
         if (instructorId) {
             await Course.destroy({
                 where: {
-                    [Op.and]:[
+                    [Op.and]: [
                         {instructorId: instructorId},
                         {courseId: courseId},
                     ]
@@ -113,7 +116,17 @@ class CourseController {
                         }],
                         attributes: [[sequelize.fn('AVG',
                             sequelize.col('rating')), 'rating']],
-                    },
+                    }, {
+                        model: Instructor,
+                        attributes: [
+                            'instructor_id',
+                        ],
+                        include: {
+                            model: Student,
+                            attributes: [sequelize.fn('concat', sequelize.col('first_name'), ' ',
+                                sequelize.col('last_name')), 'instructorFullName'],
+                        }
+                    }
                 ]
             })
             return res.status(200).json(courses);
@@ -127,10 +140,13 @@ class CourseController {
                 include: [{
                     model: Instructor,
                     attributes: [
-                        Instructor.instructor_id,
-                        [sequelize.fn('concat', sequelize.col('first_name'), ' ',
-                            sequelize.col('last_name')), 'instructorFullName']
+                        'instructor_id',
                     ],
+                    include: {
+                        model: Student,
+                        attributes: [sequelize.fn('concat', sequelize.col('first_name'), ' ',
+                            sequelize.col('last_name')), 'instructorFullName'],
+                    }
                 },
                     {
                         model: Enrollment,
@@ -174,10 +190,13 @@ class CourseController {
                 }, {
                     model: Instructor,
                     attributes: [
-                        Instructor.instructor_id,
-                        [sequelize.fn('concat', sequelize.col('first_name'), ' ',
-                            sequelize.col('last_name')), 'instructorFullName']
-                    ]
+                        'instructor_id',
+                    ],
+                    include: {
+                        model: Student,
+                        attributes: [sequelize.fn('concat', sequelize.col('first_name'), ' ',
+                            sequelize.col('last_name')), 'instructorFullName'],
+                    }
                 }, {
                     model: Enrollment,
                     include: {
@@ -209,10 +228,13 @@ class CourseController {
                 }, {
                     model: Instructor,
                     attributes: [
-                        Instructor.instructor_id,
-                        [sequelize.fn('concat', sequelize.col('first_name'), ' ',
-                            sequelize.col('last_name')), 'instructorFullName']
-                    ]
+                        'instructor_id',
+                    ],
+                    include: {
+                        model: Student,
+                        attributes: [sequelize.fn('concat', sequelize.col('first_name'), ' ',
+                            sequelize.col('last_name')), 'instructorFullName'],
+                    }
                 }, {
                     model: Enrollment,
                     include: {
