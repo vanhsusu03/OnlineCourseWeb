@@ -90,6 +90,37 @@ class StudentController {
             redirect: '/login',
         })
     }
+
+    //POST /edit
+    async editInfo(req, res, next) {
+        const studentId = req.session.student_id;
+        const {firstname, lastname, email, username, oldPassword, newPassword, phone, birth} = req.body;
+        let student=await Student.findOne({
+            where:{
+                student_id:studentId,
+            }
+        })
+        if(!student){
+            return res.status(200).json('Student is not found!');
+        }else {
+            const check = bcrypt.compareSync(oldPassword,student.password);
+            if(!check){
+                res.json('Your old password is not match!');
+            }else {
+                let newHashedPw = await bcrypt.hash(newPassword, bcryptRound);
+                await Student.update({
+                    first_name: firstname,
+                    last_name: lastname,
+                    email: email,
+                    phone: phone,
+                    birthday: birth,
+                    username: username,
+                    password: newHashedPw,
+                });
+                return res.status(200).json('Update information successfully!');
+            }
+        }
+    }
 }
 
 module.exports = new StudentController();
