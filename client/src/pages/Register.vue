@@ -81,7 +81,7 @@ export default {
             } else if (err === 'Email is already exists') {
                 this.errorObj.emailError.push(err);
             } else {
-                this.setStudent(data.data);
+                // this.setStudent(data.data);
                 // this.scrollToTop();
                 this.$router.push('/login');
             }

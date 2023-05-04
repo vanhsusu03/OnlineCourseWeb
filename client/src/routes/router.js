@@ -20,6 +20,7 @@ const routes = [
     {  path: "/signup", name: "SignUp", component: Register},
     {  path: "/deposit", name: "Deposit", component: Deposit},
     {  path: "/account/info", name: "StudentInfo", component: StudentInfo},
+    // {  path: "/info", name: "StudentInfo", component: StudentInfo},
     {  path: "/cart", name: "Cart", component: Cart},
     {  path: "/courses", name: "CourseList", component: CourseList},
     // {  path: "/editinfo", name: "EditInfo", component: EditInfo},

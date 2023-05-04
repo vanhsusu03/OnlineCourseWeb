@@ -9,11 +9,11 @@ const isAdmin = (req, res, next) => {
 };
 
 const isAlreadyLogin = (req, res, next) => {
-    if (req.session.student_id) {
+    if (req.session.studentId) {
         return res.status(200).json({
             msg: 'Already login!',
-            redirect: '/info',
-            cookie: req.headers.cookie,
+            redirect: '/account/info',
+            // cookie: req.headers.cookie,
         });
     } else {
         next();
@@ -21,7 +21,7 @@ const isAlreadyLogin = (req, res, next) => {
 };
 
 const isAuth = (req, res, next) => {
-    if (!req.student_id) {
+    if (!req.session.studentId) {
         return res.status(200).json({
             msg: 'You need to log in first',
             redirect: '/login',
@@ -33,12 +33,12 @@ const isAuth = (req, res, next) => {
 };
 
 const isInstructor = (req, res, next) => {
-    if (!req.student_id) {
+    if (!req.session.studentId) {
         return res.status(200).json({
             msg: 'You need to log in first',
             redirect: '/login',
         });
-    } else if (!req.is_instructor) {
+    } else if (!req.session.is_instructor) {
         return res.status(200).json({
             msg: 'You must be an instructor',
             redirect: '/login',
