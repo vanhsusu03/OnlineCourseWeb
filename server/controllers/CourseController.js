@@ -10,7 +10,7 @@ class CourseController {
             include:{
                 model: Instructor,
                 attributes: [
-                    Instructor.instructor_id,
+                    'instructor_id',
                     [sequelize.fn('concat', sequelize.col('first_name'), ' ',
                         sequelize.col('last_name')), 'instructorFullName']
                 ],
@@ -94,14 +94,13 @@ class CourseController {
                 include: [
                     {
                         model: Enrollment,
-                    },
-                    {
-                        model: Student,
-                        where: {
-                            student_id: studentId,
+                        include:{
+                            model: Student,
+                            where: {
+                                student_id: studentId,
+                            }
                         }
-                    }
-
+                    },
                 ]
             })
             return res.status(200).json(courses);
@@ -121,11 +120,11 @@ class CourseController {
                     ]
                 },
                 attributes: [
-                    Course.course_id,
-                    Course.title,
-                    Course.description,
-                    Course.image,
-                    Course.course_fee,
+                    'course_id',
+                    'title',
+                    'description',
+                    'image',
+                    'course_fee',
                 ],
                 where: {
                     course_id: courseId,
