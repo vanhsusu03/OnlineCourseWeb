@@ -1,5 +1,5 @@
 const sequelize = require('sequelize');
-const {models: {Course, Course_category, Category, Instructor, Enrollment, Student}} = require('../models');
+const {models: {Course, Course_category, Category, Instructor, Enrollment, Student, Feedback}} = require('../models');
 const {where} = require("sequelize");
 
 class CourseController {
@@ -7,14 +7,23 @@ class CourseController {
     //GET /courses
     async showAllCourses(req, res, next) {
         return res.status(200).json(await Course.findAll({
-            include:{
+            include: [{
                 model: Instructor,
                 attributes: [
                     'instructor_id',
                     [sequelize.fn('concat', sequelize.col('first_name'), ' ',
                         sequelize.col('last_name')), 'instructorFullName']
                 ],
-            }
+            },
+                {
+                    model: Enrollment,
+                    include: {
+                        model: Feedback,
+                        attributes: [[sequelize.fn('AVG',
+                            sequelize.col('rating')), 'rating']]
+                    }
+                }
+            ]
         }));
     }
 
@@ -94,12 +103,14 @@ class CourseController {
                 include: [
                     {
                         model: Enrollment,
-                        include:{
+                        include: [{
                             model: Student,
                             where: {
                                 student_id: studentId,
                             }
-                        }
+                        }],
+                        attributes: [[sequelize.fn('AVG',
+                            sequelize.col('rating')), 'rating']],
                     },
                 ]
             })
@@ -111,14 +122,23 @@ class CourseController {
     async showCourseDetail(req, res, next) {
         let courseId = req.params.courseId;
         let details = await Course.findAll({
-                include: {
+                include: [{
                     model: Instructor,
                     attributes: [
                         Instructor.instructor_id,
                         [sequelize.fn('concat', sequelize.col('first_name'), ' ',
                             sequelize.col('last_name')), 'instructorFullName']
-                    ]
+                    ],
                 },
+                    {
+                        model: Enrollment,
+                        include: {
+                            model: Feedback,
+                            attributes: [[sequelize.fn('AVG',
+                                sequelize.col('rating')), 'rating']]
+                        }
+                    }
+                ],
                 attributes: [
                     'course_id',
                     'title',
@@ -141,20 +161,28 @@ class CourseController {
         let categoryId = req.params.categoryId;
         let courses = await Course.findAll({
             include: [
-                {model: Course_category},
                 {
-                    model: Category,
-                    where: {
-                        category_id: categoryId,
-                    }
-                },
-                {
+                    model: Course_category,
+                    include: {
+                        model: Category,
+                        where: {
+                            category_id: categoryId,
+                        }
+                    },
+                }, {
                     model: Instructor,
                     attributes: [
                         Instructor.instructor_id,
                         [sequelize.fn('concat', sequelize.col('first_name'), ' ',
                             sequelize.col('last_name')), 'instructorFullName']
                     ]
+                }, {
+                    model: Enrollment,
+                    include: {
+                        model: Feedback,
+                        attributes: [[sequelize.fn('AVG',
+                            sequelize.col('rating')), 'rating']]
+                    }
                 }
             ],
             raw: true,
@@ -168,20 +196,28 @@ class CourseController {
         let categoryName = req.params.categoryName;
         let courses = await Course.findAll({
             include: [
-                {model: Course_category,},
                 {
-                    model: Category,
-                    where: {
-                        name: categoryName,
-                    }
-                },
-                {
+                    model: Course_category,
+                    include: {
+                        model: Category,
+                        where: {
+                            name: categoryName,
+                        }
+                    },
+                }, {
                     model: Instructor,
                     attributes: [
                         Instructor.instructor_id,
                         [sequelize.fn('concat', sequelize.col('first_name'), ' ',
                             sequelize.col('last_name')), 'instructorFullName']
                     ]
+                }, {
+                    model: Enrollment,
+                    include: {
+                        model: Feedback,
+                        attributes: [[sequelize.fn('AVG',
+                            sequelize.col('rating')), 'rating']]
+                    }
                 }
             ],
             raw: true,
