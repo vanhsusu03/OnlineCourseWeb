@@ -17,7 +17,7 @@
 
         <RouterLink v-if="!student.userName" @click="scrollToTop" to="/aboutus">
             <div class="aboutus"> About us</div>
-        </RouterLink>
+        </RouterLink>   
         <RouterLink v-if="student.userName" @click="scrollToTop" to="/mycourses">
             <div class="mycourse">My courses</div>
         </RouterLink>
@@ -238,7 +238,7 @@ export default {
             padding: .3rem;
             padding-bottom: .3rem;
             padding-left: .5rem;
-            border-radius: 10px;
+            // border-radius: 10px;
             box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .3);
             opacity: 1;
             transform: translateY(0);
