@@ -1,6 +1,6 @@
 const sequelize = require('sequelize');
 const {models: {Course, Course_category, Category, Instructor, Enrollment, Student, Feedback}} = require('../models');
-const {where} = require("sequelize");
+const {where, Op} = require("sequelize");
 
 class CourseController {
 
@@ -62,8 +62,10 @@ class CourseController {
         if (instructorId) {
             await Course.destroy({
                 where: {
-                    instructorId: instructorId,
-                    courseId: courseId,
+                    [Op.and]:[
+                        {instructorId: instructorId},
+                        {courseId: courseId},
+                    ]
                 }
             })
             return res.status(200).json('Delete successfully');
