@@ -32,7 +32,7 @@
                     </div>
                 </RouterLink>
             </div>
-            <button class="info btn" type="submit">Login</button>
+            <button class="info btn">Login</button>
         </form>
     </div>
     <br>

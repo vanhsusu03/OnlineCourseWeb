@@ -2,7 +2,7 @@
 <h1>Course List</h1>
 <ul v-if="courses && courses.length" class="listCourse">
     <li v-for="course of courses" class="item">
-        <img v-bind:src="course.img_url" alt="" class="course-img">
+        <img v-bind:src="course.image" alt="" class="course-img">
         <div class="course-content">
             <h2>{{ course.title }}</h2>
             <div>{{ course.instructor }}</div>
@@ -122,7 +122,7 @@ export default {
         //         this.errors.push(e)
         //     })
         // this.retrieveCourses();
-        axios.get('/courses')
+        axios.get('/courses',{withCredentials: true})
             .then(response => {
                 this.courses = response.data
             })

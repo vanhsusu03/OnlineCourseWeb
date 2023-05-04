@@ -6,7 +6,7 @@ class CourseController {
 
     //GET /courses
     async showAllCourses(req, res, next) {
-        return await Course.findAll();
+        return res.status(200).json( await Course.findAll());
     }
 
     //POST /courses/create
