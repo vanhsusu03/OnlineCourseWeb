@@ -1,5 +1,5 @@
 <template>
-<h1>Course List {{ student.id }} </h1>
+<h1>Course List </h1>
 <ul v-if="courses && courses.length" class="listCourse">
     <li v-for="course of courses" class="item">
         <img v-bind:src="course.image" alt="" class="course-img">
