@@ -14,4 +14,4 @@ router.get('/courses/:categoryName', courseController.showCoursesByCategoryName)
 
 router.get('/courses', courseController.showAllCourses);
 
-module.exports=router;
+module.exports = router;

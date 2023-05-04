@@ -1,0 +1,11 @@
+{
+    "cookie": {
+        "originalMaxAge": 1682960166664,
+        "expires": "2076-08-30T05:25:44.035Z",
+        "httpOnly": true,
+        "path": "/",
+        "sameSite": true
+    },
+    "student_id": 4,
+    "__lastAccess": 1683030577372
+}

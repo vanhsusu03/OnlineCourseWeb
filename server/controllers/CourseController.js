@@ -25,6 +25,7 @@ class CourseController {
                 }
             ]
         }));
+
     }
 
     //POST /courses/create
