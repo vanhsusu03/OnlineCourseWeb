@@ -7,26 +7,32 @@ class CourseController {
     //GET /courses
     async showAllCourses(req, res, next) {
         return res.status(200).json(await Course.findAll({
+            attributes: [
+                ['course_id', 'courseId'],
+                [sequelize.col('title'), 'courseTitle'],
+                [sequelize.col('description'), 'courseDescription'],
+                ['image', 'courseImage'],
+                [sequelize.col('course_fee'), 'courseFee'],
+                [sequelize.col('first_name'), 'instructorFirstName'],
+                [sequelize.col('last_name'), 'instructorLastName'],
+                // [sequelize.fn('AVG', sequelize.col('rating')), 'rating']
+            ],
             include: [{
                 model: Instructor,
+                attributes: [],
+                required: true,
                 include: {
                     model: Student,
-                    attributes: [
-                        'first_name',
-                        'last_name',
-                    ],
-                },
-            },
-                {
-                    model: Enrollment,
-                    include: {
-                        model: Student,
-                        attributes: [
-                            'first_name',
-                            'last_name',
-                        ]
-                    }
-                }],
+                    attributes: [],
+                    required: true
+                }
+            }, {
+                model: Enrollment,
+                include: {
+                    model: Feedback,
+                    attributes: [],
+                }
+            }]
         }))
     }
 
@@ -99,11 +105,14 @@ class CourseController {
         if (studentId) {
             let courses = await Course.findAll({
                 attributes: [
-                    [sequelize.col('Course.course_id'), 'courseId'],
-                    [sequelize.col('Course.title'), 'courseTitle'],
-                    [sequelize.col('Course.description'), 'courseDescription'],
-                    [sequelize.col('Course.image'), 'courseImage'],
-                    [sequelize.col('Course.course_fee'), 'courseFee'],
+                    ['course_id', 'courseId'],
+                    [sequelize.col('title'), 'courseTitle'],
+                    [sequelize.col('description'), 'courseDescription'],
+                    ['image', 'courseImage'],
+                    [sequelize.col('course_fee'), 'courseFee'],
+                    [sequelize.col('first_name'), 'instructorFirstName'],
+                    [sequelize.col('last_name'), 'instructorLastName'],
+                    // [sequelize.fn('AVG', sequelize.col('rating')), 'rating']
                 ],
                 include: [
                     {
@@ -114,8 +123,7 @@ class CourseController {
                                 student_id: studentId,
                             }
                         }],
-                        attributes: [[sequelize.fn('AVG',
-                            sequelize.col('rating')), 'rating']],
+                        attributes: [],
                     }, {
                         model: Instructor,
                         attributes: [
@@ -123,10 +131,14 @@ class CourseController {
                         ],
                         include: {
                             model: Student,
-                            attributes: [
-                                'first_name',
-                                'last_name',
-                            ],
+                            attributes: [],
+                        }
+                    },
+                    {
+                        model: Enrollment,
+                        include: {
+                            model: Feedback,
+                            attributes: [],
                         }
                     }
                 ]
@@ -139,6 +151,16 @@ class CourseController {
     async showCourseDetail(req, res, next) {
         let courseId = req.params.courseId;
         let details = await Course.findAll({
+                attributes: [
+                    ['course_id', 'courseId'],
+                    [sequelize.col('title'), 'courseTitle'],
+                    [sequelize.col('description'), 'courseDescription'],
+                    ['image', 'courseImage'],
+                    [sequelize.col('course_fee'), 'courseFee'],
+                    [sequelize.col('first_name'), 'instructorFirstName'],
+                    [sequelize.col('last_name'), 'instructorLastName'],
+                    // [sequelize.fn('AVG', sequelize.col('rating')), 'rating'],
+                ],
                 include: [{
                     model: Instructor,
                     attributes: [
@@ -161,13 +183,6 @@ class CourseController {
                         }
                     }
                 ],
-                attributes: [
-                    'course_id',
-                    'title',
-                    'description',
-                    'image',
-                    'course_fee',
-                ],
                 where: {
                     course_id: courseId,
                 },
@@ -182,6 +197,16 @@ class CourseController {
     async showCoursesByCategoryId(req, res, next) {
         let categoryId = req.params.categoryId;
         let courses = await Course.findAll({
+            attributes: [
+                ['course_id', 'courseId'],
+                [sequelize.col('title'), 'courseTitle'],
+                [sequelize.col('description'), 'courseDescription'],
+                ['image', 'courseImage'],
+                [sequelize.col('course_fee'), 'courseFee'],
+                [sequelize.col('first_name'), 'instructorFirstName'],
+                [sequelize.col('last_name'), 'instructorLastName'],
+                // [sequelize.fn('AVG', sequelize.col('rating')), 'rating']
+            ],
             include: [
                 {
                     model: Course_category,
@@ -222,6 +247,17 @@ class CourseController {
     async showCoursesByCategoryName(req, res, next) {
         let categoryName = req.params.categoryName;
         let courses = await Course.findAll({
+            attributes: [
+                ['course_id', 'courseId'],
+                [sequelize.col('title'), 'courseTitle'],
+                [sequelize.col('description'), 'courseDescription'],
+                ['image', 'courseImage'],
+                [sequelize.col('course_fee'), 'courseFee'],
+                [sequelize.col('first_name'), 'instructorFirstName'],
+                [sequelize.col('last_name'), 'instructorLastName'],
+                [sequelize.fn('AVG', sequelize.col('rating')), 'rating'],
+                // [sequelize.fn('AVG', sequelize.col('rating')), 'rating']
+            ],
             include: [
                 {
                     model: Course_category,
@@ -247,8 +283,7 @@ class CourseController {
                     model: Enrollment,
                     include: {
                         model: Feedback,
-                        attributes: [[sequelize.fn('AVG',
-                            sequelize.col('rating')), 'rating']]
+                        attributes: []
                     }
                 }
             ],
