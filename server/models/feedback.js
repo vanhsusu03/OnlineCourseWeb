@@ -23,11 +23,15 @@ module.exports = function(sequelize, DataTypes) {
     detail: {
       type: DataTypes.STRING(3000),
       allowNull: true
+    },
+    last_update: {
+      type: DataTypes.DATE,
+      allowNull: false
     }
   }, {
     sequelize,
     tableName: 'feedback',
-    timestamps: true,
+    timestamps: false,
     indexes: [
       {
         name: "PRIMARY",

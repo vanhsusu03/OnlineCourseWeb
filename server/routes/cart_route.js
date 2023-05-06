@@ -7,5 +7,4 @@ router.get('/students/cart', isAuth, cartController.getInfo);
 router.post('/students/cart/:courseId', isAuth, cartController.addCourse);
 router.delete('/students/cart/:courseId',isAuth, cartController.removeCourse);
 
-
 module.exports = router;
