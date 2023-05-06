@@ -2,11 +2,12 @@
 <h1>Course List</h1>
 <ul v-if="courses && courses.length" class="listCourse">
     <li v-for="course of courses" class="item">
-        <img v-bind:src="course.image" alt="" class="course-img">
+        <img v-bind:src="course.courseImage" alt="" class="course-img">
         <div class="course-content">
-            <h2>{{ course.title }}</h2>
+            <h2>{{ course.courseTitle }}</h2>
             <div>{{ course.instructor }}</div>
-            <h4>{{ course.course_fee + ' VND' }}</h4>
+            <h4>{{ course.courseFee + ' VND' }}</h4>
+            <div>{{ course.instructorFirstName}}</div>
             <button v-on:click="addToCart(course.id - 1)">Add To Cart</button>
         </div>
     </li>
