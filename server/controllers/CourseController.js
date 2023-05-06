@@ -17,6 +17,7 @@ class CourseController {
                 [sequelize.col('last_name'), 'instructorLastName'],
                 // [sequelize.fn('AVG', sequelize.col('rating')), 'rating']
             ],
+            order:[['courseId','ASC']],
             include: [{
                 model: Instructor,
                 attributes: [],
