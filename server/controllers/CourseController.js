@@ -1,18 +1,50 @@
 const sequelize = require('sequelize');
-const {models: {Course, Course_category, Category, Instructor, Enrollment, Student}} = require('../models');
-const {where} = require("sequelize");
+const {models: {Course, Course_category, Category, Instructor, Enrollment, Student, Feedback}} = require('../models');
+const {where, Op} = require("sequelize");
 
 class CourseController {
 
     //GET /courses
     async showAllCourses(req, res, next) {
-        return res.status(200).json(await Course.findAll());
+        return res.status(200).json(await Course.findAll({
+            include: [{
+                model: Instructor,
+                include: {
+                    model: Student,
+                    attributes: [
+                        'first_name',
+                        'last_name',
+                    ],
+                },
+            },
+                {
+                    model: Enrollment,
+                    include: {
+                        model: Student,
+                        attributes: [
+                            'first_name',
+                            'last_name',
+                        ]
+                    }
+                }],
+        }))
     }
 
-    //POST /courses/create
+//POST /courses/create
     async addCourse(req, res, next) {
         let instructorId = req.session.instructorId;
         if (instructorId) {
+            let instructor = await Student.findOne({
+                    include: {
+                        model: Instructor,
+                        where: {
+                            instructor_id: instructorId,
+                        },
+                    },
+                }
+            );
+            let instructorFirstName = instructor.first_name;
+            let instructorLastName = instructor.last_name;
             await Course.create({
                 instructorId: instructorId,
                 title: req.body.title,
@@ -26,22 +58,24 @@ class CourseController {
         }
     }
 
-    //DELETE /courses/:courseId
+//DELETE /courses/:courseId
     async deleteCourse(req, res, next) {
         let instructorId = req.session.instructorId;
         let courseId = req.body.courseId;
         if (instructorId) {
             await Course.destroy({
                 where: {
-                    instructorId: instructorId,
-                    courseId: courseId,
+                    [Op.and]: [
+                        {instructor_id: instructorId},
+                        {course_id: courseId},
+                    ]
                 }
             })
             return res.status(200).json('Delete successfully');
         }
     }
 
-    //POST /courses/:courseId/edit
+//POST /courses/:courseId/edit
     async editCourse(req, res, next) {
         let instructorId = req.session.instructorId;
         let courseId = req.params.courseId;
@@ -58,7 +92,7 @@ class CourseController {
         }
     }
 
-    //GET /mycourses
+//GET /mycourses
     async showYourCourses(req, res, next) {
         let studentId = req.session.studentId;
 
@@ -74,39 +108,68 @@ class CourseController {
                 include: [
                     {
                         model: Enrollment,
-                    },
-                    {
-                        model: Student,
-                        where: {
-                            student_id: studentId,
+                        include: [{
+                            model: Student,
+                            where: {
+                                student_id: studentId,
+                            }
+                        }],
+                        attributes: [[sequelize.fn('AVG',
+                            sequelize.col('rating')), 'rating']],
+                    }, {
+                        model: Instructor,
+                        attributes: [
+                            'instructor_id',
+                        ],
+                        include: {
+                            model: Student,
+                            attributes: [
+                                'first_name',
+                                'last_name',
+                            ],
                         }
                     }
-
                 ]
             })
             return res.status(200).json(courses);
         }
     }
 
-    //GET /courses/:courseId
+//GET /courses/:courseId
     async showCourseDetail(req, res, next) {
         let courseId = req.params.courseId;
         let details = await Course.findAll({
-                include: {
+                include: [{
                     model: Instructor,
+                    attributes: [
+                        'instructor_id',
+                    ],
+                    include: {
+                        model: Student,
+                        attributes: [
+                            'first_name',
+                            'last_name',
+                        ],
+                    }
                 },
+                    {
+                        model: Enrollment,
+                        include: {
+                            model: Feedback,
+                            attributes: [[sequelize.fn('AVG',
+                                sequelize.col('rating')), 'rating']]
+                        }
+                    }
+                ],
                 attributes: [
-                    Course.courseId,
-                    Course.title,
-                    Course.description,
-                    Course.image,
-                    Course.course_fee,
-                    Instructor.instructorId,
-                    [sequelize.fn('concat', sequelize.col('first_name'), ' ',
-                        sequelize.col('last_name')), 'instructorFullName']
+                    'course_id',
+                    'title',
+                    'description',
+                    'image',
+                    'course_fee',
                 ],
                 where: {
-                    courseId: courseId,
+                    course_id: courseId,
                 },
                 raw: true,
                 nest: true,
@@ -115,16 +178,37 @@ class CourseController {
         return res.status(200).json(details);
     }
 
-    //GET /courses/:categoryId
+//GET /courses/:categoryId
     async showCoursesByCategoryId(req, res, next) {
         let categoryId = req.params.categoryId;
         let courses = await Course.findAll({
             include: [
-                {model: Course_category},
                 {
-                    model: Category,
-                    where: {
-                        category_id: categoryId,
+                    model: Course_category,
+                    include: {
+                        model: Category,
+                        where: {
+                            category_id: categoryId,
+                        }
+                    },
+                }, {
+                    model: Instructor,
+                    attributes: [
+                        'instructor_id',
+                    ],
+                    include: {
+                        model: Student,
+                        attributes: [
+                            'first_name',
+                            'last_name',
+                        ],
+                    }
+                }, {
+                    model: Enrollment,
+                    include: {
+                        model: Feedback,
+                        attributes: [[sequelize.fn('AVG',
+                            sequelize.col('rating')), 'rating']]
                     }
                 }
             ],
@@ -134,16 +218,37 @@ class CourseController {
         return res.status(200).json(courses);
     }
 
-    //GET /courses/:categoryName
+//GET /courses/:categoryName
     async showCoursesByCategoryName(req, res, next) {
         let categoryName = req.params.categoryName;
         let courses = await Course.findAll({
             include: [
-                {model: Course_category,},
                 {
-                    model: Category,
-                    where: {
-                        name: categoryName,
+                    model: Course_category,
+                    include: {
+                        model: Category,
+                        where: {
+                            name: categoryName,
+                        }
+                    },
+                }, {
+                    model: Instructor,
+                    attributes: [
+                        'instructor_id',
+                    ],
+                    include: {
+                        model: Student,
+                        attributes: [
+                            'first_name',
+                            'last_name',
+                        ],
+                    }
+                }, {
+                    model: Enrollment,
+                    include: {
+                        model: Feedback,
+                        attributes: [[sequelize.fn('AVG',
+                            sequelize.col('rating')), 'rating']]
                     }
                 }
             ],
