@@ -4,7 +4,7 @@
         <div class="cart-content">
             <ul>
                 <li v-for="course in courses">
-                    <img :src="course.img_url" alt="">
+                    <img :src=course.image alt="">
                     <div class="course-content">
                         <h3>{{ course.title }}</h3>
                         <div>{{ course.instructor }}</div>

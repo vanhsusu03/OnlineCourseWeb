@@ -16,7 +16,7 @@ function routesInit(app) {
     // app.use('/admin', adminRoute);
     app.use('/', cartRoute);
     // app.use('/', categoryRoute);
-    // app.use('/', courseRoute);
+    app.use('/', courseRoute);
     // app.use('/', courselistRoute);
     app.use('/', depositRoute);
     // app.use('/', instructorRoute);

@@ -6,7 +6,9 @@ class SearchingController {
     async search(req, res, next) {
         let price = req.body.price;
         let sortByPrice = req.body.sortByPrice;
-        let categoryFilter=req.body.categoryFilter;
+        let categoryFilter = req.body.categoryFilter;
+        let rating = req.body.rating;
+        let sortByRating = req.body.sortByRating;
         let category = await Category.findAll({
             where: {
                 name: {like: '%' + req.body.keyword + '%'},
@@ -14,58 +16,66 @@ class SearchingController {
         });
         if (category) {
             var coursesByCategory = await Course.findAll({
-                include: [{model: Course_category},
-                    {
-                        model: Category,
-                        where: {
-                            name: {like: '%' + req.body.keyword + '%'},
+                    include: [{
+                        model: Course_category,
+                        include: {
+                            model: Category,
+                            attributes: [sequelize.col('name'), 'categoryName'],
+                            where: {
+                                name: {[Op.like]: '%' + req.body.keyword.toLowerCase() + '%'},
+                            },
                         },
+                    }, {
+                        model: Enrollment,
+                        include: {
+                            model: Feedback,
+                            attributes: [[sequelize.fn('AVG',
+                                sequelize.col('rating')), 'rating']]
+                        }
                     }],
-                raw: true,
-                nest: true,
-            });
+                    raw: true,
+                    nest: true,
+                })
+            ;
         }
         let courses = await Course.findAll({
             where:
                 {
                     [Op.or]: [
-                        {title: {like: '%' + req.body.keyword + '%'}},
-                        {description: {like: '%' + req.body.keyword + '%'}},
+                        {title: {[Op.like]: '%' + req.body.keyword + '%'}},
+                        {description: {[Op.like]: '%' + req.body.keyword + '%'}},
                     ]
+                },
+            include: {
+                model: Enrollment,
+                include: {
+                    model: Feedback,
+                    attributes: [[sequelize.fn('AVG',
+                        sequelize.col('rating')), 'rating']]
                 }
+            }
         });
         let result = coursesByCategory.concat(courses);
-        let temp = result;
+        if (price) {
+            result = result.filter(res => res.price <= price);
+        }
+        if (rating) {
+            result = result.filter(res => res.rating >= rating);
+        }
+        if (categoryFilter) {
+            result = result.filter(res => res.categoryName === categoryFilter);
+        }
+        if (sortByPrice) {
+            result.sort((a, b) => a.price - b.price);
+        }
+        if (sortByRating) {
+            result.sort((a, b) => a.rating - b.rating);
+        }
         if (!result) {
             return res.status(200).json('No result');
         } else {
-            // Filter by price
-            if (price) {
-                for (let i = 0; i < temp.length; ++i) {
-                    if (result[i].course_fee > price) {
-                        temp.splice(i, 1);
-                    }
-                }
-            }
-
-            // Filter by category
-            if(categoryFilter){
-                for (let i=0;i<temp.length;++i){
-                    if(temp[i].name!==categoryFilter){
-                        temp.splice(i,1);
-                    }
-                }
-            }
-
-            // Sort by price
-            if (sortByPrice) {
-                temp.sort(function (a, b) {
-                    a.course_fee - b.course_fee;
-                    }
-                );
-            }
+            return res.status(200).json(result);
         }
-        return res.status(200).json(temp);
     }
 }
 
