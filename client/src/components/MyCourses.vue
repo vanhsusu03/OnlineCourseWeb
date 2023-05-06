@@ -1,14 +1,13 @@
 <template>
-<h1>Course List </h1>
+<h1>My Course </h1>
 <ul v-if="courses && courses.length" class="listCourse">
     <li v-for="course of courses" class="item">
-        <img v-bind:src="course.courseImage" alt="" class="course-img">
+        <img v-bind:src="course.image" alt="" class="course-img">
         <div class="course-content">
-            <h4 v-bind:title="course.courseTitle">{{ course.courseTitle }}</h4>
-            <div v-bind:title="course.courseDescription">{{ course.courseDescription }}</div>
-            <div>By {{ course.instructorFirstName + ' ' + course.instructorLastName }}</div>
-            <h5>{{ course.courseFee + ' VND' }}</h5>
-            <button v-on:click="addToCart(course.id - 1)">Add To Cart</button>
+            <h4 v-bind:title="course.title">{{ course.title }}</h4>
+            <!-- <div>{{ course.instructor }}</div> -->
+            <div class="desc" v-bind:title="course.description">{{course.description}}</div>
+            <button v-on:click="">Study</button>
         </div>
     </li>
 </ul>
@@ -25,19 +24,25 @@
     </li>
 </ul>
 
-<ul class="listPage" >
+<ul class="listPage">
     <li v-for="page in pages" class="pagelinks" :class="{active:page.status}" v-on:click="scrollToTop() ;this.begin = false; openCity(page.value)">
         {{ page.value }}
     </li>
 </ul>
 </template>
 
+    
 <script>
-import { mapMutations, mapState } from 'vuex';
+import {
+    mapMutations,
+    mapState
+} from 'vuex';
 import axios from 'axios';
-import { onBeforeMount } from 'vue';
+import {
+    onBeforeMount
+} from 'vue';
 export default {
-    name: 'CourseList',
+    name: 'MyCourses',
     data() {
         return {
             courses: [],
@@ -45,12 +50,10 @@ export default {
             thisPage: 1,
             begin: true,
             isCalc: false,
-            pages: [
-                {
-                    value: 1,
-                    status: true
-                }
-            ],
+            pages: [{
+                value: 1,
+                status: true
+            }],
             limit: 6,
             list: document.getElementsByClassName("item")
         }
@@ -59,6 +62,9 @@ export default {
         // async retrieveCourses() {
         //     let data = await 
         // },
+        limit(string = '', limit = 0) {
+            return string.substring(0, limit)
+        },
         scrollToTop() {
             window.scrollTo(0, 0);
         },
@@ -98,19 +104,19 @@ export default {
         },
         addToCart(id) {
             axios.post(`/students/` + this.student.id + '/cart/' + id, {
-                id: this.courses[id].id,
-                title: this.courses[id].title,
-                instructor: this.courses[id].instructor,
-                description: this.courses[id].description,
-                course_fee: this.courses[id].course_fee,
-                img_url: this.courses[id].img_url
-            })
-            .then(response => {
-                console.log(response)
-            })
-            .catch(e => {
-                this.errors.push(e)
-            })
+                    id: this.courses[id].id,
+                    title: this.courses[id].title,
+                    instructor: this.courses[id].instructor,
+                    description: this.courses[id].description,
+                    course_fee: this.courses[id].course_fee,
+                    img_url: this.courses[id].img_url
+                })
+                .then(response => {
+                    console.log(response)
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                })
         },
         ...mapMutations(['setStudent']),
     },
@@ -128,7 +134,9 @@ export default {
         //         this.errors.push(e)
         //     })
         // this.retrieveCourses();
-        axios.get('/courses', {withCredentials: true})
+        axios.get('/mycourses', {
+                withCredentials: true
+            })
             .then(response => {
                 this.courses = response.data
             })
@@ -139,12 +147,14 @@ export default {
 }
 </script>
 
+    
 <style lang="scss" scoped>
 h1 {
     margin-left: 50px;
     margin-top: 30px;
     margin-bottom: 20px;
 }
+
 .listCourse {
     margin-left: 30px;
     position: relative;
@@ -156,7 +166,6 @@ h1 {
     justify-content: space-between;
 
     li {
-        // margin-bottom: 400px;
         display: none;
         flex-basis: 28%;
         list-style-type: none;
@@ -167,6 +176,7 @@ h1 {
         padding-top: 10px;
         padding-bottom: 100px;
         box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+
         .course-img {
             // position: relative;
             width: 90%;
@@ -179,14 +189,13 @@ h1 {
             display: block;
             position: relative;
 
-            div, h4 {
+            .desc, h4 {
                 display: -webkit-box;
                 -webkit-line-clamp: 2;
                 -webkit-box-orient: vertical;
                 overflow: hidden;
-                margin-bottom: 5px;
             }
-            
+
             button {
                 position: absolute;
                 font-size: 1.5vw;
@@ -195,7 +204,7 @@ h1 {
                 padding: 10px;
                 color: #fff;
                 width: 100%;
-                top: 180px;
+                top: 150px;
                 border: none;
                 border-radius: 30px;
             }

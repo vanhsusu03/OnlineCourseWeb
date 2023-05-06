@@ -7,17 +7,17 @@
             <div class="cart-content">
                 <ul>
                     <li v-for="course in courses">
-                        <img :src="course.img_url" alt="">
+                        <img :src="course.courseImage" alt="">
                         <div class="course-content">
-                            <h3>{{ course.title }}</h3>
-                            <div>By {{ course.instructor }}</div>
-                            <div>{{ course.description}}</div>
+                            <h3>{{ course.courseTitle }}</h3>
+                            <div>By {{ course.instructorFirstName + ' ' + course.instructorLastName }}</div>
+                            <div>{{ course.courseDescription}}</div>
                         </div>
                         <div class="button">
-                            <button v-on:click="removeCourse(course.id)">Remove</button><br>
-                            <button v-on:click="moveToSave(course.id)">Save For Later</button>
+                            <button v-on:click="removeCourse(course.courseId)">Remove</button><br>
+                            <button v-on:click="moveToSave(course.courseId)">Save For Later</button>
                         </div>
-                        <div class="cost">{{ course.course_fee }} VND</div>
+                        <div class="cost">{{ course.courseFee }} VND</div>
                     </li>
                 </ul>
             </div>
@@ -28,17 +28,17 @@
             <div class="cart-content">
                 <ul>
                     <li v-for="course in saved">
-                        <img :src="course.img_url" alt="">
+                        <img :src="course.courseImage" alt="">
                         <div class="course-content">
-                            <h3>{{ course.title }}</h3>
-                            <div>By {{ course.instructor }}</div>
-                            <div>{{ course.description}}</div>
+                            <h3>{{ course.courseTitle }}</h3>
+                            <div>By {{ course.courseInstructor }}</div>
+                            <div>{{ course.courseDescription}}</div>
                         </div>
                         <div class="button">
-                            <button v-on:click="removeCourse(course.id)">Remove</button><br>
-                            <button v-on:click="moveToCart(course.id)">Move To Cart</button>
+                            <button v-on:click="removeCourse(course.courseId)">Remove</button><br>
+                            <button v-on:click="moveToCart(course.courseId)">Move To Cart</button>
                         </div>
-                        <div class="cost">{{ course.course_fee }} VND</div>
+                        <div class="cost">{{ course.courseFee }} VND</div>
                     </li>
                 </ul>
             </div>
@@ -54,6 +54,7 @@
 </template>
 
 <script>
+import { mapMutations, mapState } from 'vuex';
 export default {
     name: 'Cart',
     data() {
@@ -63,50 +64,53 @@ export default {
         }
     },
     methods: {
+        ...mapMutations(['scrollToTop']),
         getTotal() {
             let sum = 0;
             for (let i = 0; i < this.courses.length; i++) {
-                sum += this.courses[i].course_fee;
+                sum += this.courses[i].courseFee;
             }
             return sum;
         },
         moveToSave(id) {
             for (let i = 0; i < this.courses.length; i++) {
-                if (this.courses[i].id === id) {
+                if (this.courses[i].courseId === id) {
                     this.saved.push(this.courses[i])
                     this.courses.splice(i, 1)
                 }
             }
         },
         removeCourse(id) {
-            for (let i = 0; i < this.courses.length; i++) {
-                if (this.courses[i].id === id) {
-                    this.courses.splice(i, 1)
-                }
-            }
-            for (let i = 0; i < this.saved.length; i++) {
-                if (this.saved[i].id === id) {
-                    this.saved.splice(i, 1)
-                }
-            }
+            alert(student.firstName) 
+            axios.delete('students/cart/' + id, id, {withCredentials: true})
+            .catch(e => {
+                this.errors.push(e)
+            })
         },
         moveToCart(id) {
             for (let i = 0; i < this.saved.length; i++) {
-                if (this.saved[i].id === id) {
+                if (this.saved[i].courseId === id) {
                     this.courses.push(this.saved[i])
                     this.saved.splice(i, 1)
                 }
             }
-        }
-    },
-    created() {
-        axios.get(`https://my-json-server.typicode.com/minhdatuet/testdb/cart`)
+        },
+        getInfo() {
+            // this.getInfo()
+            axios.get('/students/cart', {withCredentials: true})
             .then(response => {
-                this.courses = response.data
+                this.courses = response.data.coursesInCart
             })
             .catch(e => {
                 this.errors.push(e)
             })
+        }
+    },
+    created() {
+        this.getInfo()
+    },
+    computed: {
+        ...mapState(['student', 'admin'])
     }
 }
 </script>
@@ -154,7 +158,7 @@ export default {
 
     .cart-content {
         position: relative;
-        z-index: 1;
+        // z-index: 1;
         display: block;
         background-color: white;
         // margin: 10px 0;
@@ -173,11 +177,13 @@ export default {
             margin: 10px 0;
 
             img {
-                max-width: 120px;
+                width: 200px;
+                height: auto;
             }
 
             .course-content {
                 margin-left: 20px;
+                width: 500px;
             }
         }
 
