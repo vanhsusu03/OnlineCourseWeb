@@ -97,7 +97,6 @@ class StudentController {
             redirect: '/login',
         })
     }
-
     // [GET] /info
     async getInfo(req, res, next) {
         // check whether or not login

@@ -5,7 +5,7 @@
         <img v-bind:src="course.courseImage" alt="" class="course-img">
         <div class="course-content">
             <h4 v-bind:title="course.courseTitle">{{ course.courseTitle }}</h4>
-            <div v-bind:title="course.courseDescription">{{ course.courseDescrtion }}</div>
+            <div v-bind:title="course.courseDescription">{{ course.courseDescription }}</div>
             <div>By {{ course.instructorFirstName + ' ' + course.instructorLastName }}</div>
             <h5>{{ course.courseFee + ' VND' }}</h5>
             <button v-on:click="addToCart(course.id - 1)">Add To Cart</button>
