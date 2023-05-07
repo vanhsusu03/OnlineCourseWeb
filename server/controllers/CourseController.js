@@ -17,7 +17,7 @@ class CourseController {
                 [sequelize.col('last_name'), 'instructorLastName'],
                 // [sequelize.fn('AVG', sequelize.col('rating')), 'rating']
             ],
-            order:[['courseId','ASC']],
+            order: [['courseId', 'ASC']],
             include: [{
                 model: Instructor,
                 attributes: [],
@@ -151,7 +151,7 @@ class CourseController {
 //GET /courses/:courseId
     async showCourseDetail(req, res, next) {
         let courseId = req.params.courseId;
-        let details = await Course.findAll({
+        let details = await Course.findOne({
                 attributes: [
                     ['course_id', 'courseId'],
                     [sequelize.col('title'), 'courseTitle'],
@@ -164,23 +164,17 @@ class CourseController {
                 ],
                 include: [{
                     model: Instructor,
-                    attributes: [
-                        'instructor_id',
-                    ],
+                    attributes: [],
                     include: {
                         model: Student,
-                        attributes: [
-                            'first_name',
-                            'last_name',
-                        ],
+                        attributes: [],
                     }
                 },
                     {
                         model: Enrollment,
                         include: {
                             model: Feedback,
-                            attributes: [[sequelize.fn('AVG',
-                                sequelize.col('rating')), 'rating']]
+                            attributes: [],
                         }
                     }
                 ],
@@ -219,22 +213,16 @@ class CourseController {
                     },
                 }, {
                     model: Instructor,
-                    attributes: [
-                        'instructor_id',
-                    ],
+                    attributes: [],
                     include: {
                         model: Student,
-                        attributes: [
-                            'first_name',
-                            'last_name',
-                        ],
+                        attributes: [],
                     }
                 }, {
                     model: Enrollment,
                     include: {
                         model: Feedback,
-                        attributes: [[sequelize.fn('AVG',
-                            sequelize.col('rating')), 'rating']]
+                        attributes: [],
                     }
                 }
             ],
@@ -275,10 +263,7 @@ class CourseController {
                     ],
                     include: {
                         model: Student,
-                        attributes: [
-                            'first_name',
-                            'last_name',
-                        ],
+                        attributes: [],
                     }
                 }, {
                     model: Enrollment,

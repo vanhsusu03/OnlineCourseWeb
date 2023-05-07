@@ -3,6 +3,6 @@ const searchingController=require('../controllers/SearchingController');
 const router = express.Router();
 
 
-router.get('/searching/:slug',searchingController.search);
+router.get('/searching/:keyw',searchingController.search);
 
 module.exports=router;
