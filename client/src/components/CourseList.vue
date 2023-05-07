@@ -1,12 +1,13 @@
 <template>
-<h1>Course List</h1>
+<h1>Course List </h1>
 <ul v-if="courses && courses.length" class="listCourse">
     <li v-for="course in courses" class="item" >
-        <img v-bind:src="course.image" alt="" class="course-img" @click="showCourse(course.course_id)" >
+        <img v-bind:src="course.courseImage" alt="" class="course-img" @click="showCourse(course.courseId)" >
         <div class="course-content">
-            <h2>{{ course.title }}</h2>
-            <div>{{ course.instructor }}</div>
-            <h4>{{ course.course_fee + ' VND' }}</h4>
+            <h4 v-bind:title="course.courseTitle">{{ course.courseTitle }}</h4>
+            <div v-bind:title="course.courseDescription">{{ course.courseDescription }}</div>
+            <div>By {{ course.instructorFirstName + ' ' + course.instructorLastName }}</div>
+            <h5>{{ course.courseFee + ' VND' }}</h5>
             <button v-on:click="addToCart(course.id - 1)">Add To Cart</button>
         </div>
     </li>
@@ -32,9 +33,8 @@
 </template>
 
 <script>
-import axios from 'axios';
-import { onBeforeMount } from 'vue';
 import { mapMutations, mapState } from 'vuex';
+import axios from 'axios';
 export default {
     name: 'CourseList',
     data() {
@@ -101,11 +101,11 @@ export default {
             let check = await axios.post(`/course/state/${id}`, {}, {withCredentials: true});
             let states = check.data.msg;
             if(states === 'Unactivated') {
-                this.setCourseIDShowing(Number(id));
-                
+                // this.setCourseIDShowing(Number(id));
+
                 this.$router.push(`/course/info/${id}`);
             } else if (states === 'Activated') {
-                this.setCourseIDShowing(Number(id));
+                // this.setCourseIDShowing(Number(id));
                 this.$router.push(`/course/detail/${id}`);
             }
         }
@@ -145,8 +145,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+h1 {
+    margin-left: 50px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
 .listCourse {
+    margin-left: 30px;
+    position: relative;
+    width: 90%;
     display: flex;
+    // width: 100%;
     flex-wrap: wrap;
     // margin-right: 50px;
     justify-content: space-between;
@@ -162,28 +171,46 @@ export default {
     }
 
     li {
+        // margin-bottom: 400px;
         display: none;
-        flex-basis: 30%;
+        flex-basis: 28%;
         list-style-type: none;
         padding: 0 30px;
         box-sizing: border-box;
         margin-bottom: 30px;
-
+        border-radius: 10px;
+        padding-top: 10px;
+        padding-bottom: 100px;
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
         .course-img {
-            max-width: 100%;
+            // position: relative;
+            width: 90%;
+            margin-left: 50%;
+            transform: translateX(-50%);
             height: auto;
         }
 
         .course-content {
             display: block;
+            position: relative;
 
+            div, h4 {
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                margin-bottom: 5px;
+            }
+            
             button {
+                position: absolute;
                 font-size: 1.5vw;
                 font-weight: 500;
                 background-color: rgb(0, 128, 128);
                 padding: 10px;
                 color: #fff;
                 width: 100%;
+                top: 180px;
                 border: none;
                 border-radius: 30px;
             }

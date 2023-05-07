@@ -30,7 +30,7 @@ export default {
         async getCourseInfo() {
             let id = Number(window.location.href.split('/').slice(-1)[0]);
 
-            axios.get(`/courses/showinfo/${id}`, { withCredentials: true })
+            axios.get(`/courses/${id}`, { withCredentials: true })
                 .then(response => {
                     this.course = response.data.details;
                 })

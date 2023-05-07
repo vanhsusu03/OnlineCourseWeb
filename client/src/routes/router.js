@@ -26,7 +26,7 @@ const routes = [
     {  path: "/course/info/:courseId", name: "CourseInfo", component: CourseInfo},
     {  path: "/cart", name: "Cart", component: Cart},
     {  path: "/courses", name: "CourseList", component: CourseList},
-    // {  path: "/searching/:keyword", name: "Searching", component: Searching},
+    {  path: "/searching/:keyword", name: "Searching", component: Searching},
     // {  path: "/purchase/history", name: "PurchaseHistory", component: PurchaseHistory},
     {  path: "/course/detail/:courseId", name: "CourseDetail", component: CourseDetail},
     //addition in here

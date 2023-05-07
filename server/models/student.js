@@ -39,7 +39,7 @@ module.exports = function (sequelize, DataTypes) {
             unique: "username"
         },
         password: {
-            type: DataTypes.STRING(50),
+            type: DataTypes.TEXT,
             allowNull: false
         },
         registration_date: {

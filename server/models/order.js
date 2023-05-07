@@ -14,6 +14,10 @@ module.exports = function(sequelize, DataTypes) {
         model: 'student',
         key: 'student_id'
       }
+    },
+    order_time: {
+      type: DataTypes.DATE,
+      allowNull: false
     }
   }, {
     sequelize,

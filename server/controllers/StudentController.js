@@ -1,18 +1,23 @@
-const { models: { Student } } = require('../models/');
+const {models: {Student}} = require('../models/');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
+const {Op} = require("sequelize");
+const db = require("../models");
 const bcryptRound = 10;
 
 class StudentController {
 
 
     async signUp(req, res, next) {
-        const { firstname, lastname, email, username, password, phone, birth } = req.body;
+        const {firstname, lastname, email, username, password, phone, birth} = req.body;
+        const today = await db.sequelize.query("SELECT DATE(NOW()) as today", { type: db.sequelize.QueryTypes.SELECT });
+        console.log(today[0].today);
+
         try {
-            if (await Student.findOne({ where: { username: req.body.username } })) {
-                return res.status(200).json({ msg: 'Username is already exists' });
-            } else if (await Student.findOne({ where: { email: req.body.email } })) {
-                return res.status(200).json({ msg: 'Email is already exists' });
+            if (await Student.findOne({where: {username: req.body.username}})) {
+                return res.status(200).json({msg: 'Username is already exists'});
+            } else if (await Student.findOne({where: {email: req.body.email}})) {
+                return res.status(200).json({msg: 'Email is already exists'});
             } else {
 
                 const hashedPw = await bcrypt.hash(password, bcryptRound);
@@ -28,11 +33,11 @@ class StudentController {
                     birthday: birth,
                     username: username,
                     password: hashedPw,
-                    registration_date: "2023-04-30",
+                    registration_date: today[0].today,
                 })
                     .then((data) => {
                         req.session.studentId = data.student_id;
-                        return res.status(201).json({ msg: 'Success' });
+                        return res.status(201).json({msg: 'Success'});
                     })
                     .catch((err) => {
                         console.log(err);
@@ -44,18 +49,18 @@ class StudentController {
     }
 
     async logIn(req, res, next) {
-        const student = await Student.findOne({ where: { username: req.body.username } });
+        const student = await Student.findOne({where: {username: req.body.username}});
         console.log(req.session);
         try {
             if (!student) {
-                return res.status(200).json({ msg: 'Invalid username' });
+                return res.status(200).json({msg: 'Invalid username'});
             } else {
                 const checkPassword = await bcrypt.compareSync(
                     req.body.password,
                     student.password,
                 );
                 if (!checkPassword) {
-                    return res.status(200).json({ msg: 'Invalid password' });
+                    return res.status(200).json({msg: 'Invalid password'});
                 } else {
                     req.session.isLogin = true;
                     req.session.studentId = student.student_id;
@@ -74,8 +79,7 @@ class StudentController {
                     });
                 }
             }
-        }
-        catch (error) {
+        } catch (error) {
             next(error);
         }
     }
@@ -97,13 +101,14 @@ class StudentController {
             redirect: '/login',
         })
     }
+
     // [GET] /info
     async getInfo(req, res, next) {
-        // check whether or not login
+        // check whether login
         console.log(req.session);
         let id = req.session.studentId;
         console.log(id);
-        const student = await Student.findOne({ where: { student_id: id } });
+        const student = await Student.findOne({where: {student_id: id}});
         return res.status(200).json({
             student_id: student.student_id,
             username: student.username,
@@ -116,29 +121,40 @@ class StudentController {
     }
 
     async updateInfo(req, res, next) {
-        const { username, email, firstname, lastname, phone, birth } = req.body;
+        const {username, email, firstname, lastname, phone, birth} = req.body;
         try {
+            const checkEmail = await Student.findOne(
+                {
+                    where:{
+                        email: email,
+                        student_id:{
+                            [Op.ne]:req.session.student_id,
+                        }
+                    }
+                });
 
-            // const student = await Student.findOne({ where: {username: username}});
-            // if (student && student.student_id != req.session.studentId) {
-            //     return res.status(201).json({
-            //         msg: 'Username is already exists',
-            //     })
-            // }
+            const checkPhone = await Student.findOne(
+                {
+                    where:{
+                        phone: phone,
+                        student_id:{
+                            [Op.ne]:req.session.student_id,
+                        }
+                    }
+                });
 
-            // const student1 = await Student.findOne({ where: {email: email}});
-            // if (student1 && student.student_id != req.session.studentId) {
-            //     return res.status(201).json({
-            //         msg: 'Email is already exists',
-            //     })
-            // }
-
-            // const student2 = await Student.findOne({ where: {phone: phone}});
-            // if (student2 && student.student_id != req.session.studentId) {
-            //     return res.status(201).json({
-            //         msg: 'Phone number is already exists',
-            //     })
-            // }
+            if (checkEmail || checkPhone) {
+                if(checkEmail){
+                    return res.status(201).json({
+                        msg: 'Email is already exists',
+                    });
+                }
+                if (checkPhone){
+                    return res.status(201).json({
+                        msg: 'Phone is already exists',
+                    });
+                }
+            }
 
             await Student.update(
                 {
@@ -150,7 +166,7 @@ class StudentController {
                     birthday: birth,
                 },
                 {
-                    where: { student_id: req.session.studentId },
+                    where: {student_id: req.session.studentId},
                 }
             )
                 .then((data) => {
@@ -170,7 +186,7 @@ class StudentController {
     }
 
     async changePassword(req, res, next) {
-        const { curPass, newPass } = req.body;
+        const {curPass, newPass} = req.body;
 
         if (!curPass && !newPass) {
             return res.status(200).json({
@@ -207,7 +223,7 @@ class StudentController {
                     password: hashPass,
                 },
                 {
-                    where: { student_id: req.session.studentId },
+                    where: {student_id: req.session.studentId},
                 }
             )
                 .then((data) => {

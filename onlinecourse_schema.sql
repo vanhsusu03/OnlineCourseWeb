@@ -63,6 +63,7 @@ CREATE TABLE deposit (
 CREATE TABLE `order` (
   order_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   customer_id MEDIUMINT UNSIGNED NOT NULL,
+  order_time DATETIME NOT NULL,
   PRIMARY KEY (order_id),
   CONSTRAINT fk_order_student FOREIGN KEY (customer_id) REFERENCES student (student_id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -80,7 +81,6 @@ CREATE TABLE payment (
   payment_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   order_detail_id INT UNSIGNED NOT NULL,
   amount MEDIUMINT UNSIGNED NOT NULL,
-  payment_time DATETIME NOT NULL,
   PRIMARY KEY (payment_id),
   UNIQUE(order_detail_id),
   CONSTRAINT fk_payment_order_detail FOREIGN KEY (order_detail_id) REFERENCES order_detail (order_detail_id) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -142,7 +142,7 @@ CREATE TABLE feedback (
   enrollment_id INT UNSIGNED NOT NULL,
   rating FLOAT UNSIGNED NOT NULL,
   detail VARCHAR(3000) DEFAULT NULL,
-  created_at DATETIME NOT NULL,
+  last_update DATETIME NOT NULL,
   PRIMARY KEY (feedback_id),
   UNIQUE(enrollment_id),
   CONSTRAINT fk_feedback_enrollment FOREIGN KEY (enrollment_id) REFERENCES enrollment (enrollment_id) ON DELETE RESTRICT ON UPDATE CASCADE

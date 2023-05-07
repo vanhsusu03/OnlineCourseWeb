@@ -7,9 +7,9 @@
             <Categories class="cate"></Categories>
         </RouterLink>
         <div class="search">
-            <form ref="anyName">
-                <input type="text" id="searching" class="sub" placeholder="Search for everything ..."
-                    @keydown.enter="handleSearch()" v-model="form.keyw"/>
+            <form ref="anyName" action="/searching">
+                <input type="text" id="searching" class="sub" name="searching" placeholder="Search for everything ..."
+                       @keydown.enter="handleSearch()" v-model="form.keyw"/>
             </form>
             <RouterLink @click="scrollToTop()" to="/searching/"><img src="../assets/img/lookup.png" id="lookup" />
             </RouterLink>
@@ -17,7 +17,7 @@
 
         <RouterLink v-if="!student.userName" @click="scrollToTop" to="/aboutus">
             <div class="aboutus"> About us</div>
-        </RouterLink>   
+        </RouterLink>
         <RouterLink v-if="student.userName" @click="scrollToTop" to="/mycourses">
             <div class="mycourse">My courses</div>
         </RouterLink>
@@ -80,7 +80,7 @@
         </div>
 
     </div>
-</template> 
+</template>
 
 <script>
 import axios from 'axios';
@@ -94,7 +94,7 @@ export default {
         return {
             dropdownselect: false,
             form: {
-                keyw: "",
+                keyw:"",
             },
             searchResult: []
         }
@@ -130,17 +130,14 @@ export default {
             this.unshowDropDown();
         },
         async handleSearch() {
-            alert('DA DONE');
-            await axios.get('/searching', this.form.keyw, {withCredentials: true})
-            .then(response => {
-                console.log('HHDHGDHGDHGDH');
+            // alert(window.location.href)
+            await axios.get(`/searching/`+this.form.keyw, this.form.keyw, {withCredentials: true})
+                .then(response => {
                     this.searchResult = response.data;
                 })
                 .catch(e => {
-                    console.log('HHDHGDHGDHGDH');
                     this.errors.push(e)
                 });
-            alert('DONE');
             // this.$router.push(`/searching/${this.form.keyw}`);
         },
     },
@@ -358,4 +355,5 @@ export default {
         margin-top: 1.3%;
     }
 
-}</style> 
+
+}</style>
