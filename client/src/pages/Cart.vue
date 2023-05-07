@@ -64,7 +64,7 @@ export default {
         }
     },
     methods: {
-        ...mapMutations(['scrollToTop']),
+        ...mapMutations(['scrollToTop', 'setStudent']),
         getTotal() {
             let sum = 0;
             for (let i = 0; i < this.courses.length; i++) {
@@ -80,12 +80,15 @@ export default {
                 }
             }
         },
-        removeCourse(id) {
-            alert(student.firstName) 
-            axios.delete('students/cart/' + id, id, {withCredentials: true})
+        removeCourse(id) { 
+            axios.post('/students/cart/' + id + '/delete', {}, {withCredentials: true})
+            .then(response => {
+                console.log(response)
+            })
             .catch(e => {
                 this.errors.push(e)
-            })
+            });
+            
         },
         moveToCart(id) {
             for (let i = 0; i < this.saved.length; i++) {
