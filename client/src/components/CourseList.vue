@@ -8,7 +8,7 @@
             <div v-bind:title="course.courseDescription">{{ course.courseDescription }}</div>
             <div>By {{ course.instructorFirstName + ' ' + course.instructorLastName }}</div>
             <h5>{{ course.courseFee + ' VND' }}</h5>
-            <button v-on:click="addToCart(course.id - 1)">Add To Cart</button>
+            <button v-on:click="addToCart(course)">Add To Cart</button>
         </div>
     </li>
 </ul>
@@ -51,7 +51,7 @@ export default {
                     status: true
                 }
             ],
-            limit: 6,
+            limit: 9,
             list: document.getElementsByClassName("item")
         }
     },
@@ -96,15 +96,8 @@ export default {
             }
             return numPages;
         },
-        addToCart(id) {
-            axios.post(`/students/` + this.student.id + '/cart/' + id, {
-                id: this.courses[id].id,
-                title: this.courses[id].title,
-                instructor: this.courses[id].instructor,
-                description: this.courses[id].description,
-                course_fee: this.courses[id].course_fee,
-                img_url: this.courses[id].img_url
-            })
+        addToCart(course) {
+            axios.post('/students/cart/' + course.courseId , course, {withCredentials: true})
             .then(response => {
                 console.log(response)
             })
@@ -166,9 +159,13 @@ h1 {
         border-radius: 10px;
         padding-top: 10px;
         padding-bottom: 100px;
-        box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+        
+        &:hover {
+            box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+        }
         .course-img {
             // position: relative;
+            margin-top:10px;
             width: 90%;
             margin-left: 50%;
             transform: translateX(-50%);
@@ -195,7 +192,7 @@ h1 {
                 padding: 10px;
                 color: #fff;
                 width: 100%;
-                top: 180px;
+                top: 200px;
                 border: none;
                 border-radius: 30px;
             }

@@ -111,7 +111,7 @@ class CartController {
 
     async removeCourse(req, res, next) {
         const studentId = req.session.studentId;
-        const courseId = req.body.courseId;
+        const courseId = Number(req.params.courseId);
 
         var cart = req.session.cart;
         var isRemoved = false;

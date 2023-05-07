@@ -6,7 +6,7 @@ class CourseController {
 
     //GET /courses
     async showAllCourses(req, res, next) {
-        return res.status(200).json(await Course.findAll({
+        let courses=await Course.findAll({
             attributes: [
                 ['course_id', 'courseId'],
                 [sequelize.col('title'), 'courseTitle'],
@@ -17,6 +17,7 @@ class CourseController {
                 [sequelize.col('last_name'), 'instructorLastName'],
                 // [sequelize.fn('AVG', sequelize.col('rating')), 'rating']
             ],
+            order:[['courseId','ASC']],
             include: [{
                 model: Instructor,
                 attributes: [],
@@ -32,8 +33,9 @@ class CourseController {
                     model: Feedback,
                     attributes: [],
                 }
-            }]
-        }))
+            }],
+        });
+        return res.status(200).json(courses);
     }
 
 //POST /courses/create
