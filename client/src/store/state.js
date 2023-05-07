@@ -5,4 +5,5 @@ export default {
     isLogin: false,
     miniCart: true,
     isSearching: false,
+    courseIDshowing: 0,
 };

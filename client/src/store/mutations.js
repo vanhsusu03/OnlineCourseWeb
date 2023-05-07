@@ -14,4 +14,7 @@ export default {
     setMiniCart(state,miniCart){
       state.miniCart = miniCart;
     },
+    setCourseIDShowing(state, courseIDshowing) {
+      state.courseIDshowing = courseIDshowing;
+    }
   };

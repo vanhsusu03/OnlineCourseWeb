@@ -17,6 +17,10 @@ export default {
 
     getMiniCart(state) {
       return state.miniCart;
+    },
+
+    getCourseIDShowing(state) {
+      return state.courseIDShowing;
     }
   
   }

@@ -1,8 +1,8 @@
 <template>
 <h1>Course List</h1>
 <ul v-if="courses && courses.length" class="listCourse">
-    <li v-for="course of courses" class="item">
-        <img v-bind:src="course.image" alt="" class="course-img">
+    <li v-for="course in courses" class="item" >
+        <img v-bind:src="course.image" alt="" class="course-img" @click="showCourse(course.course_id)" >
         <div class="course-content">
             <h2>{{ course.title }}</h2>
             <div>{{ course.instructor }}</div>
@@ -34,6 +34,7 @@
 <script>
 import axios from 'axios';
 import { onBeforeMount } from 'vue';
+import { mapMutations, mapState } from 'vuex';
 export default {
     name: 'CourseList',
     data() {
@@ -50,10 +51,12 @@ export default {
                 }
             ],
             limit: 6,
-            list: document.getElementsByClassName("item")
+            list: document.getElementsByClassName("item"),
+            courseIDShowing: undefined,
         }
     },
     methods: {
+        ...mapMutations(['setCourseIDShowing']),
         // async retrieveCourses() {
         //     let data = await 
         // },
@@ -94,7 +97,19 @@ export default {
             }
             return numPages;
         },
-        addToCart(id) {
+        async showCourse (id) {
+            let check = await axios.post(`/course/state/${id}`, {}, {withCredentials: true});
+            let states = check.data.msg;
+            if(states === 'Unactivated') {
+                this.setCourseIDShowing(Number(id));
+                
+                this.$router.push(`/course/info/${id}`);
+            } else if (states === 'Activated') {
+                this.setCourseIDShowing(Number(id));
+                this.$router.push(`/course/detail/${id}`);
+            }
+        }
+,        addToCart(id) {
             axios.post(`https://my-json-server.typicode.com/minhdatuet/testdb/cart`, {
                 id: this.courses[id].id,
                 title: this.courses[id].title,
@@ -112,16 +127,12 @@ export default {
         }
     },
 
+    computed: {
+        ...mapState(['courseIDshowing'])
+    },
+
     // lấy dữ liệu khi component được tạo thành công
     created() {
-        // axios.get(`https://my-json-server.typicode.com/minhdatuet/testdb/courses`)
-        //     .then(response => {
-        //         this.courses = response.data
-        //     })
-        //     .catch(e => {
-        //         this.errors.push(e)
-        //     })
-        // this.retrieveCourses();
         axios.get('/courses',{withCredentials: true})
             .then(response => {
                 this.courses = response.data
@@ -139,6 +150,16 @@ export default {
     flex-wrap: wrap;
     // margin-right: 50px;
     justify-content: space-between;
+
+    .item {
+        &:hover {
+        box-shadow: -0.5rem -0.5rem 1rem rgba($color: #000000, $alpha: 0.1), 0.5rem 0.5rem 1rem rgba($color: #000000, $alpha: 0.1);
+        border: 0.02rem solid rgba($color: #000000, $alpha: 0.05);
+        cursor: pointer;
+        // padding: 0.05rem 0.05rem 0.05rem 0.05rem;
+        // border-radius: 1rem;
+        }
+    }
 
     li {
         display: none;
