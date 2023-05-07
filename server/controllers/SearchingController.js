@@ -1,10 +1,11 @@
-const {models: {Course, Category, Course_category, Feedback, Enrollment}} = require('../models');
+const {models: {Course, Category, Course_category, Feedback, Enrollment, Instructor, Student}} = require('../models');
 const {Op} = require("sequelize");
 const sequelize = require('sequelize');
 
 class SearchingController {
 
     async search(req, res, next) {
+        console.log(req.params);
         let keyword = req.params.keyw;
         let price = req.params.price;
         let sortByPrice = req.params.sortByPrice;
@@ -31,7 +32,7 @@ class SearchingController {
                     ],
                     include: [{
                         model: Course_category,
-                        attributes:[],
+                        attributes: [],
                         include: {
                             model: Category,
                             attributes: [],
@@ -44,6 +45,15 @@ class SearchingController {
                         include: {
                             model: Feedback,
                             attributes: []
+                        }
+                    }, {
+                        model: Instructor,
+                        attributes: [],
+                        required: true,
+                        include: {
+                            model: Student,
+                            attributes: [],
+                            required: true,
                         }
                     }],
                     raw: true,
@@ -69,13 +79,22 @@ class SearchingController {
                         {description: {[Op.like]: '%' + keyword + '%'}},
                     ]
                 },
-            include: {
+            include: [{
                 model: Enrollment,
                 include: {
                     model: Feedback,
                     attributes: []
                 }
-            }
+            }, {
+                model: Instructor,
+                attributes: [],
+                required: true,
+                include: {
+                    model: Student,
+                    attributes: [],
+                    required: true,
+                }
+            }]
         });
         let result = coursesByCategory.concat(courses);
         if (price) {
