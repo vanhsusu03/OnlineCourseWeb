@@ -1,17 +1,19 @@
 const {models: {Course, Category, Course_category, Feedback, Enrollment}} = require('../models');
 const {Op} = require("sequelize");
-
+const sequelize = require('sequelize');
 class SearchingController {
 
+    //{GET} - '/searching/:text' 
     async search(req, res, next) {
         let price = req.body.price;
         let sortByPrice = req.body.sortByPrice;
         let categoryFilter = req.body.categoryFilter;
         let rating = req.body.rating;
         let sortByRating = req.body.sortByRating;
+        let keyw = String(req.params.text);
         let category = await Category.findAll({
             where: {
-                name: {like: '%' + req.body.keyword + '%'},
+                name: {[Op.like]: '%' + req.body.keyw + '%'},
             }
         });
         if (category) {
@@ -20,9 +22,9 @@ class SearchingController {
                         model: Course_category,
                         include: {
                             model: Category,
-                            attributes: [sequelize.col('name'), 'categoryName'],
+                            attributes: ['name', 'categoryName'],
                             where: {
-                                name: {[Op.like]: '%' + req.body.keyword.toLowerCase() + '%'},
+                                name: {[Op.like]: '%' + req.body.keyw + '%'},
                             },
                         },
                     }, {
@@ -42,8 +44,8 @@ class SearchingController {
             where:
                 {
                     [Op.or]: [
-                        {title: {[Op.like]: '%' + req.body.keyword + '%'}},
-                        {description: {[Op.like]: '%' + req.body.keyword + '%'}},
+                        {title: {[Op.like]: '%' + req.body.keyw + '%'}},
+                        {description: {[Op.like]: '%' + req.body.keyw + '%'}},
                     ]
                 },
             include: {

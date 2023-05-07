@@ -6,26 +6,26 @@ class CourseController {
 
     //GET /courses
     async showAllCourses(req, res, next) {
-        return res.status(200).json(await Course.findAll({
-            include: [{
-                model: Instructor,
-                attributes: [
-                    'instructor_id',
-                    [sequelize.fn('concat', sequelize.col('first_name'), ' ',
-                        sequelize.col('last_name')), 'instructorFullName']
-                ],
-            },
-                {
-                    model: Enrollment,
-                    include: {
-                        model: Feedback,
-                        attributes: [[sequelize.fn('AVG',
-                            sequelize.col('rating')), 'rating']]
-                    }
-                }
-            ]
-        }));
-
+        // return res.status(200).json(await Course.findAll({
+        //     include: [{
+        //         model: Instructor,
+        //         attributes: [
+        //             'instructor_id',
+        //             [sequelize.fn('concat', sequelize.col('first_name'), ' ',
+        //                 sequelize.col('last_name')), 'instructorFullName']
+        //         ],
+        //     },
+        //         {
+        //             model: Enrollment,
+        //             include: {
+        //                 model: Feedback,
+        //                 attributes: [[sequelize.fn('AVG',
+        //                     sequelize.col('rating')), 'rating']]
+        //             }
+        //         }
+        //     ]
+        // }));
+        return res.status(200).json( await Course.findAll());
     }
 
     //POST /courses/create

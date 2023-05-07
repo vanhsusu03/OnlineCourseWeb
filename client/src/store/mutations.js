@@ -10,5 +10,8 @@ export default {
     },
     setLogged(state, isLogin) {
       state.isLogin = isLogin;
-    }
+    },
+    setMiniCart(state,miniCart){
+      state.miniCart = miniCart;
+    },
   };

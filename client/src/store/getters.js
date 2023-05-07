@@ -13,6 +13,10 @@ export default {
 
     getInstructor(state) {
         return state.instructor;
+    },
+
+    getMiniCart(state) {
+      return state.miniCart;
     }
   
   }

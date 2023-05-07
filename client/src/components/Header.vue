@@ -8,8 +8,8 @@
         </RouterLink>
         <div class="search">
             <form ref="anyName">
-                <input type="text" id="searching" name="search" class="sub" placeholder="Search for everything ..."
-                    @keydown.enter="redirectToLogin()" />
+                <input type="text" id="searching" class="sub" placeholder="Search for everything ..."
+                    @keydown.enter="handleSearch()" v-model="form.keyw"/>
             </form>
             <RouterLink @click="scrollToTop()" to="/searching/"><img src="../assets/img/lookup.png" id="lookup" />
             </RouterLink>
@@ -92,7 +92,11 @@ export default {
     name: 'Header',
     data() {
         return {
-            dropdownselect: false
+            dropdownselect: false,
+            form: {
+                keyw: "",
+            },
+            searchResult: []
         }
     },
     components: {
@@ -100,7 +104,7 @@ export default {
         MiniCart
     },
     methods: {
-        ...mapMutations(['setStudent', 'setLogged']),
+        ...mapMutations(['setStudent', 'setLogged','setMiniCart']),
 
         showMenu() {
             let nav_bar = document.querySelector('.header .navbar');
@@ -125,15 +129,23 @@ export default {
             this.setLogged(false);
             this.unshowDropDown();
         },
-        redirectToLogin() {
-            this.$router.push('/login');
-            this.$refs.anyName.reset();
-            event.preventDefault();
+        async handleSearch() {
+            alert('DA DONE');
+            await axios.get('/searching', this.form.keyw, {withCredentials: true})
+            .then(response => {
+                console.log('HHDHGDHGDHGDH');
+                    this.searchResult = response.data;
+                })
+                .catch(e => {
+                    console.log('HHDHGDHGDHGDH');
+                    this.errors.push(e)
+                });
+            alert('DONE');
+            // this.$router.push(`/searching/${this.form.keyw}`);
         },
-
     },
     computed: {
-        ...mapState(['student', 'admin'])
+        ...mapState(['student', 'admin','miniCart'])
     }
 }
 </script>
