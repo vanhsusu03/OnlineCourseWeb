@@ -19,10 +19,6 @@ module.exports = function(sequelize, DataTypes) {
     amount: {
       type: DataTypes.MEDIUMINT.UNSIGNED,
       allowNull: false
-    },
-    payment_time: {
-      type: DataTypes.DATE,
-      allowNull: false
     }
   }, {
     sequelize,
