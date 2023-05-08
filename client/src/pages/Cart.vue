@@ -81,6 +81,11 @@ export default {
             }
         },
         removeCourse(id) { 
+            for (let i = 0; i < this.courses.length; i++) {
+                if (this.courses[i].courseId === id) {
+                    this.courses.splice(i, 1)
+                }
+            }
             axios.post('/students/cart/' + id + '/delete', {}, {withCredentials: true})
             .then(response => {
                 console.log(response)
@@ -88,7 +93,7 @@ export default {
             .catch(e => {
                 this.errors.push(e)
             });
-            
+            getInfo();
         },
         moveToCart(id) {
             for (let i = 0; i < this.saved.length; i++) {
@@ -107,12 +112,16 @@ export default {
             .catch(e => {
                 this.errors.push(e)
             })
+            return this.courses;
         }
     },
     created() {
         this.getInfo()
     },
     computed: {
+        updateInfo() {
+            this.courses = getInfo();
+        },
         ...mapState(['student', 'admin'])
     }
 }
@@ -128,8 +137,8 @@ export default {
     display: flex;
     margin-left: 50px;
     .total {
-        margin-left: 100px;
-        margin-top: 50px;
+        margin-left: 10px;
+        margin-top: 80px;
 
         .title {
             color: gray;
@@ -161,6 +170,7 @@ export default {
 
     .cart-content {
         position: relative;
+        width: 100%;
         // z-index: 1;
         display: block;
         background-color: white;
@@ -191,14 +201,18 @@ export default {
         }
 
         .total {
+            // margin-left: 20px;
+            margin-left: 0;
             text-align: center;
         }
 
         button {
+            // width: 120px;
             border: none;
             background-color: white;
-            margin: 5px 0;
-            margin-left: 150px;
+            margin: 10px 0;
+            margin-left: 10px;
+            // margin-left: 150px;
             color: rgb(0, 128, 128);
             font-weight: 500;
         }

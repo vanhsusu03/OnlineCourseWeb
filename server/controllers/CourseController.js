@@ -6,7 +6,7 @@ class CourseController {
 
     //GET /courses
     async showAllCourses(req, res, next) {
-        let courses=await Course.findAll({
+        return res.status(200).json(await Course.findAll({
             attributes: [
                 ['course_id', 'courseId'],
                 [sequelize.col('title'), 'courseTitle'],
@@ -17,7 +17,7 @@ class CourseController {
                 [sequelize.col('last_name'), 'instructorLastName'],
                 // [sequelize.fn('AVG', sequelize.col('rating')), 'rating']
             ],
-            order:[['courseId','ASC']],
+            order: [['courseId', 'ASC']],
             include: [{
                 model: Instructor,
                 attributes: [],
@@ -32,10 +32,10 @@ class CourseController {
                 include: {
                     model: Feedback,
                     attributes: [],
+                    required: true,
                 }
-            }],
-        });
-        return res.status(200).json(courses);
+            }]
+        }))
     }
 
 //POST /courses/create
@@ -128,9 +128,7 @@ class CourseController {
                         attributes: [],
                     }, {
                         model: Instructor,
-                        attributes: [
-                            'instructor_id',
-                        ],
+                        attributes: [],
                         include: {
                             model: Student,
                             attributes: [],
@@ -138,9 +136,12 @@ class CourseController {
                     },
                     {
                         model: Enrollment,
+                        attributes: [],
+                        required: true,
                         include: {
                             model: Feedback,
                             attributes: [],
+                            required: true,
                         }
                     }
                 ]
@@ -152,7 +153,7 @@ class CourseController {
 //GET /courses/:courseId
     async showCourseDetail(req, res, next) {
         let courseId = req.params.courseId;
-        let details = await Course.findAll({
+        let details = await Course.findOne({
                 attributes: [
                     ['course_id', 'courseId'],
                     [sequelize.col('title'), 'courseTitle'],
@@ -161,35 +162,30 @@ class CourseController {
                     [sequelize.col('course_fee'), 'courseFee'],
                     [sequelize.col('first_name'), 'instructorFirstName'],
                     [sequelize.col('last_name'), 'instructorLastName'],
-                    // [sequelize.fn('AVG', sequelize.col('rating')), 'rating'],
-                ],
-                include: [{
-                    model: Instructor,
-                    attributes: [
-                        'instructor_id',
-                    ],
-                    include: {
-                        model: Student,
-                        attributes: [
-                            'first_name',
-                            'last_name',
-                        ],
-                    }
-                },
-                    {
-                        model: Enrollment,
-                        include: {
-                            model: Feedback,
-                            attributes: [[sequelize.fn('AVG',
-                                sequelize.col('rating')), 'rating']]
-                        }
-                    }
+                    // [sequelize.fn('AVG', sequelize.col('rating')), 'rating']
                 ],
                 where: {
                     course_id: courseId,
                 },
-                raw: true,
-                nest: true,
+                include: [{
+                    model: Instructor,
+                    attributes: [],
+                    required: true,
+                    include: {
+                        model: Student,
+                        attributes: [],
+                        required: true
+                    }
+                }, {
+                    model: Enrollment,
+                    attributes: [],
+                    required: true,
+                    include: {
+                        model: Feedback,
+                        attributes: [],
+                        required: true,
+                    }
+                }]
             }
         )
         return res.status(200).json(details);
@@ -209,38 +205,36 @@ class CourseController {
                 [sequelize.col('last_name'), 'instructorLastName'],
                 // [sequelize.fn('AVG', sequelize.col('rating')), 'rating']
             ],
-            include: [
-                {
-                    model: Course_category,
-                    include: {
-                        model: Category,
-                        where: {
-                            category_id: categoryId,
-                        }
-                    },
-                }, {
-                    model: Instructor,
-                    attributes: [
-                        'instructor_id',
-                    ],
-                    include: {
-                        model: Student,
-                        attributes: [
-                            'first_name',
-                            'last_name',
-                        ],
-                    }
-                }, {
-                    model: Enrollment,
-                    include: {
-                        model: Feedback,
-                        attributes: [[sequelize.fn('AVG',
-                            sequelize.col('rating')), 'rating']]
+            order: [['courseId', 'ASC']],
+            include: [{
+                model: Instructor,
+                attributes: [],
+                required: true,
+                include: {
+                    model: Student,
+                    attributes: [],
+                    required: true
+                }
+            }, {
+                model: Enrollment,
+                attributes: [],
+                required: true,
+                include: {
+                    model: Feedback,
+                    attributes: [],
+                }
+            }, {
+                model: Course_category,
+                attributes: [],
+                required: true,
+                include: {
+                    model: Category,
+                    attributes: [],
+                    where: {
+                        category_id: categoryId,
                     }
                 }
-            ],
-            raw: true,
-            nest: true,
+            }]
         });
         return res.status(200).json(courses);
     }
@@ -257,40 +251,40 @@ class CourseController {
                 [sequelize.col('course_fee'), 'courseFee'],
                 [sequelize.col('first_name'), 'instructorFirstName'],
                 [sequelize.col('last_name'), 'instructorLastName'],
-                [sequelize.fn('AVG', sequelize.col('rating')), 'rating'],
                 // [sequelize.fn('AVG', sequelize.col('rating')), 'rating']
             ],
-            include: [
-                {
-                    model: Course_category,
-                    include: {
-                        model: Category,
-                        where: {
-                            name: categoryName,
-                        }
-                    },
-                }, {
-                    model: Instructor,
-                    attributes: [
-                        'instructor_id',
-                    ],
-                    include: {
-                        model: Student,
-                        attributes: [
-                            'first_name',
-                            'last_name',
-                        ],
-                    }
-                }, {
-                    model: Enrollment,
-                    include: {
-                        model: Feedback,
-                        attributes: []
+            order: [['courseId', 'ASC']],
+            include: [{
+                model: Instructor,
+                attributes: [],
+                required: true,
+                include: {
+                    model: Student,
+                    attributes: [],
+                    required: true
+                }
+            }, {
+                model: Enrollment,
+                attributes: [],
+                required: true,
+                include: {
+                    model: Feedback,
+                    attributes: [],
+                    required: true,
+                }
+            }, {
+                model: Course_category,
+                attributes: [],
+                required: true,
+                include: {
+                    model: Category,
+                    attributes: [],
+                    required: true,
+                    where: {
+                        name: categoryName,
                     }
                 }
-            ],
-            raw: true,
-            nest: true,
+            }]
         });
         return res.status(200).json(courses);
     }

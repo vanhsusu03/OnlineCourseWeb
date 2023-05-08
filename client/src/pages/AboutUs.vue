@@ -1,15 +1,15 @@
 <template>
 <div class="aboutus">
     <h1 class="title">About us</h1>
-    <h4 class="sub-title">Meet the team</h4>
+    <h4 class="sub-title">Meet the DNATeam</h4>
     <ul>
         <li v-for="member in teams">
             <div class="info">
                 <div class="text">
                     <div class="res">{{ member.responsible }}</div>
-                    {{ member.name }} <br>
-                    {{ member.msv }} <br>
-                    {{ member.birth }}
+                    <div class="name">{{ member.name }} <br> </div>
+                    MSV: {{ member.msv }} <br>
+                    D.O.B: {{ member.birth }}
                 </div>
             </div>
             <div class="img">
@@ -48,14 +48,14 @@ export default {
                     name: 'Hoang Van Nguyen',
                     msv: 21020370,
                     responsible: 'Backend',
-                    birth: '/2003',
+                    birth: '17/01/2003',
                     img: 'https://vn.japo.news/contents/wp-content/uploads/2017/09/MeoMappuChin-21.jpg'
                 },
                 {
                     name: 'Nguyen Hoang Duy',
                     msv: 21020755,
                     responsible: 'Backend',
-                    birth: '/2003',
+                    birth: '20/04/2003',
                     img: 'https://progameguides.com/wp-content/uploads/2021/03/Genshin-Impact-Character-Ayaka-1.jpg?fit=875%2C915'
                 },
             ]
@@ -121,13 +121,17 @@ ul {
             .text {
                 width: 100%;
                 color: white;
-                font-size: 25px;
+                font-size: 20px;
                 font-weight: 400;
                 position: absolute;
                 margin-top: 150px;
                 margin-left: 25px;
 
                 // text-align: center;
+                .name {
+                    font-size: 26px;
+                    font-weight: 500;
+                }
                 .res {
                     font-size: 40px;
                     font-weight: 500;
