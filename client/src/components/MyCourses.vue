@@ -2,11 +2,11 @@
 <h1>My Course </h1>
 <ul v-if="courses && courses.length" class="listCourse">
     <li v-for="course of courses" class="item">
-        <img v-bind:src="course.image" alt="" class="course-img">
+        <img v-bind:src="course.courseImage" alt="" class="course-img">
         <div class="course-content">
-            <h4 v-bind:title="course.title">{{ course.title }}</h4>
+            <h4 v-bind:title="course.courseTitle">{{ course.courseTitle }}</h4>
             <!-- <div>{{ course.instructor }}</div> -->
-            <div class="desc" v-bind:title="course.description">{{course.description}}</div>
+            <div class="desc" v-bind:title="course.courseDescription">{{course.courseDescription}}</div>
             <button v-on:click="">Study</button>
         </div>
     </li>

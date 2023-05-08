@@ -1,8 +1,39 @@
 const sequelize = require('sequelize');
 const {models: {Course, Course_category, Category, Instructor, Enrollment, Student, Feedback}} = require('../models');
 const {where, Op} = require("sequelize");
+const student = require('../models/student');
 
 class CourseController {
+
+    //POST /course/state/:courseId
+    async checkStateCourse(req, res, next) {
+        const studentId = req.session.studentId;
+        const courseId = Number(req.params.courseId);
+        try {
+            if (req.session.studentId) {
+                let isActivated = await Enrollment.findOne({
+                    where: {
+                        student_id: studentId,
+                        course_id: courseId,
+                    }
+                });
+
+                if (!isActivated) {
+                    return res.status(200).json({
+                        msg: 'Unactivated',
+                        redirect: '/course/info/:courseId',
+                    });
+                } else {
+                    return res.status(200).json({
+                        msg: 'Activated',
+                        redirect: '/course/detail/:courseId',
+                    });
+                }
+            }
+        } catch (err) {
+            next(err);
+        }
+    }
 
     //GET /courses
     async showAllCourses(req, res, next) {
@@ -32,7 +63,6 @@ class CourseController {
                 include: {
                     model: Feedback,
                     attributes: [],
-                    required: true,
                 }
             }]
         }))
@@ -112,57 +142,72 @@ class CourseController {
                     [sequelize.col('description'), 'courseDescription'],
                     ['image', 'courseImage'],
                     [sequelize.col('course_fee'), 'courseFee'],
-                    [sequelize.col('first_name'), 'instructorFirstName'],
-                    [sequelize.col('last_name'), 'instructorLastName'],
+                    [sequelize.col('Instructor.Student.first_name'), 'instructorFirstName'],
+                    [sequelize.col('Instructor.Student.last_name'), 'instructorLastName'],
                     // [sequelize.fn('AVG', sequelize.col('rating')), 'rating']
                 ],
                 include: [
                     {
                         model: Enrollment,
+                        attributes: [],
+                        required: true,
                         include: [{
                             model: Student,
+                            attribute: [],
+                            required: true,
                             where: {
                                 student_id: studentId,
                             }
                         }],
-                        attributes: [],
                     }, {
                         model: Instructor,
+                        required: true,
                         attributes: [],
                         include: {
                             model: Student,
-                            attributes: [],
+                            required: true,
+                            attributes: [
+                                'last_name',
+                                'first_name',
+                            ],
                         }
                     },
                     {
                         model: Enrollment,
                         attributes: [],
-                        required: true,
                         include: {
                             model: Feedback,
                             attributes: [],
-                            required: true,
                         }
                     }
                 ]
             })
+            console.log(courses);
             return res.status(200).json(courses);
         }
     }
 
 //GET /courses/:courseId
     async showCourseDetail(req, res, next) {
-        let courseId = req.params.courseId;
-        let details = await Course.findOne({
+        // number of student, timestamp,
+        let courseId = Number(req.params.courseId);
+        const numOfStudents = (await Enrollment.findAll({
+            where: {
+                course_id: courseId,
+            }
+        })).length;
+        let details = await Course.findAll({
                 attributes: [
                     ['course_id', 'courseId'],
                     [sequelize.col('title'), 'courseTitle'],
                     [sequelize.col('description'), 'courseDescription'],
                     ['image', 'courseImage'],
                     [sequelize.col('course_fee'), 'courseFee'],
-                    [sequelize.col('first_name'), 'instructorFirstName'],
-                    [sequelize.col('last_name'), 'instructorLastName'],
-                    // [sequelize.fn('AVG', sequelize.col('rating')), 'rating']
+                    [sequelize.col('Instructor.Student.first_name'), 'instructorFirstName'],
+                    [sequelize.col('Instructor.Student.last_name'), 'instructorLastName'],
+                    'createdAt',
+                    'updatedAt',
+                    [sequelize.fn('AVG', sequelize.col('rating')), 'rating']
                 ],
                 where: {
                     course_id: courseId,
@@ -173,22 +218,23 @@ class CourseController {
                     required: true,
                     include: {
                         model: Student,
-                        attributes: [],
+                        attributes: [
+                            'first_name',
+                            'last_name',
+                        ],
                         required: true
                     }
                 }, {
                     model: Enrollment,
                     attributes: [],
-                    required: true,
                     include: {
                         model: Feedback,
                         attributes: [],
-                        required: true,
                     }
                 }]
             }
         )
-        return res.status(200).json(details);
+        return res.status(200).json({...details, ...{'numOfStudents': numOfStudents}});
     }
 
 //GET /courses/:categoryId
@@ -203,6 +249,8 @@ class CourseController {
                 [sequelize.col('course_fee'), 'courseFee'],
                 [sequelize.col('first_name'), 'instructorFirstName'],
                 [sequelize.col('last_name'), 'instructorLastName'],
+                'createdAt',
+                'updatedAt',
                 // [sequelize.fn('AVG', sequelize.col('rating')), 'rating']
             ],
             order: [['courseId', 'ASC']],
@@ -218,7 +266,6 @@ class CourseController {
             }, {
                 model: Enrollment,
                 attributes: [],
-                required: true,
                 include: {
                     model: Feedback,
                     attributes: [],
@@ -230,9 +277,10 @@ class CourseController {
                 include: {
                     model: Category,
                     attributes: [],
+                    required: true,
                     where: {
                         category_id: categoryId,
-                    }
+                    },
                 }
             }]
         });
@@ -266,11 +314,9 @@ class CourseController {
             }, {
                 model: Enrollment,
                 attributes: [],
-                required: true,
                 include: {
                     model: Feedback,
                     attributes: [],
-                    required: true,
                 }
             }, {
                 model: Course_category,

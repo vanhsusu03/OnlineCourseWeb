@@ -3,21 +3,26 @@ const sequelize = require("sequelize");
 
 class InstructorController {
     async createInstructor(req, res, next) {
-        const studentId = req.session.student_id;
+        const studentId = req.session.studentId;
+        console.log(studentId);
         if (studentId) {
-            await Instructor.create({
-                instructor_id: studentId,
-                qualification: req.body.qualification,
-                introduction_brief: req.body.introduction_brief,
-                transfer_info: req.body.transfer_info,
-                include: {
-                    model: Student,
-                    attributes: {
-                        is_instructor: true,
+            if (student.is_instructor) {
+                return res.status(400).json({msg: 'You have been a teacher before!'});
+            } else {
+                await Instructor.create({
+                    instructor_id: studentId,
+                    qualification: req.body.qualification,
+                    introduction_brief: req.body.introduction_brief,
+                    transfer_info: req.body.transfer_info,
+                    include: {
+                        model: Student,
+                        attributes: {
+                            is_instructor: true,
+                        }
                     }
-                }
-            });
-            return res.status(200).json({msg: 'You are now an instructor'});
+                });
+                return res.status(200).json({msg: 'You are now an instructor'});
+            }
         } else {
             return res.status(400).json({msg: 'You need to log in first'});
         }

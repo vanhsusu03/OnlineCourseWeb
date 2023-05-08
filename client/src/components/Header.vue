@@ -22,9 +22,21 @@
             <div class="mycourse">My courses</div>
         </RouterLink>
 
-        <RouterLink @click="scrollToTop" to="/become/instructor">
+
+        <RouterLink @click="scrollToTop()" to="/login" v-if="!student.userName">
             <div class="become">Become instructor</div>
         </RouterLink>
+        <div v-else>
+            <RouterLink @click="scrollToTop" to="/become/instructor" v-if="!student.checkIns">
+                <div class="become">Become instructor</div>
+            </RouterLink>
+            <RouterLink @click="scrollToTop" to="/instructor/manage" v-else>
+                <div class="become">Instructor Manage</div>
+            </RouterLink>
+        </div>
+        
+
+
         <div v-if="student.userName" class="logged">
             <img src="../assets/img/user.png" id="user" @click.prevent="showDropDown">
             <div v-if="dropdownselect" class="drop-down-select" @mouseleave="unshowDropDown">
@@ -133,7 +145,7 @@ export default {
 
     },
     computed: {
-        ...mapState(['student', 'admin'])
+        ...mapState(['student', 'admin', 'instructor'])
     }
 }
 </script>

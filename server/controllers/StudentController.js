@@ -70,6 +70,7 @@ class StudentController {
                         email: student.email,
                         phone: student.phone,
                         birth: student.birthday,
+                        checkIns: student.is_instructor,
                         cookie: req.headers.cookie,
                     });
                 }

@@ -10,6 +10,7 @@ import StudentInfo from '../pages/StudentInfo.vue';
 import CourseList from '../components/CourseList.vue';
 import MyCourses from '../components/MyCourses';
 import AboutUs from '../pages/AboutUs';
+import BecomeInstructor from '../pages/BecomeInstructor';
 // import EditInfo from '../components/EditInfo.vue';
 // import PurchaseHistory from '../pages/PurchaseHistory.vue';
 //create a page called MyCourses
@@ -27,6 +28,7 @@ const routes = [
     {  path: "/courses", name: "CourseList", component: CourseList},
     {  path: "/mycourses", name: "MyCourse", component: MyCourses},
     {  path: "/aboutus", name: "AboutUs", component: AboutUs},
+    {  path: "/become/instructor", name: "BecomeInstructor", component: BecomeInstructor},
     // {  path: "/editinfo", name: "EditInfo", component: EditInfo},
     // {  path: "/purchase/history", name: "PurchaseHistory", component: PurchaseHistory},
     // {  path: "/signup", name: "SignUp", component: Register},
