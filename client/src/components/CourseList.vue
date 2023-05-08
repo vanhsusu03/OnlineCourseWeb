@@ -33,8 +33,8 @@
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex';
 import axios from 'axios';
+
 export default {
     name: 'CourseList',
     data() {
@@ -52,14 +52,9 @@ export default {
             ],
             limit: 6,
             list: document.getElementsByClassName("item"),
-            courseIDShowing: undefined,
         }
     },
     methods: {
-        ...mapMutations(['setCourseIDShowing']),
-        // async retrieveCourses() {
-        //     let data = await 
-        // },
         scrollToTop() {
             window.scrollTo(0, 0);
         },
@@ -101,11 +96,8 @@ export default {
             let check = await axios.post(`/course/state/${id}`, {}, {withCredentials: true});
             let states = check.data.msg;
             if(states === 'Unactivated') {
-                // this.setCourseIDShowing(Number(id));
-
                 this.$router.push(`/course/info/${id}`);
             } else if (states === 'Activated') {
-                // this.setCourseIDShowing(Number(id));
                 this.$router.push(`/course/detail/${id}`);
             }
         }
@@ -125,10 +117,6 @@ export default {
                 this.errors.push(e)
             })
         }
-    },
-
-    computed: {
-        ...mapState(['courseIDshowing'])
     },
 
     // lấy dữ liệu khi component được tạo thành công

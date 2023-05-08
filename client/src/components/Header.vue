@@ -7,9 +7,9 @@
             <Categories class="cate"></Categories>
         </RouterLink>
         <div class="search">
-            <form ref="anyName" action="/searching">
-                <input type="text" id="searching" class="sub" name="searching" placeholder="Search for everything ..."
-                       @keydown.enter="handleSearch()" v-model="form.keyw"/>
+            <form ref="anyName">
+                <input type="text" id="searching" class="sub" placeholder="Search for everything ..."
+                       @keydown.enter.prevent="handleSearch()" v-model="form.keyw"/>
             </form>
             <RouterLink @click="scrollToTop()" to="/searching/"><img src="../assets/img/lookup.png" id="lookup" />
             </RouterLink>
@@ -130,15 +130,9 @@ export default {
             this.unshowDropDown();
         },
         async handleSearch() {
-            // alert(window.location.href)
-            await axios.get(`/searching/`+this.form.keyw, this.form.keyw, {withCredentials: true})
-                .then(response => {
-                    this.searchResult = response.data;
-                })
-                .catch(e => {
-                    this.errors.push(e)
-                });
-            // this.$router.push(`/searching/${this.form.keyw}`);
+            this.$refs.anyName.reset();
+            this.$router.push('/');
+            this.$router.push(`/searching/${this.form.keyw}`);
         },
     },
     computed: {

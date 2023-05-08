@@ -11,7 +11,7 @@ class CourseController {
         const courseId = Number(req.params.courseId);
         console.log("ID COURSE LA: " + courseId + ' Studentid la: ' + studentId);
         try {
-            if (req.session.studentId) {
+            if (typeof studentId != 'undefined') {
                 let isActivated = await Enrollment.findOne({
                     where: {
                         student_id: studentId,
@@ -30,6 +30,11 @@ class CourseController {
                         redirect: '/course/detail/:courseId',
                     });
                 }
+            } else {
+                return res.status(201).json({
+                    msg: 'Unactivated',
+                    redirect: '/course/info/:courseId',
+                });
             }
         } catch (err) {
             next(err);
@@ -186,46 +191,80 @@ class CourseController {
     async showCourseDetail(req, res, next) {
         let courseId = Number(req.params.courseId);
         console.log("CPOURSEIF LA" + courseId);
-        let details = await Course.findOne({
-                attributes: [
-                    ['course_id', 'courseId'],
-                    [sequelize.col('title'), 'courseTitle'],
-                    [sequelize.col('description'), 'courseDescription'],
-                    ['image', 'courseImage'],
-                    [sequelize.col('course_fee'), 'courseFee'],
-                    // [sequelize.col('first_name'), 'instructorFirstName'],
-                    // [sequelize.col('last_name'), 'instructorLastName'],
-                    // [sequelize.fn('AVG', sequelize.col('rating')), 'rating']
-                ],
-                where: {
-                    course_id: courseId,
-                },
-                // include: [{
+
+        // let details = await Course.findOne({
+        //         attributes: [
+        //             ['course_id', 'courseId'],
+        //             [sequelize.col('title'), 'courseTitle'],
+        //             [sequelize.col('description'), 'courseDescription'],
+        //             ['image', 'courseImage'],
+        //             [sequelize.col('course_fee'), 'courseFee'],
+        //             [sequelize.col('name'), 'courseCategory'],
+        //             // [sequelize.col('first_name'), 'instructorFirstName'],
+        //             // [sequelize.col('last_name'), 'instructorLastName'],
+        //             // [sequelize.fn('AVG', sequelize.col('rating')), 'rating']
+        //         ],
+        //         where: {
+        //             course_id: courseId,
+        //         },
+        //         include: {
+        //             model: Course_category,
+        //             attributes: [],
+        //             require: true,
+        //             include: {
+        //                 model: Category,
+        //                 attributes: [],
+        //                 require: true
+        //             }
+
+        //         }
+        //         // include: [{
+        //         //     model: Instructor,
+        //         //     attributes: [],
+        //         //     required: true,
+        //         //     include: {
+        //         //         model: Student,
+        //         //         attributes: [],
+        //         //         required: true
+        //         //     }
+        //         // }, {
+        //         //     model: Enrollment,
+        //         //     attributes: [],
+        //         //     required: true,
+        //         //     include: {
+        //         //         model: Feedback,
+        //         //         attributes: [],
+        //         //         required: true,
+        //         //     }
+        //         // }]
+        //     }
+        // )
+        let details = await Course.findByPk(courseId, {
+            include: [
+              {
+                model: Category,
+                attributes: ['name'],
+                through: {attributes: []},
+                // include: {
                 //     model: Instructor,
-                //     attributes: [],
-                //     required: true,
+                //     attributes:[],
+                //     require: true,
                 //     include: {
                 //         model: Student,
-                //         attributes: [],
-                //         required: true
+                //         attributes: ['first_name'],
+                //         require: true
                 //     }
-                // }, {
-                //     model: Enrollment,
-                //     attributes: [],
-                //     required: true,
-                //     include: {
-                //         model: Feedback,
-                //         attributes: [],
-                //         required: true,
-                //     }
-                // }]
-            }
-        )
+                // }
+              }
+            ]
+          });
         console.log('HIEHHHHHHHHHHHHHHHHHHH');
         if (!details) {
             console.log('DIE');
         }
-        return res.status(200).json(details);
+        return res.status(200).json({
+            info: details,
+        });
     }
 
 //GET /courses/:categoryId

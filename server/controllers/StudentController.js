@@ -123,38 +123,38 @@ class StudentController {
     async updateInfo(req, res, next) {
         const {username, email, firstname, lastname, phone, birth} = req.body;
         try {
-            const checkEmail = await Student.findOne(
-                {
-                    where:{
-                        email: email,
-                        student_id:{
-                            [Op.ne]:req.session.student_id,
-                        }
-                    }
-                });
+            // const checkEmail = await Student.findOne(
+            //     {
+            //         where:{
+            //             email: email,
+            //             student_id:{
+            //                 [Op.ne]:req.session.student_id,
+            //             }
+            //         }
+            //     });
 
-            const checkPhone = await Student.findOne(
-                {
-                    where:{
-                        phone: phone,
-                        student_id:{
-                            [Op.ne]:req.session.student_id,
-                        }
-                    }
-                });
+            // const checkPhone = await Student.findOne(
+            //     {
+            //         where:{
+            //             phone: phone,
+            //             student_id:{
+            //                 [Op.ne]:req.session.student_id,
+            //             }
+            //         }
+            //     });
 
-            if (checkEmail || checkPhone) {
-                if(checkEmail){
-                    return res.status(201).json({
-                        msg: 'Email is already exists',
-                    });
-                }
-                if (checkPhone){
-                    return res.status(201).json({
-                        msg: 'Phone is already exists',
-                    });
-                }
-            }
+            // if (checkEmail || checkPhone) {
+            //     if(checkEmail){
+            //         return res.status(201).json({
+            //             msg: 'Email is already exists',
+            //         });
+            //     }
+            //     if (checkPhone){
+            //         return res.status(201).json({
+            //             msg: 'Phone is already exists',
+            //         });
+            //     }
+            // }
 
             await Student.update(
                 {
