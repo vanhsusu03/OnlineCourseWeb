@@ -6,9 +6,8 @@
             <span id="filter-head">Filter</span>
             <select id="select" v-model="sortBy">
                 <option disabled value="" id="def">Sort by price</option>
-                <option>Z to A</option>
-                <option>A to Z</option>
-                <option>None</option>
+                <option>Descending</option>
+                <option>Ascending</option>
             </select>
             <span id="clear-filter" @click.prevent="clearFilters"> Clear filter</span>
         </div>
@@ -18,17 +17,16 @@
                 <div class="filter-box">
                     <div id="tag">Price</div>
                     <div>
-                        <input type="radio" id="paid" value="Paid" v-model="paid">
+                        <input type="radio" id="paid" value="paid" name="fil" v-model="paid" @click="setPaid">
                         <label for="paid">Paid</label>
                     </div>
                     <div>
-                        <input type="radio" id="free" value="Free" v-model="free">
+                        <input type="radio" id="free" value="free" name="fil" v-model="free" @click="setFree">
                         <label for="free">Free</label>
                     </div>
                 </div>
             </div>
             <div class="res-course">
-                <!-- <ul> -->
                 <li v-for="res in this.searchResult" @click.prevent="showCourse(res.courseId)">
                     <div id="img">
                         <span><img :src="res.courseImage" alt=""></span>
@@ -36,24 +34,28 @@
                     <div id="content">
                         <div id="title"> {{ res.courseTitle }}</div>
                         <div id="descr">{{ res.courseDescription }}</div>
-                        <div id="ins">Created by: <span id="name"> {{ res.instructorFirstName + ' ' + res.instructorLastName }}</span></div>
+                        <div id="ins">Created by: <span id="name"> {{ res.instructorFirstName + ' ' + res.instructorLastName
+                        }}</span></div>
                         <div id="fee">{{ res.courseFee + ' VND' }}</div>
                     </div>
                 </li>
-                <!-- </ul> -->
             </div>
         </div>
     </div>
 </template>
     
 <script>
-
+import { mapMutations } from 'vuex';
+import axios from "axios";
 export default {
     name: 'Searching',
     data() {
         return {
+            isPaid: false,
+            isFree: false,
             keySearch: "",
             numSearch: 0,
+            oldSearchResult: [],
             searchResult: [],
             found: true,
             sortShow: false,
@@ -61,13 +63,66 @@ export default {
         }
     },
     methods: {
+        sortCoursesByFee(courses, ascending = true) {
+            courses.sort(function (courseA, courseB) {
+                if (ascending) {
+                    return courseA.courseFee - courseB.courseFee;
+                } else {
+                    return courseB.courseFee - courseA.courseFee;
+                }
+            });
+            return courses;
+        },
+        setSort() {
+            if (this.sortBy === 'Descending') {
+                this.searchResult = this.sortCoursesByFee(this.searchResult, false);
+            } else if (this.sortBy === 'Ascending') {
+                this.searchResult = this.sortCoursesByFee(this.searchResult, true);
+            }
+        },
         clearFilters() {
             this.sortBy = "";
+            if(!this.isPaid && !this.isFree) {
+                this.getResultSearch();
+            }
+            else if (this.isPaid) {
+                this.setPaid();
+            } else {
+                this.setFree();
+            }
         },
-        async showCourse (id) {
-            let check = await axios.post(`/course/state/${id}`, {}, {withCredentials: true});
+        async setPaid() {
+            this.isPaid = true;
+            this.isFree = false;
+            let id = String(window.location.href.split('/').slice(-1)[0]);
+            await axios.get(`/searching/paid/${id}`, {}, { withCredentials: true })
+                .then(response => {
+                    this.numSearch = response.data.number;
+                    this.searchResult = response.data.result;
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                });
+                this.setSort();
+        },
+        async setFree() {
+            this.isFree = true;
+            this.isPaid = false;
+            let id = String(window.location.href.split('/').slice(-1)[0]);
+            await axios.get(`/searching/free/${id}`, {}, { withCredentials: true })
+                .then(response => {
+                    this.numSearch = response.data.number;
+                    this.searchResult = response.data.result;
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                });
+                this.setSort();
+        },
+        async showCourse(id) {
+            let check = await axios.post(`/course/state/${id}`, {}, { withCredentials: true });
             let states = check.data.msg;
-            if(states === 'Unactivated') {
+            if (states === 'Unactivated') {
                 this.$router.push(`/course/info/${id}`);
             } else if (states === 'Activated') {
                 this.$router.push(`/course/detail/${id}`);
@@ -76,7 +131,7 @@ export default {
         async getResultSearch() {
             let id = String(window.location.href.split('/').slice(-1)[0]);
             this.keySearch = id;
-            await axios.get(`/searching/${id}`, id, { withCredentials: true })
+            await axios.get(`/searching/${id}`, { withCredentials: true })
                 .then(response => {
                     this.numSearch = response.data.number;
                     this.searchResult = response.data.result;
@@ -84,22 +139,20 @@ export default {
                 .catch(e => {
                     this.errors.push(e)
                 });
-            // this.$router.push(`/searching/${this.form.keyw}`);
-        }
-
+        },
     },
     watch: {
         '$route'() {
             this.getResultSearch();
+        },
+        sortBy() {
+            this.setSort();
         }
     },
     mounted() {
         this.getResultSearch();
-
     },
-    update() {
-        this.getResultSearch();
-    }
+
 }
 </script>
     
@@ -142,10 +195,10 @@ export default {
 
         #clear-filter {
             cursor: pointer;
-            font-size: 1.5rem;
+            font-size: 1.1rem;
 
             &:hover {
-                color: red;
+                color: rgb(52, 73, 94);
                 font-weight: 600;
             }
         }
@@ -188,6 +241,7 @@ export default {
             // border: 2px solid black;
             margin-left: 20px;
             cursor: pointer;
+
             img {
                 width: 100%;
                 height: 100%;
@@ -215,20 +269,23 @@ export default {
                     font-size: 0.9rem;
                     margin-bottom: 10px;
                 }
-                #ins{
+
+                #ins {
                     font-size: 0.9rem;
+
                     #name {
                         font-weight: 500;
                     }
+
                     margin-bottom: 10px;
                 }
 
                 #fee {
-                    font-weight:  600;
+                    font-weight: 600;
                     font-size: 1.2rem;
                 }
             }
-            
+
         }
     }
 
