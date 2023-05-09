@@ -131,7 +131,6 @@ export default {
         },
         async handleSearch() {
             this.$refs.anyName.reset();
-            this.$router.push('/');
             this.$router.push(`/searching/${this.form.keyw}`);
         },
     },

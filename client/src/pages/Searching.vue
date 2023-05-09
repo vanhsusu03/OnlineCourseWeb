@@ -63,6 +63,7 @@ export default {
         }
     },
     methods: {
+        ...mapMutations(['scrollToTop']),
         sortCoursesByFee(courses, ascending = true) {
             courses.sort(function (courseA, courseB) {
                 if (ascending) {
@@ -151,6 +152,7 @@ export default {
     },
     mounted() {
         this.getResultSearch();
+        this.scrollToTop();
     },
 
 }
