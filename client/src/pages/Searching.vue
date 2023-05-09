@@ -1,30 +1,46 @@
 <template >
     <div class="res-search">
-        <h1 v-if="this.numSearch != 0">{{ this.numSearch + ' ' }} results for "{{ this.keySearch }}"</h1>
+        <h1 v-if="this.numSearch != 0">We found {{ this.numSearch + ' ' }} results for "{{ this.keySearch }}"</h1>
         <h1 v-else>No results for "{{ this.keySearch }}"</h1>
         <div class="filter-intro">
-            <button id="filter"> Filter</button>
-            <button @click="toggleDropDown" id="sort-by-price"> Sort by price
-                <img src="../assets/img/drop-down.png" alt="">
-                <ul v-if="this.sortShow" id="sort-engine">
-                    <li id="z-a">Ascending</li>
-                    <li id="a-z">Descending</li>
-                </ul>
-            </button>
+            <span id="filter-head">Filter</span>
+            <select id="select" v-model="sortBy">
+                <option disabled value="" id="def">Sort by price</option>
+                <option>Z to A</option>
+                <option>A to Z</option>
+                <option>None</option>
+            </select>
+            <span id="clear-filter" @click.prevent="clearFilters"> Clear filter</span>
         </div>
         <div class="result">
 
             <div class="filter">
-                Filter is in here
+                <div class="filter-box">
+                    <div id="tag">Price</div>
+                    <div>
+                        <input type="radio" id="paid" value="Paid" v-model="paid">
+                        <label for="paid">Paid</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="free" value="Free" v-model="free">
+                        <label for="free">Free</label>
+                    </div>
+                </div>
             </div>
             <div class="res-course">
-                <ul>
-                    <li v-for="res in this.searchResult">
-                        <span> {{ res.courseId }}</span>
-                        <span>{{ res.courseTitle }}</span>
-                        <span>{{ res.courseFee }}</span>
-                    </li>
-                </ul>
+                <!-- <ul> -->
+                <li v-for="res in this.searchResult" @click.prevent="showCourse(res.courseId)">
+                    <div id="img">
+                        <span><img :src="res.courseImage" alt=""></span>
+                    </div>
+                    <div id="content">
+                        <div id="title"> {{ res.courseTitle }}</div>
+                        <div id="descr">{{ res.courseDescription }}</div>
+                        <div id="ins">Created by: <span id="name"> {{ res.instructorFirstName + ' ' + res.instructorLastName }}</span></div>
+                        <div id="fee">{{ res.courseFee + ' VND' }}</div>
+                    </div>
+                </li>
+                <!-- </ul> -->
             </div>
         </div>
     </div>
@@ -41,15 +57,21 @@ export default {
             searchResult: [],
             found: true,
             sortShow: false,
+            sortBy: "",
         }
     },
     methods: {
-        toggleDropDown() {
-            this.sortShow = !this.sortShow;
+        clearFilters() {
+            this.sortBy = "";
         },
-        selectSort(item) {
-            this.selectedSort = item;
-            this.sortShow = false;
+        async showCourse (id) {
+            let check = await axios.post(`/course/state/${id}`, {}, {withCredentials: true});
+            let states = check.data.msg;
+            if(states === 'Unactivated') {
+                this.$router.push(`/course/info/${id}`);
+            } else if (states === 'Activated') {
+                this.$router.push(`/course/detail/${id}`);
+            }
         },
         async getResultSearch() {
             let id = String(window.location.href.split('/').slice(-1)[0]);
@@ -83,38 +105,131 @@ export default {
     
 <style lang="scss" scoped>
 .res-search {
-    h1 {}
+    h1 {
+        font-weight: 700;
+        font-size: 3rem;
+        margin-top: 130px;
+        margin-left: 130px;
+        margin-bottom: 50px;
+    }
 
     .filter-intro {
-        #filter {
-            margin-right: 20px;
-        }
-        #sort-by-price {
-           
-            align-items: center;
-            justify-content: center;
-            justify-items: center;
-            img {
-                width: 20px;
-            }
-            #sort-engine {
-                list-style: none;
-                #z-a{
-                    border: 2px solid black;
-                }
-                #a-z{
+        margin-left: 8.5%;
+        border-bottom: 1px solid rgb(230, 230, 230);
+        padding-bottom: 0.7rem;
+        margin-bottom: 40px;
 
-                }
+        #filter-head {
+            // font-weight: 600;
+            font-size: 2.25rem;
+            // border: 1px solid black;
+            margin-right: 100px;
+        }
+
+        #select {
+            margin-left: 20px;
+            width: 12%;
+            margin-right: 20px;
+            font-size: 1.2rem;
+            border: 2px solid black;
+
+            // border-radius: 10px;
+            // height: 50%;
+            #def {}
+
+            option {}
+        }
+
+        #clear-filter {
+            cursor: pointer;
+            font-size: 1.5rem;
+
+            &:hover {
+                color: red;
+                font-weight: 600;
             }
         }
+
     }
 
     .result {
         display: flex;
 
-        .filter {}
+        .filter {
+            margin-left: 8.5%;
+            border-right: 2px solid rgb(220, 220, 220);
+            padding-right: 80px;
 
-        .res-course {}
+            .filter-box {
+
+                #tag {
+                    font-size: 2rem;
+                    font-weight: 600;
+                }
+
+                label {
+                    margin-left: 10px;
+                    font-size: 1.5rem;
+                }
+
+                #paid {
+                    margin-left: 10px;
+                }
+
+                #free {
+                    margin-left: 10px;
+                }
+
+            }
+        }
+
+        .res-course {
+            // margin-left: 8.5%;
+            // border: 2px solid black;
+            margin-left: 20px;
+            cursor: pointer;
+            img {
+                width: 100%;
+                height: 100%;
+            }
+
+            li {
+                list-style: none;
+                display: flex;
+                // border: 2px solid black;
+                border-bottom: 1px solid rgb(215, 215, 215);
+                padding-bottom: 20px;
+                margin-bottom: 20px;
+            }
+
+            #content {
+                margin-left: 2%;
+
+                #title {
+                    font-weight: 600;
+                    font-size: 1.25rem;
+                    margin-bottom: 10px;
+                }
+
+                #descr {
+                    font-size: 0.9rem;
+                    margin-bottom: 10px;
+                }
+                #ins{
+                    font-size: 0.9rem;
+                    #name {
+                        font-weight: 500;
+                    }
+                    margin-bottom: 10px;
+                }
+
+                #fee {
+                    font-weight:  600;
+                    font-size: 1.2rem;
+                }
+            }
+            
+        }
     }
 
 }
