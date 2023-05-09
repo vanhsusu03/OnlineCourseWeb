@@ -11,7 +11,7 @@
                 <input type="text" id="searching" class="sub" placeholder="Search for everything ..."
                        @keydown.enter.prevent="handleSearch()" v-model="form.keyw"/>
             </form>
-            <RouterLink @click="scrollToTop()" to="/searching/"><img src="../assets/img/lookup.png" id="lookup" />
+            <RouterLink @click="handleSearch()" to="/searching/"><img src="../assets/img/lookup.png" id="lookup" />
             </RouterLink>
         </div>
 
@@ -156,7 +156,6 @@ export default {
         },
         async handleSearch() {
             this.$refs.anyName.reset();
-            this.$router.push('/');
             this.$router.push(`/searching/${this.form.keyw}`);
         },
     },

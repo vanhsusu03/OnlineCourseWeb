@@ -9,6 +9,7 @@
                         <h3>{{ course.courseTitle }}</h3>
                         <div>{{ course.instructorFirstName + ' ' + course.instructorLastName }}</div>
                         <div>{{ course.courseFee + ' vnd' }}</div>
+                        
                     </div>
                 </li>
             </ul>
