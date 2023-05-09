@@ -84,7 +84,7 @@ class CartController {
 
         if (cart) {
             if (this.isInCart(cart, courseId)) {
-                return res.status(400).json({
+                return res.status(200).json({
                     msg: 'The course already exists in the cart!',
                     numberOfCourses: cart.length
                 });
