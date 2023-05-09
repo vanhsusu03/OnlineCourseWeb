@@ -4,18 +4,13 @@
         <div class="profilecontent">
             Username:
             <span>
-                <form>
-                    <input type="text" id="username" class="sub" v-bind:placeholder="student.userName"
-                        v-model="form.username">
-                </form>
+               {{student.userName}}
             </span>
         </div>
         <div class="profilecontent">
             Email:
             <span>
-                <form>
-                    <input type="text" id="email" class="sub" v-bind:placeholder="student.email" v-model="form.email">
-                </form>
+                {{student.email}}
             </span>
         </div>
         <div class="profilecontent">
@@ -57,9 +52,7 @@
         <div class="profilecontent">
             Birthday:
             <span>
-                <form>
-                    <input type="text" id="birthday" class="sub" v-bind:placeholder="student.birth" v-model="form.birth">
-                </form>
+                {{student.birth}}
             </span>
 
         </div>
@@ -79,15 +72,12 @@ export default {
             form: {
                 firstname: "",
                 lastname: "",
-                email: "",
-                username: "",
                 phone: "",
-                birth: Date,
             },
             matchStudent: undefined,
             errorObj: {
-                firstnameError: [], lastnameError: [], emailError: [], usernameError: [],
-                phoneError: [], birthError: []
+                firstnameError: [], lastnameError: [],
+                phoneError: [],
             },
         }
     },
@@ -96,12 +86,7 @@ export default {
         ...mapMutations(['setStudent', 'scrollToTop']),
         async edit() {
             let data = await axios.get('/account/info', { withCredentials: true });
-            if (!this.form.username) {
-                this.form.username = data.data.username;
-            }
-            if (!this.form.email) {
-                this.form.email = data.data.email;
-            }
+            
             if (!this.form.firstname) {
                 this.form.firstname = data.data.firstname;
             }
@@ -111,9 +96,7 @@ export default {
             if (!this.form.phone) {
                 this.form.phone = data.data.phone;
             }
-            if (!this.form.birthday) {
-                this.form.birthday = data.data.birthday;
-            }
+            
             let res = await axios.post('/edit/info', this.form, { withCredentials: true });
             // let err = res.data.msg;
 
@@ -130,28 +113,19 @@ export default {
         },
 
         clearForms() {
-            this.form.username = "";
             this.form.firstname = "";
             this.form.lastname = "";
-            this.form.email = "";
             this.form.phone = "";
-            this.form.birthday = "";
         },
         updateInfos() {
-            this.student.userName = this.form.username;
             this.student.firstName = this.form.firstname;
             this.student.lastName = this.form.lastname;
-            this.student.email = this.form.email;
             this.student.phone = this.form.phone;
-            this.student.birth = this.form.birthday;
         },
         resetError() {
             this.errorObj.firstnameError = [];
             this.errorObj.lastnameError = [];
-            this.errorObj.emailError = [];
-            this.errorObj.usernameError = [];
             this.errorObj.phoneError = [];
-            this.errorObj.birthError = [];
         },
 
         checkEmptyError() {
@@ -173,10 +147,6 @@ export default {
 
             if (this.form.lastname && !/^[A-Za-z]+$/.test(this.form.lastname.replace(/\s/g, ""))) {
                 alert('Your last name is only contains alphabetic characters!');
-            }
-
-            if (this.form.email && !/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/.test(this.form.email)) {
-                alert('Please enter a valid email!');
             }
 
             if (this.form.phone) {

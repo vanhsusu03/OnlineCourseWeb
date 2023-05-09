@@ -20,7 +20,7 @@ class CartController {
 
         var cart = req.session.cart;
 
-        if (!cart) {
+        if (typeof cart === 'undefined') {
             cart = await Cart.findAll({
                 attributes: [
                     [sequelize.col('Course.course_id'), 'courseId'],
@@ -109,6 +109,7 @@ class CartController {
         });
     }
 
+     //[POST] /students/cart/:courseId/delete
     async removeCourse(req, res, next) {
         const studentId = req.session.studentId;
         const courseId = Number(req.params.courseId);

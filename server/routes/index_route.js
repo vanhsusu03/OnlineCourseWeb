@@ -23,9 +23,9 @@ function routesInit(app) {
     // app.use('/', mainRoute);
     app.use('/', orderRoute);
     app.use('/', paymentRoute);
-    // app.use('/', searchingRoute);
+    app.use('/', searchingRoute);
     app.use('/', studentRoute);
-    // app.use('/', studyRoute);
+    app.use('/', studyRoute);
 }
 
 module.exports = routesInit;

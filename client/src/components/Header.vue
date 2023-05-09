@@ -8,8 +8,8 @@
         </RouterLink>
         <div class="search">
             <form ref="anyName">
-                <input type="text" id="searching" name="search" class="sub" placeholder="Search for everything ..."
-                    @keydown.enter="redirectToLogin()" />
+                <input type="text" id="searching" class="sub" placeholder="Search for everything ..."
+                       @keydown.enter.prevent="handleSearch()" v-model="form.keyw"/>
             </form>
             <RouterLink @click="scrollToTop()" to="/searching/"><img src="../assets/img/lookup.png" id="lookup" />
             </RouterLink>
@@ -17,7 +17,7 @@
 
         <RouterLink v-if="!student.userName" @click="scrollToTop" to="/aboutus">
             <div class="aboutus"> About us</div>
-        </RouterLink>   
+        </RouterLink>
         <RouterLink v-if="student.userName" @click="scrollToTop" to="/mycourses">
             <div class="mycourse">My courses</div>
         </RouterLink>
@@ -92,7 +92,7 @@
         </div>
 
     </div>
-</template> 
+</template>
 
 <script>
 import axios from 'axios';
@@ -104,7 +104,11 @@ export default {
     name: 'Header',
     data() {
         return {
-            dropdownselect: false
+            dropdownselect: false,
+            form: {
+                keyw:"",
+            },
+            searchResult: []
         }
     },
     components: {
@@ -112,7 +116,7 @@ export default {
         MiniCart
     },
     methods: {
-        ...mapMutations(['setStudent', 'setLogged']),
+        ...mapMutations(['setStudent', 'setLogged','setMiniCart']),
 
         showMenu() {
             let nav_bar = document.querySelector('.header .navbar');
@@ -137,15 +141,14 @@ export default {
             this.setLogged(false);
             this.unshowDropDown();
         },
-        redirectToLogin() {
-            this.$router.push('/login');
+        async handleSearch() {
             this.$refs.anyName.reset();
-            event.preventDefault();
+            this.$router.push('/');
+            this.$router.push(`/searching/${this.form.keyw}`);
         },
-
     },
     computed: {
-        ...mapState(['student', 'admin', 'instructor'])
+        ...mapState(['student', 'admin','miniCart'])
     }
 }
 </script>
@@ -358,4 +361,5 @@ export default {
         margin-top: 1.3%;
     }
 
-}</style> 
+
+}</style>

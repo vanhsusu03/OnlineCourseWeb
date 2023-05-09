@@ -57,7 +57,7 @@
             </div>
 
             <div id="mycourse" class="tabcontent" style="display: none;">
-                Hii
+                <MyCourses></MyCourses>
             </div>
         </div>
     </div>
@@ -66,13 +66,15 @@
 <script>
 import ChangePass from '@/components/ChangePass.vue';
 import EditInfo from '@/components/EditInfo.vue';
+import MyCourses from '@/components/MyCourses.vue';
 import { mapMutations, mapState } from 'vuex';
 export default {
     name: 'StudentInfo',
     components: {
-        EditInfo,
-        ChangePass
-    },
+    EditInfo,
+    ChangePass,
+    MyCourses
+},
     data() {
         return {
             reqUpdateInfo: false,

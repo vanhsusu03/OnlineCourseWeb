@@ -1,5 +1,5 @@
 const fs = require('fs');
-const readline = require('readline')
+const readline = require('readline');
 
 class DepositController {
     async getTransferInfo(req, res, next) {
