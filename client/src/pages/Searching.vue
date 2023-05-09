@@ -27,7 +27,7 @@
                 </div>
             </div>
             <div class="res-course">
-                <li v-for="res in this.searchResult" @click.prevent="showCourse(res.courseId)">
+                <li v-for="res in this.searchResult" @click.prevent="showCourse(res.courseId);" class="item">
                     <div id="img">
                         <span><img :src="res.courseImage" alt=""></span>
                     </div>
@@ -41,7 +41,21 @@
                 </li>
             </div>
         </div>
+        <div v-if="begin">
+                {{ openPage(1) }}
+            </div>
+
+            <div v-if="!isCalc">
+                {{ calcNumPages() }}
+            </div>
+            <ul class="listPage">
+                <li v-for="page in pages" class="pagelinks" :class="{ active: page.status }"
+                    v-on:click="scrollToTop(); this.begin = false; openPage(page.value)">
+                    {{ page.value }}
+                </li>
+            </ul>
     </div>
+
 </template>
     
 <script>
@@ -55,6 +69,16 @@ export default {
             isFree: false,
             keySearch: "",
             numSearch: 0,
+            thisPage: 1,
+            limit: 8,
+            pages: [
+                {
+                    value: 1,
+                    status: true
+                }
+            ],
+            begin: true,
+            isCalc: false,
             oldSearchResult: [],
             searchResult: [],
             found: true,
@@ -64,6 +88,49 @@ export default {
     },
     methods: {
         ...mapMutations(['scrollToTop']),
+        openPage(page) {
+            var tabcontent;
+            // Get all elements with class="item" and hide them
+            tabcontent = document.getElementsByClassName("item");
+            let beginGet = this.limit * (page - 1);
+            let endGet = (this.limit * page > tabcontent.length ? tabcontent.length : this.limit * page);
+            for (let i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            for (let i = 0; i < this.pages.length; i++) {
+                this.pages[i].status = false
+            }
+            this.pages[page - 1].status = true
+            for (let i = beginGet; i < endGet; i++) {
+                tabcontent[i].style.display = "flex";
+            }
+        },
+        calcNumPages() {
+            let num, tabcontent;
+            let len = this.pages.length;
+            if(len > 1) {this.pages.splice(1, len-1);};
+            // alert("calc" + len);
+            tabcontent = document.getElementsByClassName("item");
+            // if (tabcontent.length <= this.limit) {
+            //     this.isCalc = true;
+            //     return 1;
+            // }
+            num = tabcontent.length / this.limit + 1;
+            let numPages = parseInt(num);
+            numPages = numPages == num ? numPages - 1 : numPages;
+            if (numPages > 1) {
+                this.isCalc = true;
+            }
+            for (let i = 2; i <= numPages; i++) {
+                this.pages.push({
+                    value: i,
+                    status: false
+                })
+            }
+            // alert(numPages);
+            console.warn(numPages);
+            return numPages;
+        },
         sortCoursesByFee(courses, ascending = true) {
             courses.sort(function (courseA, courseB) {
                 if (ascending) {
@@ -98,6 +165,7 @@ export default {
             let id = String(window.location.href.split('/').slice(-1)[0]);
             await axios.get(`/searching/paid/${id}`, {}, { withCredentials: true })
                 .then(response => {
+                    
                     this.numSearch = response.data.number;
                     this.searchResult = response.data.result;
                 })
@@ -105,6 +173,9 @@ export default {
                     this.errors.push(e)
                 });
                 this.setSort();
+                this.isCalc = false;
+                this.thisPage = 1;
+                    this.calcNumPages();
         },
         async setFree() {
             this.isFree = true;
@@ -114,11 +185,15 @@ export default {
                 .then(response => {
                     this.numSearch = response.data.number;
                     this.searchResult = response.data.result;
+                    
                 })
                 .catch(e => {
                     this.errors.push(e)
                 });
                 this.setSort();
+                this.isCalc = false;
+                this.thisPage = 1;
+                    this.calcNumPages();
         },
         async showCourse(id) {
             let check = await axios.post(`/course/state/${id}`, {}, { withCredentials: true });
@@ -140,6 +215,9 @@ export default {
                 .catch(e => {
                     this.errors.push(e)
                 });
+                this.isCalc = false;
+                this.thisPage = 1;
+                this.calcNumPages();
         },
     },
     watch: {
@@ -249,6 +327,9 @@ export default {
                 height: 100%;
             }
 
+            .item {
+                display: flex;
+            }
             li {
                 list-style: none;
                 display: flex;
@@ -291,5 +372,27 @@ export default {
         }
     }
 
+}
+
+.listPage {
+    padding: 10px;
+    text-align: center;
+    list-style: none;
+
+    .active {
+        background-color: #ccc;
+    }
+
+    li {
+        background-color: #ffffffBD;
+        padding: 20px;
+        display: inline-block;
+        margin: 0 10px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #ddd;
+        }
+    }
 }
 </style>
