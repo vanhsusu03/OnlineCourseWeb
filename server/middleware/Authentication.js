@@ -32,12 +32,12 @@ const isAuth = (req, res, next) => {
 
 const isInstructor = (req, res, next) => {
     if (!req.session.studentId) {
-        return res.status(200).json({
+        return res.status(400).json({
             msg: 'You need to log in first',
             redirect: '/login',
         });
     } else if (!req.session.is_instructor) {
-        return res.status(200).json({
+        return res.status(400).json({
             msg: 'You must be an instructor',
             redirect: '/login',
         })

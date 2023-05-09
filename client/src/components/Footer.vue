@@ -4,12 +4,12 @@
         <div class="left box">
             <h2 class="head-content">About us</h2>
             <div class="content">
-                <p>Day la page hoc tap la page hoc tap la page hoc tap la page hoc tap la page hoc tap la page hoc tap la page hoc tap</p>
+                <p>Our online learning websites have become a popular way for people to access education on a variety of subjects. They offer a flexible and convenient way for learners to study at their own pace and from anywhere in the world. Online learning provides access to high-quality education that may not be available in traditional classroom settings. Learners can benefit from interactive tools and resources that enhance their understanding of the course material.</p>
                 <div class="social">
-                    <a href="https://www.facebook.com/messages/t/100012917022374"><img src="../assets/img/face.png" class="fab"></a>
-                    <a href="#"><img src="../assets/img/twitter.png" class="fab"></a>
-                    <a href="#"><img src="../assets/img/youtube.png" class="fab"></a>
-                    <a href="#"><img src="../assets/img/insta.png" class="fab"></a>
+                    <a href="https://www.facebook.com/vietanh.duongnguyen.7" target="_blank"><img src="../assets/img/face.png" class="fab"></a>
+                    <a href="#" target="_blank"><img src="../assets/img/twitter.png" class="fab"></a>
+                    <a href="https://www.youtube.com/@vietanhduongnguyen8174" target="_blank"><img src="../assets/img/youtube.png" class="fab"></a>
+                    <a href="https://www.instagram.com/vanhsusu/" target="_blank"><img src="../assets/img/insta.png" class="fab"></a>
                 </div>
             </div>
         </div>
@@ -27,7 +27,7 @@
                 </div>
                 <div class="email">
                     <img src="../assets/img/mail.png" class="fas">
-                    <span class="text">minhdatuet@gmail.com</span>
+                    <span class="text">dnateam@gmail.com</span>
                 </div>
             </div>
         </div>
