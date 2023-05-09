@@ -12,7 +12,7 @@
                     </div>
                     <div id="name">
                         <div>
-                            {{ course.title }}
+                            {{ course.title }} {{ course.course_id }}
                         </div>
                     </div>
                     <div class="description">
@@ -65,7 +65,7 @@
             </div>
             <br>
             <div>
-                <button id="buy-now">Buy now</button>
+                <button id="buy-now" v-on:click="openPayment()">Buy now</button>
             </div>
             <br>
             <div id="intro">
@@ -74,19 +74,38 @@
             </div>
         </div>
     </div>
+
+    <div class="modal" id="myModal">
+        <div class="modal-content">
+            <span class="close" v-on:click="closePayment()">&times;</span>
+            <p><Payment :numOfCourses="courses.length" :courses="courses" :isInCart="false"></Payment></p>
+        </div>
+    </div>
 </template>
 
 
 <script>
 import axios from 'axios';
+import Payment from '@/pages/Payment.vue';
 
 export default {
     name: 'CourseInfo',
     data() {
         return {
             course: Object,
+            courses: [{
+                courseId: Number,
+                courseImage: "",
+                courseTitle: "",
+                courseFee: Number,
+                instructorFirstName: "",
+                instructorLastName: ""
+            }],
             category: [],
         }
+    },
+    components: {
+        Payment
     },
     methods: {
         async getCourseInfo() {
@@ -95,7 +114,23 @@ export default {
             this.course = res.data.info;
             this.category = this.course.categories;
             // alert("HE" + this.course.courseId);
-        }
+        },
+        openPayment() {
+            let modal = document.getElementById("myModal");
+            this.courses[0].courseId = this.course.course_id;
+            this.courses[0].courseTitle = this.course.title;
+            this.courses[0].courseImage = this.course.image;
+            this.courses[0].courseFee = this.course.course_fee;
+            this.courses[0].instructorFirstName = this.course.instructor;
+            // alert("hio");
+            modal.style.display = "block";
+            this.openingPayment = true;
+        },
+        closePayment() {
+            let modal = document.getElementById("myModal");
+            modal.style.display = "none";
+            this.openingPayment = false;
+        },
     },
     computed: {
     },
@@ -308,5 +343,56 @@ export default {
         }
 
     }
+}
+
+/* The Modal (background) */
+.modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 3;
+    /* Sit on top */
+    padding-top: 100px;
+    /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+/* The Close Button */
+.close {
+    color: #aaaaaa;
+    // float: right;
+    position: absolute;
+    right: 10px;
+    top: 0px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
 }
 </style>

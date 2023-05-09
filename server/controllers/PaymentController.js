@@ -60,7 +60,8 @@ class PaymentController {
     async purchaseWithoutCart(req, res, next) {
         const courseId = req.body.courseId;
         const courseFee = req.body.courseFee;
-
+        console.log(courseId);
+        console.log(courseFee);
         const studentId = req.session.studentId;
         
         var coin = req.session.coin;
@@ -91,8 +92,8 @@ class PaymentController {
     }
 
     async purchaseWithCart(req, res, next) {
-        const savingCourseIds = req.body.savingCourseIds;
-
+        const savingCourseIds = req.body;
+        
         const studentId = req.session.studentId;
         const cart = req.session.cart;
 

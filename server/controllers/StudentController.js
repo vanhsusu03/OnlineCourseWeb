@@ -76,6 +76,7 @@ class StudentController {
                         phone: student.phone,
                         birth: student.birthday,
                         checkIns: student.is_instructor,
+                        coin: student.coin,
                         cookie: req.headers.cookie,
                     });
                 }

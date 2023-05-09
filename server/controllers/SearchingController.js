@@ -107,42 +107,42 @@ class SearchingController {
     
            
         }
-        // let courses = await Course.findAll({
-        //     attributes: [
-        //         ['course_id', 'courseId'],
-        //         [sequelize.col('title'), 'courseTitle'],
-        //         [sequelize.col('description'), 'courseDescription'],
-        //         ['image', 'courseImage'],
-        //         [sequelize.col('course_fee'), 'courseFee'],
-        //         [sequelize.col('first_name'), 'instructorFirstName'],
-        //         [sequelize.col('last_name'), 'instructorLastName'],
-        //         // [sequelize.fn('AVG', sequelize.col('rating')), 'rating']
-        //     ],
-        //     where:
-        //         {
-        //             [Op.or]: [
-        //                 {title: {[Op.like]: '%' + keyword + '%'}},
-        //                 {description: {[Op.like]: '%' + keyword + '%'}},
-        //             ]
-        //         },
-        //     include: [{
-        //         model: Enrollment,
-        //         include: {
-        //             model: Feedback,
-        //             attributes: []
-        //         }
-        //     }, {
-        //         model: Instructor,
-        //         attributes: [],
-        //         required: true,
-        //         include: {
-        //             model: Student,
-        //             attributes: [],
-        //             required: true,
-        //         }
-        //     }]
-        // });
-        let result = coursesByCategory;
+        let courses = await Course.findAll({
+            attributes: [
+                ['course_id', 'courseId'],
+                [sequelize.col('title'), 'courseTitle'],
+                [sequelize.col('description'), 'courseDescription'],
+                ['image', 'courseImage'],
+                [sequelize.col('course_fee'), 'courseFee'],
+                [sequelize.col('first_name'), 'instructorFirstName'],
+                [sequelize.col('last_name'), 'instructorLastName'],
+                // [sequelize.fn('AVG', sequelize.col('rating')), 'rating']
+            ],
+            where:
+                {
+                    [Op.or]: [
+                        {title: {[Op.like]: '%' + keyword + '%'}},
+                        {description: {[Op.like]: '%' + keyword + '%'}},
+                    ]
+                },
+            include: [{
+                model: Enrollment,
+                include: {
+                    model: Feedback,
+                    attributes: []
+                }
+            }, {
+                model: Instructor,
+                attributes: [],
+                required: true,
+                include: {
+                    model: Student,
+                    attributes: [],
+                    required: true,
+                }
+            }]
+        });
+        let result = coursesByCategory.concat(courses);
         // .concat(courses);
         if (price) {
             result = result.filter(res => res.price <= price);

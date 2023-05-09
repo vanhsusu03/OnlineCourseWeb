@@ -5,11 +5,7 @@
             <ul>
                 <li v-for="course in courses">
                     <img :src=course.courseImage alt="">
-                    <img :src=course.courseImage alt="">
                     <div class="course-content">
-                        <h3>{{ course.courseTitle }}</h3>
-                        <div>{{ course.instructorFirstName + ' ' + course.instructorLastName }}</div>
-                        <div>{{ course.courseFee + ' vnd' }}</div>
                         <h3>{{ course.courseTitle }}</h3>
                         <div>{{ course.instructorFirstName + ' ' + course.instructorLastName }}</div>
                         <div>{{ course.courseFee + ' vnd' }}</div>

@@ -138,62 +138,61 @@ class CourseController {
     }
 
 //GET /mycourses
-    async showYourCourses(req, res, next) {
-        let studentId = req.session.studentId;
+async showYourCourses(req, res, next) {
+    let studentId = req.session.studentId;
 
-        if (studentId) {
-            let courses = await Course.findAll({
-                attributes: [
-                    ['course_id', 'courseId'],
-                    [sequelize.col('title'), 'courseTitle'],
-                    [sequelize.col('description'), 'courseDescription'],
-                    ['image', 'courseImage'],
-                    [sequelize.col('course_fee'), 'courseFee'],
-                    [sequelize.col('Instructor.Student.first_name'), 'instructorFirstName'],
-                    [sequelize.col('Instructor.Student.last_name'), 'instructorLastName'],
-                    // [sequelize.fn('AVG', sequelize.col('rating')), 'rating']
-                ],
-                include: [
-                    {
-                        model: Enrollment,
-                        attributes: [],
+    if (studentId) {
+        let courses = await Course.findAll({
+            attributes: [
+                ['course_id', 'courseId'],
+                [sequelize.col('title'), 'courseTitle'],
+                [sequelize.col('description'), 'courseDescription'],
+                ['image', 'courseImage'],
+                [sequelize.col('course_fee'), 'courseFee'],
+                [sequelize.col('Instructor.Student.first_name'), 'instructorFirstName'],
+                [sequelize.col('Instructor.Student.last_name'), 'instructorLastName'],
+                // [sequelize.fn('AVG', sequelize.col('rating')), 'rating']
+            ],
+            include: [
+                {
+                    model: Enrollment,
+                    attributes: [],
+                    required: true,
+                    include: [{
+                        model: Student,
+                        attribute: [],
                         required: true,
-                        include: [{
-                            model: Student,
-                            attribute: [],
-                            required: true,
-                            where: {
-                                student_id: studentId,
-                            }
-                        }],
-                    }, {
-                        model: Instructor,
-                        attributes: [],
-                        include: {
-                            model: Student,
-                            required: true,
-                            attributes: [
-                                'last_name',
-                                'first_name',
-                            ],
+                        where: {
+                            student_id: studentId,
                         }
-                    },
-                    {
-                        model: Enrollment,
-                        attributes: [],
+                    }],
+                }, {
+                    model: Instructor,
+                    required: true,
+                    attributes: [],
+                    include: {
+                        model: Student,
                         required: true,
-                        include: {
-                            model: Feedback,
-                            attributes: [],
-                            required: true,
-                        }
+                        attributes: [
+                            'last_name',
+                            'first_name',
+                        ],
                     }
-                ]
-            })
-            console.log(courses);
-            return res.status(200).json(courses);
-        }
+                },
+                {
+                    model: Enrollment,
+                    attributes: [],
+                    include: {
+                        model: Feedback,
+                        attributes: [],
+                    }
+                }
+            ]
+        })
+        console.log(courses);
+        return res.status(200).json(courses);
     }
+}
 
 //GET /courses/:courseId
     async showCourseDetail(req, res, next) {

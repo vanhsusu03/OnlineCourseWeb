@@ -198,6 +198,10 @@ h1 {
                 top: 200px;
                 border: none;
                 border-radius: 30px;
+                &:hover {
+                    background-color: #000000;
+                    transform: scale(1.1);
+                }
             }
         }
     }
