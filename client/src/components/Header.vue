@@ -40,6 +40,19 @@
         <div v-if="student.userName" class="logged">
             <img src="../assets/img/user.png" id="user" @click.prevent="showDropDown">
             <div v-if="dropdownselect" class="drop-down-select" @mouseleave="unshowDropDown">
+                <div style="display: flex;" class="top-info">
+                    <img src="../assets/img/user.png" alt="" style="width: 100px; height: auto; z-index: 3; padding: 0; margin: 0;">
+                    <div>
+                        <h5>{{ student.firstName + ' ' + student.lastName }}</h5>
+                        <div style="font-size: 23px; font-weight: 500;">
+                            <img src="../assets/img/logo.png" alt="" style="width: 25px; z-index: 3; padding: 0; margin: 0;"> 
+                            <span class="coin">{{ student.coin }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                        
+                
                 <div>
                     <RouterLink @click.prevent="unshowDropDown" to="/account/info">Account Settings</RouterLink>
                 </div>
@@ -238,6 +251,13 @@ export default {
         position: relative;
         width: 1%;
 
+        .top-info {
+            .coin {
+                padding-top: 10px;
+                margin-left: 5px;
+            }
+        }
+        
         img {
             width: 220%;
             margin-left: 3030%;
@@ -247,8 +267,9 @@ export default {
         .drop-down-select {
             position: absolute;
             margin-left: 3030%;
+            left:-300%;
             top: 115%;
-            width: 1450%;
+            width: 1800%;
             background-color: white;
             padding: .3rem;
             padding-bottom: .3rem;

@@ -56,7 +56,6 @@ export default {
                 name: ""
             },
             data: {
-                qualification: "",
                 introduction_brief: "",
                 transfer_info: ""
             },
