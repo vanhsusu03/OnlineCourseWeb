@@ -10,5 +10,11 @@ export default {
     },
     setLogged(state, isLogin) {
       state.isLogin = isLogin;
+    },
+    setMiniCart(state,miniCart){
+      state.miniCart = miniCart;
+    },
+    setCourseIDShowing(state, courseIDshowing) {
+      state.courseIDshowing = courseIDshowing;
     }
   };

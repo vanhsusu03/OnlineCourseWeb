@@ -84,7 +84,7 @@ class CartController {
 
         if (cart) {
             if (this.isInCart(cart, courseId)) {
-                return res.status(400).json({
+                return res.status(200).json({
                     msg: 'The course already exists in the cart!',
                     numberOfCourses: cart.length
                 });
@@ -109,9 +109,10 @@ class CartController {
         });
     }
 
+     //[POST] /students/cart/:courseId/delete
     async removeCourse(req, res, next) {
         const studentId = req.session.studentId;
-        const courseId = req.body.courseId;
+        const courseId = Number(req.params.courseId);
 
         var cart = req.session.cart;
         var isRemoved = false;

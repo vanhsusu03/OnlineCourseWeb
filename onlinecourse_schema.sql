@@ -23,7 +23,6 @@ CREATE TABLE student (
 
 CREATE TABLE instructor (
   instructor_id MEDIUMINT UNSIGNED NOT NULL,
-  qualification VARCHAR(300) NOT NULL,
   introduction_brief VARCHAR(3000) NOT NULL,
   transfer_info VARCHAR(200) NOT NULL, -- BankName_AccountNumber_NameOfBankAccount
   PRIMARY KEY (instructor_id),

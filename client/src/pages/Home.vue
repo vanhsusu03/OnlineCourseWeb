@@ -60,16 +60,15 @@
         <div class="underline"></div>
         <br>
         <div class="line-1">
-            <div class="sub">
+            <div class="sub" @click="redirectSearching">
                 <div class="cate">
-                    <!-- <div class="math"> -->
+
                     <img src="../assets/img/math.png" class="cate-img">
-                    <!-- </div> -->
                     <br />
                 </div>
                 <p class="cate-content">Math</p>
             </div>
-            <div class="sub">
+            <div class="sub" @click="redirectSearching">
                 <div class="cate">
                     <!-- <div class="math"> -->
                     <img src="../assets/img/des.png" class="cate-img">
@@ -78,7 +77,7 @@
                 </div>
                 <p class="cate-content">Design</p>
             </div>
-            <div class="sub">
+            <div class="sub" @click="redirectSearching">
                 <div class="cate">
                     <!-- <div class="math"> -->
                     <img src="../assets/img/dev.png" class="cate-img">
@@ -87,7 +86,7 @@
                 </div>
                 <p class="cate-content">Development</p>
             </div>
-            <div class="sub">
+            <div class="sub" @click="redirectSearching">
                 <div class="cate">
                     <!-- <div class="math"> -->
                     <img src="../assets/img/psy.png" class="cate-img">
@@ -96,7 +95,7 @@
                 </div>
                 <p class="cate-content">Psychology</p>
             </div>
-            <div class="sub">
+            <div class="sub" @click="redirectSearching">
                 <div class="cate">
                     <!-- <div class="math"> -->
                     <img src="../assets/img/music.png" class="cate-img">
@@ -105,7 +104,7 @@
                 </div>
                 <p class="cate-content">Music</p>
             </div>
-            <div class="sub">
+            <div class="sub" @click="redirectSearching">
                 <div class="cate">
                     <!-- <div class="math"> -->
                     <img src="../assets/img/health.png" class="cate-img">
@@ -116,7 +115,7 @@
             </div>
         </div>
         <div class="line-2">
-            <div class="sub">
+            <div class="sub" @click="redirectSearching">
                 <div class="cate">
                     <!-- <div class="math"> -->
                     <img src="../assets/img/lifestyle.png" class="cate-img">
@@ -125,7 +124,7 @@
                 </div>
                 <p class="cate-content">Lifestyle</p>
             </div>
-            <div class="sub">
+            <div class="sub" @click="redirectSearching">
                 <div class="cate">
                     <!-- <div class="math"> -->
                     <img src="../assets/img/media.png" class="cate-img">
@@ -134,16 +133,16 @@
                 </div>
                 <p class="cate-content">Media</p>
             </div>
-            <div class="sub">
+            <div class="sub" @click="redirectSearching">
                 <div class="cate">
                     <!-- <div class="math"> -->
                     <img src="../assets/img/it.png" class="cate-img">
                     <!-- </div> -->
                     <br />
                 </div>
-                <p class="cate-content">IT/Software</p>
+                <p class="cate-content">IT</p>
             </div>
-            <div class="sub">
+            <div class="sub" @click="redirectSearching">
                 <div class="cate">
                     <!-- <div class="math"> -->
                     <img src="../assets/img/economic.png" class="cate-img">
@@ -152,7 +151,7 @@
                 </div>
                 <p class="cate-content">Economic</p>
             </div>
-            <div class="sub">
+            <div class="sub" @click="redirectSearching">
                 <div class="cate">
                     <!-- <div class="math"> -->
                     <img src="../assets/img/chemistry.png" class="cate-img">
@@ -161,7 +160,7 @@
                 </div>
                 <p class="cate-content">Chemistry</p>
             </div>
-            <div class="sub">
+            <div class="sub" @click="redirectSearching">
                 <div class="cate">
                     <!-- <div class="math"> -->
                     <img src="../assets/img/physic.png" class="cate-img">
@@ -245,7 +244,18 @@ export default {
         }
     },
     methods: {
-        ...mapMutations(['scrollToTop'])
+        ...mapMutations(['scrollToTop']),
+        getText(event) {
+            const clickedElement = event.target;
+            const subDiv = clickedElement.closest(".sub");
+            let pTag = subDiv.querySelector(".cate-content");
+            let text = pTag.textContent;
+            return text; // Output: Economic
+        },
+        redirectSearching(event) {
+            let id = this.getText(event);
+            this.$router.push(`/searching/${id}`);
+        }
     },
     computed: {
         ...mapState(['student'])
@@ -451,6 +461,7 @@ export default {
     margin-bottom: 8%;
     margin-left: 7%;
     margin-top: -3%;
+
     .hello {
         display: flex;
 
@@ -487,6 +498,7 @@ export default {
     margin-left: 80px;
     margin-right: 50px;
     margin-top: -90px;
+
     .top-title {
         font-size: 1.8rem;
         font-weight: 600;
