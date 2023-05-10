@@ -9,7 +9,8 @@ class StudyController {
         this.addFeedback = this.addFeedback.bind(this);
         this.updateLastTimeAccess = this.updateLastTimeAccess.bind(this);
         this.getLastTimeAccess = this.getLastTimeAccess.bind(this);
-        this.getContent = this.getContent.bind(this);
+        this.getContents = this.getContents.bind(this);
+        this.getContentLink = this.getContentLink.bind(this);
     }
 
     async getEnrollmentId(studentId, courseId) {
@@ -194,7 +195,7 @@ class StudyController {
         });
     }
 
-    async getContent(req, res, next) {
+    async getContents(req, res, next) {
         const courseId = req.params.courseId;
         
         const studentId = req.session.studentId;
@@ -211,14 +212,20 @@ class StudyController {
                 [sequelize.col('Chapter.chapter_id'), 'chapterId'],
                 [sequelize.col('Chapter.title'), 'chapterTitle']
             ],
+            order: [
+                ['chapterId', 'ASC']
+            ],
             include: {
                 model: Content,
                 attributes: [
                     [sequelize.col('content_id'), 'contentId'],
+                    [sequelize.col('title'), 'contentTitle'],
                     [sequelize.col('time_required_in_sec'), 'timeRequiredInSec'],
                     'link'
                 ],
-                required: true,
+                order: [
+                    [sequelize.col('content_id'), 'ASC']
+                ],
                 include: {
                     model: Content_type,
                     attributes: [
@@ -236,6 +243,39 @@ class StudyController {
 
         return res.status(200).json({
             contents: contents
+        });
+    }
+
+    async getContentLink(req, res, next) {
+        const courseId = req.params.courseId;
+        const contentId = req.params.contentId;
+        
+        const studentId = req.session.studentId;
+
+        const enrollmentId = await this.getEnrollmentId(studentId, courseId);
+        if (!enrollmentId) {
+            return res.status(400).json({
+                msg: 'You have not enrolled in this course yet!'
+            });
+        }
+
+        const link = await Chapter.findOne({
+            attributes: [],
+            include: {
+                model: Content,
+                attributes: [ 'link' ],
+                where: { 
+                    content_id: contentId 
+                }
+            },
+            required: true,
+            where: { 
+                course_id: courseId 
+            }
+        });
+
+        return res.status(200).json({
+            contentLink: link.dataValues.contents[0].link
         });
     }
 }

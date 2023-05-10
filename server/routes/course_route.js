@@ -14,4 +14,6 @@ router.get('/courses/:categoryName', courseController.showCoursesByCategoryName)
 
 router.get('/courses', courseController.showAllCourses);
 
+router.get('/courses/:courseId/contents', courseController.getContents);
+
 module.exports = router;
