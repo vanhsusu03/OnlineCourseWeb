@@ -9,7 +9,7 @@
         <div class="search">
             <form ref="anyName">
                 <input type="text" id="searching" class="sub" placeholder="Search for everything ..."
-                       @keydown.enter.prevent="handleSearch()" v-model="form.keyw"/>
+                    @keydown.enter.prevent="handleSearch()" v-model="form.keyw" />
             </form>
             <RouterLink @click="handleSearch()" to="/searching/"><img src="../assets/img/lookup.png" id="lookup" />
             </RouterLink>
@@ -34,25 +34,27 @@
                 <div class="become">Instructor Manage</div>
             </RouterLink>
         </div>
-        
+
 
 
         <div v-if="student.userName" class="logged">
             <img src="../assets/img/user.png" id="user" @click.prevent="showDropDown">
             <div v-if="dropdownselect" class="drop-down-select" @mouseleave="unshowDropDown">
                 <div style="display: flex;" class="top-info">
-                    <img src="../assets/img/user.png" alt="" style="width: 100px; height: auto; z-index: 3; padding: 0; margin: 0;">
+                    <img src="../assets/img/user.png" alt=""
+                        style="width: 100px; height: auto; z-index: 3; padding: 0; margin: 0;">
                     <div>
                         <h5>{{ student.firstName + ' ' + student.lastName }}</h5>
                         <div style="font-size: 23px; font-weight: 500;">
-                            <img src="../assets/img/logo.png" alt="" style="width: 25px; z-index: 3; padding: 0; margin: 0;"> 
+                            <img src="../assets/img/logo.png" alt=""
+                                style="width: 25px; z-index: 3; padding: 0; margin: 0;">
                             <span class="coin">{{ student.coin }}</span>
                         </div>
                     </div>
                 </div>
-                
-                        
-                
+
+
+
                 <div>
                     <RouterLink @click.prevent="unshowDropDown" to="/account/info">Account Settings</RouterLink>
                 </div>
@@ -81,8 +83,11 @@
             <div class="new">
                 <img src="../assets/img/new.png" id="new">
             </div>
-            <RouterLink @click="scrollToTop()" to="/login" v-if="!student.userName"><img id="cart" style="width: 40px; cursor: pointer;" src="../assets/img/cart.png" alt=""></RouterLink>
-            <RouterLink @click="scrollToTop()" to="/cart" v-if="student.userName"><MiniCart id="cart"></MiniCart></RouterLink>
+            <RouterLink @click="scrollToTop()" to="/login" v-if="!student.userName"><img id="cart"
+                    style="width: 40px; cursor: pointer;" src="../assets/img/cart.png" alt=""></RouterLink>
+            <RouterLink @click="scrollToTop()" to="/cart" v-if="student.userName">
+                <MiniCart id="cart"></MiniCart>
+            </RouterLink>
 
         </div>
         <div v-if="!student.userName" class="login">
@@ -119,7 +124,7 @@ export default {
         return {
             dropdownselect: false,
             form: {
-                keyw:"",
+                keyw: "",
             },
             searchResult: []
         }
@@ -129,7 +134,7 @@ export default {
         MiniCart
     },
     methods: {
-        ...mapMutations(['setStudent', 'setLogged','setMiniCart']),
+        ...mapMutations(['setStudent', 'setLogged', 'setMiniCart']),
 
         showMenu() {
             let nav_bar = document.querySelector('.header .navbar');
@@ -160,7 +165,7 @@ export default {
         },
     },
     computed: {
-        ...mapState(['student', 'admin','miniCart'])
+        ...mapState(['student', 'admin', 'miniCart'])
     }
 }
 </script>
@@ -256,7 +261,7 @@ export default {
                 margin-left: 5px;
             }
         }
-        
+
         img {
             width: 220%;
             margin-left: 3030%;
@@ -266,7 +271,7 @@ export default {
         .drop-down-select {
             position: absolute;
             margin-left: 3030%;
-            left:-300%;
+            left: -300%;
             top: 115%;
             width: 1800%;
             background-color: white;
@@ -382,4 +387,5 @@ export default {
     }
 
 
-}</style>
+}
+</style>

@@ -18,6 +18,8 @@ class StudentController {
                 return res.status(200).json({msg: 'Username is already exists'});
             } else if (await Student.findOne({where: {email: req.body.email}})) {
                 return res.status(200).json({msg: 'Email is already exists'});
+            }else if (await Student.findOne({where: {phone: req.body.phone}})) {
+                return res.status(200).json({msg: 'Phone is already exists'});
             } else {
 
                 const hashedPw = await bcrypt.hash(password, bcryptRound);
@@ -36,7 +38,6 @@ class StudentController {
                     registration_date: today[0].today,
                 })
                     .then((data) => {
-                        // req.session.studentId = data.student_id;
                         return res.status(201).json({msg: 'Success'});
                     })
                     .catch((err) => {
@@ -125,39 +126,6 @@ class StudentController {
     async updateInfo(req, res, next) {
         const {username, email, firstname, lastname, phone, birth} = req.body;
         try {
-            // const checkEmail = await Student.findOne(
-            //     {
-            //         where:{
-            //             email: email,
-            //             student_id:{
-            //                 [Op.ne]:req.session.student_id,
-            //             }
-            //         }
-            //     });
-
-            // const checkPhone = await Student.findOne(
-            //     {
-            //         where:{
-            //             phone: phone,
-            //             student_id:{
-            //                 [Op.ne]:req.session.student_id,
-            //             }
-            //         }
-            //     });
-
-            // if (checkEmail || checkPhone) {
-            //     if(checkEmail){
-            //         return res.status(201).json({
-            //             msg: 'Email is already exists',
-            //         });
-            //     }
-            //     if (checkPhone){
-            //         return res.status(201).json({
-            //             msg: 'Phone is already exists',
-            //         });
-            //     }
-            // }
-
             await Student.update(
                 {
                     username: username,
