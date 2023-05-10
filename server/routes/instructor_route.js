@@ -4,6 +4,7 @@ const {isAlreadyLogin, isAuth, isInstructor} = require('../middleware/Authentica
 const router = express.Router();
 
 router.post('/teaching', instructorController.createInstructor);
+
 router.get('/instructor/info/:instructorId', instructorController.getInstructorInfo);
 router.get('/courseof/:instructorId', instructorController.getCoursesOfInstructor);
 
