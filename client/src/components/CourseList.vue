@@ -1,12 +1,13 @@
 <template>
-    <h1>Course List </h1>
+    <h1>All our courses for you </h1>
     <ul v-if="courses && courses.length" class="listCourse">
         <li v-for="course in courses" class="item">
             <img v-bind:src="course.courseImage" alt="" class="course-img" @click="showCourse(course.courseId)">
             <div class="course-content">
                 <h4 v-bind:title="course.courseTitle">{{ course.courseTitle }}</h4>
                 <div v-bind:title="course.courseDescription">{{ course.courseDescription }}</div>
-                <div>By {{ course.instructorFirstName + ' ' + course.instructorLastName }}</div>
+                <div @click="redirectInstructorInfo(course.instructorId)" id="ins">By <span> {{ course.instructorFirstName +
+                    ' ' + course.instructorLastName }}</span></div>
                 <h5>{{ course.courseFee + ' VND' }}</h5>
                 <button v-on:click="addToCart(course)">Add To Cart</button>
                 <!-- <div>{{ courseState[course.courseId] }}</div> -->
@@ -98,21 +99,9 @@ export default {
         },
         checkBought(id) {
             axios.post(`/course/state/${id}`, {}, { withCredentials: true })
-            .then(response => {
+                .then(response => {
                     this.isBought = response.data.msg;
                 });
-            // let state=data.data.msg;
-            // if(state === 'Activated') {
-            //     this.isBought = true;
-            //     alert(this.isBought);
-            // } else {
-            //     this.isBought = false;
-            // }
-            // alert(state);
-            // if(state === 'Unactivated') {
-            //     return true;
-            // }
-            // return false;
         },
         async showCourse(id) {
             let check = await axios.post(`/course/state/${id}`, {}, { withCredentials: true });
@@ -128,16 +117,26 @@ export default {
             setTimeout(() => {
                 if (this.isBought === 'Unactivated') {
                     axios.post('/students/cart/' + course.courseId, course, { withCredentials: true })
-                    .then(response => {
-                        alert(response.data.msg);
-                    })
-                    .catch(e => {
-                        this.errors.push(e);
-                    })
+                        .then(response => {
+                            alert(response.data.msg);
+                        })
+                        .catch(e => {
+                            this.errors.push(e);
+                        })
                 } else {
                     alert("You have actived this course before");
                 }
             }, 100);
+        },
+        getText(event) {
+            const clickedElement = event.target;
+            const subDiv = clickedElement.closest(".sub");
+            let pTag = subDiv.querySelector(".cate-content");
+            let text = pTag.textContent;
+            return text;
+        },
+        redirectInstructorInfo(id) {
+            this.$router.push(`/instructor/info/show/${id}`);
         }
     },
 
@@ -156,9 +155,17 @@ export default {
 
 <style lang="scss" scoped>
 h1 {
-    margin-left: 50px;
-    margin-top: 30px;
-    margin-bottom: 20px;
+    margin-top: 40px;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: rgb(52, 73, 94);
+    margin-left: 12%;
+    margin-bottom: 40px;
+    transform: translateX(-3%);
+    width: 30%;
+    border-bottom: 2px solid black;
+    padding-bottom: 20px;
+
 }
 
 .listCourse {
@@ -172,10 +179,13 @@ h1 {
     justify-content: space-between;
 
     .item {
+        img:hover {
+            cursor: pointer;
+        }
+
         &:hover {
             box-shadow: -0.5rem -0.5rem 1rem rgba($color: #000000, $alpha: 0.1), 0.5rem 0.5rem 1rem rgba($color: #000000, $alpha: 0.1);
             border: 0.02rem solid rgba($color: #000000, $alpha: 0.05);
-            cursor: pointer;
             // padding: 0.05rem 0.05rem 0.05rem 0.05rem;
             // border-radius: 1rem;
         }
@@ -234,6 +244,17 @@ h1 {
                 &:hover {
                     background-color: #000000;
                     transform: scale(1.1);
+                }
+            }
+
+            #ins {
+                span {
+                    font-weight: 500;
+                    border-bottom: 1px solid black;
+
+                    &:hover {
+                        cursor: pointer;
+                    }
                 }
             }
         }

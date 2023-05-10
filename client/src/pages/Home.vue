@@ -7,12 +7,7 @@
             <div class="box">
                 <div class="text">
                     <div class="heading">
-                        <!-- <div v-if="student.userName"> Hi, {{student.lastName}}</div>
-
-                        <div v-else>  -->
                         Learning your own course
-                        <!-- </div> -->
-
                     </div>
                     <div class="body">
                         Unlock and try out our 1000+ courses
@@ -36,7 +31,7 @@
     </div>
     <br>
     <br>
-
+    
     <!-- INTRO -->
     <div class="intro">
         <div v-if="student.userName" class="hello">
@@ -45,13 +40,6 @@
                 {{ student.lastName + ' ' + student.firstName + '!' }}
             </div>
         </div>
-        <!-- <div class="content">
-            Choose from 10000+ online courses with new additions published every month
-        </div>
-
-        <div class="ins">
-
-        </div> -->
     </div>
 
     <!-- TOP CATE -->
@@ -62,7 +50,6 @@
         <div class="line-1">
             <div class="sub" @click="redirectSearching">
                 <div class="cate">
-
                     <img src="../assets/img/math.png" class="cate-img">
                     <br />
                 </div>
@@ -240,7 +227,7 @@ export default {
     name: 'Home',
     data() {
         return {
-
+    
         }
     },
     methods: {
@@ -250,7 +237,7 @@ export default {
             const subDiv = clickedElement.closest(".sub");
             let pTag = subDiv.querySelector(".cate-content");
             let text = pTag.textContent;
-            return text; // Output: Economic
+            return text; 
         },
         redirectSearching(event) {
             let id = this.getText(event);
@@ -261,8 +248,6 @@ export default {
         ...mapState(['student'])
     }
 }
-
-// Logic do in here
 </script>
 
 <style lang = "scss" scoped>
