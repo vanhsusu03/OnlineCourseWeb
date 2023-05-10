@@ -10,5 +10,6 @@ router.get('/courses/:courseId/reviews', studyController.getFeedbacksOfACourse);
 router.put('/courses/:courseId/students/:studentId/lastTimeAccess', isAuth, studyController.updateLastTimeAccess);
 router.get('/courses/:courseId/students/:studentId/lastTimeAccess', isAuth, studyController.getLastTimeAccess);
 router.post('/courses/:courseId/students/contents', studyController.getContent);
+router.get('/courses/:courseId/:chapterId/:contentId/study', isAuth, studyController.getContentLink);
 
 module.exports = router;
