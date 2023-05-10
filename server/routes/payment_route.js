@@ -3,8 +3,8 @@ const paymentController = require('../controllers/PaymentController');
 const { isAuth } = require('../middleware/Authentication');
 const router = express.Router();
 
-router.get('/students/:studentId/coin', isAuth, paymentController.getCoinOfStudent);
-router.put('/students/:studentId/courses/:courseId/payment', isAuth, paymentController.purchaseWithoutCart);
-router.put('/students/:studentId/cart/payment', isAuth, paymentController.purchaseWithCart);
+router.get('/students/coin', isAuth, paymentController.getCoinOfStudent);
+router.post('/students/payment/course', isAuth, paymentController.purchaseWithoutCart);
+router.post('/students/payment/cart', isAuth, paymentController.purchaseWithCart);
 
 module.exports = router;

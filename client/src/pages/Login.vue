@@ -8,11 +8,6 @@
     <div class="login">
         <h1>Login</h1>
         <form @submit="handleSubmit" novalidate autocomplete="off">
-            <!-- <div v-if="errors.length" class="error-box">
-                <ul>
-                    <li v-for="error in errors" :key="error">{{ error }}</li>
-                </ul>
-            </div> -->
 
             <label for="username" class="info">Username: <br /> </label>
             <br>
