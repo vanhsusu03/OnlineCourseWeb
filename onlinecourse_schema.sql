@@ -23,7 +23,6 @@ CREATE TABLE student (
 
 CREATE TABLE instructor (
   instructor_id MEDIUMINT UNSIGNED NOT NULL,
-  qualification VARCHAR(300) NOT NULL,
   introduction_brief VARCHAR(3000) NOT NULL,
   transfer_info VARCHAR(200) NOT NULL, -- BankName_AccountNumber_NameOfBankAccount
   PRIMARY KEY (instructor_id),
@@ -118,9 +117,10 @@ CREATE TABLE content (
   content_id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
   chapter_id MEDIUMINT UNSIGNED NOT NULL,
   content_type_id TINYINT UNSIGNED NOT NULL,
+  title VARCHAR(200) NOT NULL,
   time_required_in_sec SMALLINT UNSIGNED NOT NULL,
   is_open_for_free BOOLEAN NOT NULL DEFAULT FALSE,
-  link VARCHAR(300) NOT NULL,
+  link VARCHAR(1000) NOT NULL,
   PRIMARY KEY (content_id),
   CONSTRAINT fk_content_chapter FOREIGN KEY (chapter_id) REFERENCES chapter (chapter_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT fk_content_content_type FOREIGN KEY (content_type_id) REFERENCES content_type (type_id) ON DELETE RESTRICT ON UPDATE CASCADE

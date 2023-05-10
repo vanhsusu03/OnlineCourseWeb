@@ -23,6 +23,10 @@ module.exports = function(sequelize, DataTypes) {
         key: 'type_id'
       }
     },
+    title: {
+      type: DataTypes.STRING(200),
+      allowNull: false
+    },
     time_required_in_sec: {
       type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false
@@ -33,7 +37,7 @@ module.exports = function(sequelize, DataTypes) {
       defaultValue: 0
     },
     link: {
-      type: DataTypes.STRING(300),
+      type: DataTypes.STRING(1000),
       allowNull: false
     }
   }, {

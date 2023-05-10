@@ -10,10 +10,6 @@ module.exports = function(sequelize, DataTypes) {
         key: 'student_id'
       }
     },
-    qualification: {
-      type: DataTypes.STRING(300),
-      allowNull: false
-    },
     introduction_brief: {
       type: DataTypes.STRING(3000),
       allowNull: false
