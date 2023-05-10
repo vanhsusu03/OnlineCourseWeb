@@ -2,5 +2,8 @@ export default {
     student:[],
     admin: "",
     instructor: [],
-    isLogin: false
+    isLogin: false,
+    miniCart: true,
+    isSearching: false,
+    courseIDshowing: 0  ,
 };

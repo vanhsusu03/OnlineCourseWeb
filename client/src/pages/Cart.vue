@@ -48,23 +48,58 @@
     <div class="total">
         <h3 class="title">Total:</h3>
         <h2>{{ getTotal() }} VND</h2>
-        <RouterLink to="/payment"><button>Payment</button></RouterLink>
+        <button v-on:click="openPayment()">Payment</button>
+    </div>
+</div>
+<!-- <div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>Some text in the Modal..</p>
+    </div>
+
+</div> -->
+<div class="modal" id="myModal">
+    <div class="modal-content">
+        <span class="close" v-on:click="closePayment()">&times;</span>
+        <p><Payment :numOfCourses="courses.length" :courses="courses" :saved="saved" :isInCart="true"></Payment></p>
     </div>
 </div>
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex';
+import {
+    mapMutations,
+    mapState
+} from 'vuex';
+import Payment from './Payment.vue';
+import MiniCart from '@/components/MiniCart.vue';
+import axios from 'axios';
 export default {
     name: 'Cart',
+
     data() {
         return {
             courses: [],
-            saved: []
+            saved: [],
+            openingPayment: false,
         }
     },
+    components: {
+        Payment
+    },
     methods: {
-        ...mapMutations(['scrollToTop']),
+        ...mapMutations(['scrollToTop', 'setMiniCart']),
+        openPayment() {
+            let modal = document.getElementById("myModal");
+            // alert("hio");
+            modal.style.display = "block";
+            this.openingPayment = true;
+        },
+        closePayment() {
+            let modal = document.getElementById("myModal");
+            modal.style.display = "none";
+            this.openingPayment = false;
+        },
         getTotal() {
             let sum = 0;
             for (let i = 0; i < this.courses.length; i++) {
@@ -80,12 +115,14 @@ export default {
                 }
             }
         },
-        removeCourse(id) {
-            alert(student.firstName) 
-            axios.delete('students/cart/' + id, id, {withCredentials: true})
-            .catch(e => {
-                this.errors.push(e)
-            })
+        async removeCourse(id) {
+            await axios.post(`/students/cart/${id}/delete`, {}, {
+                withCredentials: true
+            });
+            this.getInfo();
+            // this.setUpdateMiniCart(true);
+            this.$router.push('/cart');
+
         },
         moveToCart(id) {
             for (let i = 0; i < this.saved.length; i++) {
@@ -96,22 +133,24 @@ export default {
             }
         },
         getInfo() {
-            // this.getInfo()
-            axios.get('/students/cart', {withCredentials: true})
-            .then(response => {
-                this.courses = response.data.coursesInCart
-            })
-            .catch(e => {
-                this.errors.push(e)
-            })
+            axios.get('/students/cart/', {
+                    withCredentials: true
+                })
+                .then(response => {
+                    this.courses = response.data.coursesInCart
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                })
         }
     },
     created() {
         this.getInfo()
     },
     computed: {
-        ...mapState(['student', 'admin'])
-    }
+        ...mapState(['student', 'admin', 'miniCart'])
+    },
+    
 }
 </script>
 
@@ -121,9 +160,11 @@ export default {
     margin-top: 30px;
     margin-bottom: 20px;
 }
+
 .content {
     display: flex;
     margin-left: 50px;
+
     .total {
         margin-left: 100px;
         margin-top: 50px;
@@ -209,5 +250,56 @@ export default {
         }
     }
 
+}
+
+/* The Modal (background) */
+.modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    padding-top: 100px;
+    /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+/* The Close Button */
+.close {
+    color: #aaaaaa;
+    // float: right;
+    position: absolute;
+    right: 10px;
+    top: 0px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
 }
 </style>

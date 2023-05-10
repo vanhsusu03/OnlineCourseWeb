@@ -2,10 +2,10 @@ import router from "@/routes/router";
 import axios from "axios"
 
 export default {
-  async getProducts(context) {
-    await axios.get('products', {withCredentials: true})
+  async getAllCourses(context) {
+    await axios.get('/courses', {withCredentials: true})
     .then((res) => {
-      context.commit("setFoods", res.data);
+      context.commit("setCourses", res.data);
     })
     .catch((err) => {
       console.log(err);
