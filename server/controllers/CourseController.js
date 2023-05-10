@@ -198,48 +198,61 @@ async showYourCourses(req, res, next) {
 
 //GET /courses/:courseId
     async showCourseDetail(req, res, next) {
-        let courseId = req.params.courseId;
-        let details = await Course.findAll({
-                attributes: [
-                    ['course_id', 'courseId'],
-                    [sequelize.col('title'), 'courseTitle'],
-                    [sequelize.col('description'), 'courseDescription'],
-                    ['image', 'courseImage'],
-                    [sequelize.col('course_fee'), 'courseFee'],
-                    [sequelize.col('first_name'), 'instructorFirstName'],
-                    [sequelize.col('last_name'), 'instructorLastName'],
-                    // [sequelize.fn('AVG', sequelize.col('rating')), 'rating'],
-                ],
-                include: [{
-                    model: Instructor,
-                    attributes: [
-                        'instructor_id',
-                    ],
-                    include: {
-                        model: Student,
-                        attributes: [
-                            'first_name',
-                            'last_name',
-                        ],
-                    }
-                },
-                    {
-                        model: Enrollment,
-                        include: {
-                            model: Feedback,
-                            attributes: [[sequelize.fn('AVG',
-                                sequelize.col('rating')), 'rating']]
-                        }
-                    }
-                ],
-                where: {
-                    course_id: courseId,
-                },
-                raw: true,
-                nest: true,
-            }
-        )
-        return res.status(200).json(details);
+        let courseId = Number(req.params.courseId);
+        
+        let details = await Course.findByPk(courseId, {
+            include: [
+              {
+                model: Category,
+                attributes: ['name'],
+                through: {attributes: []}
+              }
+            ]
+          });
+
+        const numOfChapters = await Chapter.count({
+            where: { course_id: courseId },
+        });
+
+        let numOfContents = 0;
+        await Chapter.findAll({
+            where: { course_id: courseId },
+            include: [{ model: Content }],
+        }).then((chapters) => {
+            chapters.forEach((chapter) => {
+                numOfContents += chapter.contents.length;
+            });
+        });
+
+        const numOfStudents = await Enrollment.count({
+            where: { course_id: courseId },
+        });
+
+        var averageRating;
+        var feedbackCount = 0;
+        await Enrollment.findAll({
+            where: { course_id: courseId },
+            include: [{ model: Feedback }],
+        }).then((enrollments) => {
+            let totalRating = 0;
+            enrollments.forEach((enrollment) => {
+                if (enrollment.feedback) {
+                    totalRating += enrollment.feedback.rating;
+                    feedbackCount++;
+                }
+            });
+            averageRating = feedbackCount > 0 ? totalRating/feedbackCount : 0;
+        });
+
+
+        return res.status(200).json({
+            info: details,
+            numOfChapters,
+            numOfContents,
+            numOfStudents,
+            feedbackCount,
+            averageRating
+        });
     }
 
 //GET /courses/:categoryId
