@@ -15,6 +15,9 @@ import MyCourses from '../components/MyCourses';
 import AboutUs from '../pages/AboutUs';
 import BecomeInstructor from '../pages/BecomeInstructor';
 import InstructorInfo from '../pages/InstructorInfo.vue';
+import StudyPage from '../pages/StudyPage';
+import Admin from '../pages/Admin';
+// import EditInfo from '../components/EditInfo.vue';
 import PurchaseHistory from '../pages/PurchaseHistory.vue';
 
 import store from '@/store/index';
@@ -35,6 +38,9 @@ const routes = [
     {  path: "/instructor/info/show/:instructorId", name: "InstructorInfox", component: InstructorInfo},
     {  path: "/purchase/history", name: "PurchaseHistory", component: PurchaseHistory},
     {  path: "/course/detail/:courseId", name: "CourseDetail", component: CourseDetail},
+    {  path: "/study/:courseId", name: "StudyPage", component: StudyPage},
+    {  path: "/admin", name: "Admin", component: Admin},
+    //addition in here
 ]
 
 const router = createRouter({

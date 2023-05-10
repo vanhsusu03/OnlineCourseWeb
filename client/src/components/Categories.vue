@@ -5,13 +5,7 @@
         Categories
         <ul class="subnav">
             <li v-for="item in cates" class="itemfirst">
-                {{ item.name }}
-                <img src="../assets/img/right_arrow.png" alt="">
-                <ul class="subnavsecond">
-                    <li v-for="i in item.data" class="itemsecond">
-                        {{ i }}
-                    </li>
-                </ul>
+                <RouterLink :to="{path: '/searching/' + item.name}" class="link">{{ item.name }}</RouterLink>
             </li>
         </ul>
     </div>
@@ -20,35 +14,26 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
     name: 'Categories',
     data() {
         return {
             cates : [
-                {
-                    name: 'Math',
-                    data: [
-                        'math1',
-                        'math2',
-                        'math3'
-                    ]
-                },
-                {
-                    name: 'Develope',
-                    data: [
-                        'dev1',
-                        'dev2'
-                    ]
-                },
-                {
-                    name: 'Music',
-                    data: [
-                        'music1',
-                        'music2'
-                    ]
-                }
             ]
         }
+    },
+    created() {
+
+        axios.get('/categories', {
+                    withCredentials: true
+                })
+                .then(response => {
+                    this.cates = response.data;
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                })
     }
 }
 </script>
@@ -109,6 +94,14 @@ export default {
                 color: #0000ff;
             }
         }
+    }
+}
+.link {
+    text-decoration: none;
+    color: #000;
+    &:hover {
+        transform: scale(1.15); 
+        color: rgb(0,128,128);
     }
 }
 </style>

@@ -15,7 +15,7 @@
         </li>
     </ul>
     <div v-if="begin">
-        {{ openCity(1) }}
+        {{ openPage(1) }}
     </div>
 
     <div v-if="!isCalc">
@@ -29,7 +29,7 @@
 
     <ul class="listPage">
         <li v-for="page in pages" class="pagelinks" :class="{ active: page.status }"
-            v-on:click="scrollToTop(); this.begin = false; openCity(page.value)">
+            v-on:click="scrollToTop(); this.begin = false; openPage(page.value)">
             {{ page.value }}
         </li>
     </ul>
@@ -63,7 +63,7 @@ export default {
         scrollToTop() {
             window.scrollTo(0, 0);
         },
-        openCity(page) {
+        openPage(page) {
             var tabcontent;
             // Get all elements with class="item" and hide them
             tabcontent = document.getElementsByClassName("item");
