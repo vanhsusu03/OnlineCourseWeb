@@ -7,7 +7,10 @@
                 <h4 v-bind:title="course.courseTitle">{{ course.courseTitle }}</h4>
                 <!-- <div>{{ course.instructor }}</div> -->
                 <div class="desc" v-bind:title="course.courseDescription">{{course.courseDescription}}</div>
-                <button v-on:click="">Study</button>
+                <RouterLink :to="{path: '/study/' + course.courseId}">
+                    <button v-on:click="">Study</button>
+                </RouterLink>
+                
             </div>
         </li>
     </ul>

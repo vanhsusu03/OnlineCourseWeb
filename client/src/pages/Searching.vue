@@ -128,7 +128,7 @@ export default {
                 })
             }
             // alert(numPages);
-            console.warn(numPages);
+            // console.warn(numPages);
             return numPages;
         },
         sortCoursesByFee(courses, ascending = true) {
