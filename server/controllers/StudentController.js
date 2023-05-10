@@ -36,7 +36,7 @@ class StudentController {
                     registration_date: today[0].today,
                 })
                     .then((data) => {
-                        req.session.studentId = data.student_id;
+                        // req.session.studentId = data.student_id;
                         return res.status(201).json({msg: 'Success'});
                     })
                     .catch((err) => {
