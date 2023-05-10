@@ -1,7 +1,7 @@
 const sequelize = require('sequelize');
 const { format } = require('date-fns');
 const {
-    models: { Chapter, Content, Content_type, Feedback, Enrollment, Progress }
+    models: { Chapter, Content, Content_type, Feedback, Enrollment, Progress, Student }
 } = require('../models');
 
 class StudyController {
@@ -112,7 +112,11 @@ class StudyController {
         const courseId = req.params.courseId;
 
         const feedbacks = await Enrollment.findAll({
-            attributes: [ 
+            attributes: [
+                [sequelize.col('Student.student_id'), 'studentId'], 
+                [sequelize.col('Student.first_name'), 'studentFirstName'], 
+                [sequelize.col('Student.last_name'), 'studentLastName'],
+                [sequelize.col('Student.image'), 'studentImage'],
                 [sequelize.col('Enrollment.enrollment_id'), 'enrollmentId'],
                 [sequelize.col('Enrollment.enrollment_date'), 'enrollmentDate'],
                 [sequelize.col('feedback_id'), 'feedbackId'],
@@ -123,11 +127,18 @@ class StudyController {
             where: {
                 course_id: courseId
             },
-            include: {
+            include: [
+            {
                 model: Feedback,
                 attributes: [],
                 required: true
             },
+            {
+                model: Student,
+                attributes: [],
+                required: true
+            }
+            ]
         });
 
         return res.status(200).json({
@@ -184,10 +195,11 @@ class StudyController {
     }
 
     async getContent(req, res, next) {
-        const courseId = req.params.courseId;
+        const courseId = Number(req.params.courseId);
         
         const studentId = req.session.studentId;
 
+        console.log(courseId + ' ' + studentId);
         const enrollmentId = await this.getEnrollmentId(studentId, courseId);
         if (!enrollmentId) {
             return res.status(400).json({
@@ -204,6 +216,7 @@ class StudyController {
                 model: Content,
                 attributes: [
                     [sequelize.col('content_id'), 'contentId'],
+                    [sequelize.col('title'), 'contentTitle'],
                     [sequelize.col('time_required_in_sec'), 'timeRequiredInSec'],
                     'link'
                 ],

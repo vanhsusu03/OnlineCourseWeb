@@ -1,27 +1,42 @@
 <template>
-<h1 class="title">{{ course.courseTitle }}</h1>
+<h1 class="title">Studying</h1>
+<!-- {{ content }} -->
 <!-- {{ openChapter($event, 1) }} -->
+<div v-if="begin">
+    {{ openTabs(content[0].chapterId) }}
+    {{ openChapter(content[0].contents[0].contentId) }}
+    {{ this.begin = false }}
+</div>
+
 <div class="tab">
-    <div class="sub-title">
-        <div class="container" :class="{ change: openTab }" v-on:click="openTabs(); openTab=!openTab; ">
-            <div class="bar1"></div>
-            <div class="bar2"></div>
-            <div class="bar3"></div>
+    <div v-for="chapter in content">
+        <div class="sub-title">
+            <div class="container" :class="{ change: openTab[chapter.contents[0].contentId] }" v-on:click="openTabs(chapter.chapterId);">
+                <div class="bar1"></div>
+                <div class="bar2"></div>
+                <div class="bar3"></div>
+            </div>
+            <h5 class="limit">{{chapter.chapterTitle}}</h5>
         </div>
-        <h5 class="tablinks">Chapters in this course:</h5>
+        <button class="tablinks" :class="{ active: openContent[cont.contentId], open: openTab[cont.contentId]}" v-for="cont in chapter.contents" v-on:click=" openChapter(cont.contentId)"><div class="limit">{{ cont.contentTitle }}</div></button>
     </div>
-    <button class="tablinks" v-for="chapter in course.chapters" v-on:click="openChapter($event, chapter.chapter_id)">{{ chapter.chapter_id }}. {{ chapter.title }}</button>
+
     <!-- {{ openChapter($even, 1) }} -->
 </div>
 
-<div v-for="chapter in course.chapters" class="tabcontent">
-    <div>
-    <video width="1000" controls style="" class="course-video">
-      <source :src="chapter.link" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-  </div>
+<div v-for="chapter in content">
+    <div v-for="cont in chapter.contents" class="tabcontent" :class="{ active: openContent[cont.contentId]}">
+        <div>
+            <video width="1000" controls style="" class="course-video">
+                <source :src="cont.link" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <h2 style="margin-left: 80px;">{{cont.contentTitle}}</h2>
+        </div>
+    </div>
 </div>
+
+
 
 <div class="clearfix"></div>
 </template>
@@ -30,45 +45,39 @@
 export default {
     name: 'StudyPage',
     methods: {
-        openChapter(evt, chapter_id) {
-            // alert('Hello')
-            // Declare all variables
-            var i, tabcontent, tablinks;
-            // Get all elements with class="tabcontent" and hide them
-            tabcontent = document.getElementsByClassName("tabcontent");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
+        openChapter(content_id) {
+
+            for (let i = 0; i < this.openContent.length; i++) {
+                this.openContent[i] = false;
+                if (i === content_id) {
+                    this.openContent[i] = true;
+                }
             }
-            // Get all elements with class="tablinks" and remove the class "active"
-            tablinks = document.getElementsByClassName("tablinks");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].classList.remove('active');
-            }
-            // Show the current tab, and add an "active" class to the button that opened the tab
-            tabcontent[chapter_id - 1].style.display = "block";
-            evt.target.classList.add('active');
+            // tabcontent[chapter_id - 1].style.display = "block";
         },
         myFunction(evt) {
             evt.target.classList.add('change');
         },
-        openTabs() {
+        openTabs(id) {
             // alert("hi");
-            var i, tabcontent, tablinks, tab;
-            tablinks = document.getElementsByClassName("tablinks");
-            tab = document.getElementsByClassName("tab");
-            tabcontent = document.getElementsByClassName("tabcontent");
-            for (i = 0; i < tablinks.length; i++) {
-                if (this.openTab === true) {
-                    tablinks[i].style.display = "none";
-                    if (i>0) {tabcontent[i-1].style.width = "96%";}
-                    tab[0].style.width = "4%";
+            // alert(id);
+            var i;
+                for (let j=0; j<this.content.length; j++) {
+                    // alert(j);
+                    if (this.content[j].chapterId === id) {
+                        // alert(j);
+                        for (i = 0; i < this.content[j].contents.length; i++) {
+                            // alert(i);
+                            this.openTab[this.content[j].contents[i].contentId] = !this.openTab[this.content[j].contents[i].contentId];
+                        }
+                    }
                 }
-                else {
-                    tablinks[i].style.display = "block";
-                    if (i>0) {tabcontent[i-1].style.width = "80%";}
-                    tab[0].style.width = "20%";
+        },
+        fillOpenArray() {
+                for (let j = 0; j < 200; j++) {
+                    this.openContent.push(false);
+                    this.openTab.push(false);
                 }
-            }
         }
     },
     data() {
@@ -92,19 +101,43 @@ export default {
                     }
                 ],
             },
-            openTab: true,
-            video: "https://www.w3schools.com/tags/movie.mp4",
-            videoLink: 'http://techslides.com/demos/sample-videos/small.mp4'
+            begin:true,
+            openTab: [],
+            openContent: [],
+            content: [],
+
         }
+    },
+    created() {
+        let id = Number(window.location.href.split('/').slice(-1)[0]);
+        // alert(id);
+        axios.post(`/courses/${id}/students/contents`, {}, {
+                withCredentials: true
+            })
+            .then(response => {
+                this.content = response.data.contents;
+                this.fillOpenArray();
+            })
+            .catch(e => {
+                this.errors.push(e)
+            })
     }
 }
 </script>
 
 <style lang="scss" scoped>
+.limit {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
 .title {
     margin: 20px 0;
     margin-left: 20px;
 }
+
 * {
     box-sizing: border-box
 }
@@ -121,25 +154,28 @@ body {
     width: 20%;
     height: 100%;
     position: relative;
+
     .sub-title {
-    display: flex;
-    // margin-left: -50px;
-    padding-left: 0;
-    .container {
-        margin-left: 0;
+        display: flex;
+        // margin-left: -50px;
+        padding-left: 0;
+
+        .container {
+            margin-left: 0;
+        }
+
+        h5 {
+            position: absolute;
+            // margin-left: -40px;
+            margin-left: 60px;
+            margin-top: 5px;
+        }
     }
-    h5 {
-        position: absolute;
-        // margin-left: -40px;
-        margin-left: 60px;
-        margin-top: 5px;
-    }
-}
 }
 
 /* Style the buttons inside the tab */
 .tab button {
-    display: block;
+    display: none;
     background-color: inherit;
     color: black;
     padding: 22px 16px;
@@ -157,8 +193,16 @@ body {
 }
 
 /* Create an active/current "tab button" class */
-.tab button.active {
+button.active {
     background-color: #ccc;
+} 
+
+.tabcontent.active {
+    display: block;
+}
+
+.tablinks.open {
+    display: block;
 }
 
 /* Style the tab content */
@@ -181,33 +225,36 @@ body {
 
 .container {
     width: 50px;
-  display: inline-block;
-  cursor: pointer;
+    display: inline-block;
+    cursor: pointer;
 }
 
-.bar1, .bar2, .bar3 {
-  width: 35px;
-  height: 5px;
-  background-color: #333;
-  margin: 6px 0;
-  transition: 0.4s;
+.bar1,
+.bar2,
+.bar3 {
+    width: 35px;
+    height: 5px;
+    background-color: #333;
+    margin: 6px 0;
+    transition: 0.4s;
 }
 
 .change .bar1 {
-  transform: translate(0, 11px) rotate(-45deg);
+    transform: translate(0, 11px) rotate(-45deg);
 }
 
-.change .bar2 {opacity: 0;}
+.change .bar2 {
+    opacity: 0;
+}
 
 .change .bar3 {
-  transform: translate(0, -11px) rotate(45deg);
+    transform: translate(0, -11px) rotate(45deg);
 }
 
 .course-video {
     position: relative;
     margin: 10px 0;
-    margin-left: 50%; 
+    margin-left: 50%;
     transform: translateX(-50%);
 }
-
 </style>

@@ -9,6 +9,6 @@ router.get('/courses/:courseId/students/:studentId/review', studyController.getF
 router.get('/courses/:courseId/reviews', studyController.getFeedbacksOfACourse);
 router.put('/courses/:courseId/students/:studentId/lastTimeAccess', isAuth, studyController.updateLastTimeAccess);
 router.get('/courses/:courseId/students/:studentId/lastTimeAccess', isAuth, studyController.getLastTimeAccess);
-router.get('/courses/:courseId/students/:studentId/contents', isAuth, studyController.getContent);
+router.post('/courses/:courseId/students/contents', studyController.getContent);
 
 module.exports = router;
