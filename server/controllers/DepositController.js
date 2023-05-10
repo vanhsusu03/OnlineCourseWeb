@@ -19,6 +19,7 @@ class DepositController {
             nameOfBankAccount: transferInfo[2]
         });
     }
+
 }
 
 module.exports = new DepositController();

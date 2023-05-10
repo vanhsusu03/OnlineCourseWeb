@@ -7,16 +7,21 @@ const {
         Category,
         Cart,
         Feedback,
-        Enrollment
+        Enrollment,
+        Deposit,
     }
 } = require('../models');
 const bcrypt = require("bcrypt");
+const { where } = require("sequelize");
 const bcryptRound = 10;
+const sequelize = require('sequelize');
+const db = require("../models");
+
 
 class AdminController {
-    //DELETE /admin/:studentId
+    //POST /admin/:studentId
     async deleteAccount(req, res, next) {
-        const studentId = req.params.studentId;
+        const studentId = Number(req.params.studentId);
         if (studentId) {
             await Student.destroy({
                 include: [{
@@ -33,13 +38,13 @@ class AdminController {
                     student_id: studentId,
                 }
             })
-            return res.status(200).json({msg: 'Delete account successfully'});
+            return res.status(200).json({ msg: 'Delete account successfully' });
         } else {
-            return res.status(200).json({msg: 'Account not found'});
+            return res.status(200).json({ msg: 'Account not found' });
         }
     }
 
-    //DELETE /admin/:courseId
+    //POST /admin/:courseId
     async deleteCourse(req, res, next) {
         const courseId = req.params.studentId;
         if (courseId) {
@@ -53,42 +58,34 @@ class AdminController {
                     course_id: courseId,
                 }
             })
-            return res.status(200).json({msg: 'Delete course successfully'});
+            return res.status(200).json({ msg: 'Delete course successfully' });
         } else {
-            return res.status(200).json({msg: 'Course not found'});
+            return res.status(200).json({ msg: 'Course not found' });
         }
     }
 
     //POST /admin/:studentId
     async editStudentInfo(req, res, next) {
-        const studentId = req.params.student_id;
-        const {firstname, lastname, email, username, oldPassword, newPassword, phone, birth, coin} = req.body;
-        let student = await Student.findOne({
-            where: {
-                student_id: studentId,
+        const studentId = Number(req.params.studentId);
+        const coin = Number(req.params.coin);
+        const today = await db.sequelize.query("SELECT DATE(NOW()) as today", { type: db.sequelize.QueryTypes.SELECT });
+        // console.log(studentId);
+        await Student.update(
+            { coin: coin, },
+            {
+                where: {
+                    student_id: studentId,
+                }
             }
-        })
-        if (!student) {
-            return res.status(200).json('Student is not found!');
-        } else {
-            const check = bcrypt.compareSync(oldPassword, student.password);
-            if (!check) {
-                res.json('Your old password is not match!');
-            } else {
-                let newHashedPw = await bcrypt.hash(newPassword, bcryptRound);
-                await Student.update({
-                    first_name: firstname,
-                    last_name: lastname,
-                    email: email,
-                    phone: phone,
-                    birthday: birth,
-                    username: username,
-                    password: newHashedPw,
-                    coin: coin,
-                });
-                return res.status(200).json('Update information successfully!');
+        );
+        await Deposit.create(
+            {
+                customer_id: studentId,
+                amount: coin,
+                deposit_time: today[0].today,
             }
-        }
+        )
+        return res.status(200).json('Update information successfully!');
     }
 
     //POST /admin/:courseId
@@ -101,13 +98,56 @@ class AdminController {
                 image: req.body.description,
                 course_fee: req.body.course_fee,
             }, {
-                where: {courseId: req.session.courseId},
+                where: { courseId: req.session.courseId },
             })
             return res.status(200).json('Edit successfully');
         } else {
             res.status(200).json('Course is not found!');
         }
     }
+
+    //GET /admin/courses
+    async showCourses(req, res, next) {
+        return res.status(200).json(await Course.findAll({
+            attributes: [
+                ['course_id', 'courseId'],
+                [sequelize.col('title'), 'courseTitle'],
+                [sequelize.col('description'), 'courseDescription'],
+                ['image', 'courseImage'],
+                [sequelize.col('course_fee'), 'courseFee'],
+                [sequelize.col('first_name'), 'instructorFirstName'],
+                [sequelize.col('last_name'), 'instructorLastName'],
+                // [sequelize.fn('AVG', sequelize.col('rating')), 'rating']
+            ],
+            order: [['courseId', 'ASC']],
+            include: [{
+                model: Instructor,
+                attributes: [],
+                required: true,
+                include: {
+                    model: Student,
+                    attributes: [],
+                    required: true
+                }
+            }, {
+                model: Enrollment,
+                include: {
+                    model: Feedback,
+                    attributes: [],
+                    required: true,
+                }
+            }]
+        }))
+    }
+
+    //GET /admin/accounts
+    async showAccounts(req, res, next) {
+        return res.status(200).json(await Student.findAll());
+    }
+
+
 }
+
+
 
 module.exports = new AdminController();
