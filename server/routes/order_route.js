@@ -4,6 +4,6 @@ const { isAuth, isAdmin } = require('../middleware/Authentication');
 const router = express.Router();
 
 router.get('/student/orders', isAuth, orderController.getByStudent);
-router.get('/orders', isAdmin, orderController.getOrders);
+router.get('/orders', orderController.getOrders);
 
 module.exports = router;

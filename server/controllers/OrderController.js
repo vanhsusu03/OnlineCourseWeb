@@ -64,9 +64,15 @@ class OrderController {
             attributes: [ 
                 [sequelize.col('Order.order_id'), 'orderId'],
                 [sequelize.col('Order.customer_id'), 'studentId'],
+                [sequelize.col('Student.first_name'), 'studentFirstName'],
+                [sequelize.col('Student.last_name'), 'studentLastName'],
+                [sequelize.col('Student.username'), 'studentUsername'],
+                [sequelize.col('Student.email'), 'studentEmail'],
+                [sequelize.col('Student.phone'), 'studentPhone'],
+                [sequelize.col('Student.image'), 'studentImage'],
                 [sequelize.fn('CONVERT_TZ', sequelize.col('Order.order_time'), '+00:00', '+07:00'), 'orderTime']
             ],
-            include: {
+            include: [{
                 model: Order_detail,
                 attributes: [ [sequelize.col('order_detail_id'), 'orderDetailId'] ],
                 include: [
@@ -96,7 +102,11 @@ class OrderController {
                         }
                     }
                 }]
-            },
+            },{
+                model: Student,
+                attributes: []
+            }
+            ]
         });
 
         return res.status(200).json({
