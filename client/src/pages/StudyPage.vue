@@ -52,7 +52,9 @@ export default {
     name: 'StudyPage',
     methods: {
         openChapter(content_id) {
-            document.querySelectorAll('video').forEach(vid => vid.pause());
+            document.querySelectorAll('video').forEach(vid => {
+                vid.currentTime=0;
+                vid.pause();});
             for (let i = 0; i < this.openContent.length; i++) {
                 this.openContent[i] = false;
                 if (i === content_id) {
