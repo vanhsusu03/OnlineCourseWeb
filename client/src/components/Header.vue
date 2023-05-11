@@ -166,7 +166,12 @@ export default {
     },
     computed: {
         ...mapState(['student', 'admin', 'miniCart'])
-    }
+    },
+    watch: {
+        '$route'() {
+            this.$refs.anyName.reset(); 
+        },
+    },
 }
 </script>
 
