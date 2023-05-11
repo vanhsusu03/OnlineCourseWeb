@@ -195,11 +195,12 @@ class StudyController {
         });
     }
 
-    async getContents(req, res, next) {
-        const courseId = req.params.courseId;
+    async getContent(req, res, next) {
+        const courseId = Number(req.params.courseId);
         
         const studentId = req.session.studentId;
 
+        console.log(courseId + ' ' + studentId);
         const enrollmentId = await this.getEnrollmentId(studentId, courseId);
         if (!enrollmentId) {
             return res.status(400).json({
