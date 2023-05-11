@@ -18,6 +18,7 @@
                 <th>Email</th>
                 <th>Coin</th>
                 <th class="change-coin">Change Coin</th>
+                <th>Delete</th>
             </tr>
             <tr v-for="account in accounts">
                 <td>{{ account.student_id }}</td>
@@ -32,6 +33,7 @@
                         <div v-else v-on:click="changeAccount(account.student_id)">Save</div>
                     </button>
                 </td>
+                <td><button class="remove" @click="removeAccount(account.student_id)">Delete</button></td>
             </tr>
         </table>
         
@@ -89,6 +91,11 @@ export default {
         },
         changeAccount(id) {
             axios.post(`admin/change/${id}/${this.accounts[id-1].coin}`, {}, {
+                withCredentials: true
+            })
+        },
+        removeAccount(id) {
+            axios.post(`admin/delete/${id}`, {}, {
                 withCredentials: true
             })
         },
