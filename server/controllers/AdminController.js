@@ -24,23 +24,13 @@ class AdminController {
         const studentId = Number(req.params.studentId);
         if (studentId) {
             await Student.destroy({
-                include: [{
-                    model: Instructor,
-                }, {
-                    model: Enrollment,
-                    include: {
-                        model: Feedback,
-                    }
-                }, {
-                    model: Cart,
-                }],
                 where: {
                     student_id: studentId,
                 }
             })
-            return res.status(200).json({ msg: 'Delete account successfully' });
+            return res.status(200).json({msg: 'Delete account successfully'});
         } else {
-            return res.status(200).json({ msg: 'Account not found' });
+            return res.status(200).json({msg: 'Account not found'});
         }
     }
 
