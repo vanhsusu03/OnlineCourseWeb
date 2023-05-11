@@ -8,7 +8,11 @@
                 <div v-bind:title="course.courseDescription" id="description">{{ course.courseDescription }}</div>
                 <div @click="redirectInstructorInfo(course.instructorId)" id="ins">By <span> {{ course.instructorFirstName +
                     ' ' + course.instructorLastName }}</span></div>
-                <h5>{{ course.courseFee + ' VND' }}</h5>
+                <div class="fee">
+                    <h5>{{ course.courseFee }}</h5>
+                    <div id="image"> <img src="../assets/img/logo.png" alt="" id="img-coin"> </div>
+                </div>
+
                 <button v-on:click="addToCart(course)">Add To Cart</button>
                 <!-- <div>{{ courseState[course.courseId] }}</div> -->
             </div>
@@ -114,25 +118,22 @@ export default {
             }
         },
         addToCart(course) {
-            if (this.student.username) {
-                this.checkBought(course.courseId);
-                setTimeout(() => {
-                    if (this.isBought === 'Unactivated') {
-                        axios.post('/students/cart/' + course.courseId, course, { withCredentials: true })
-                            .then(response => {
-                                alert(response.data.msg);
-                            })
-                            .catch(e => {
-                                this.errors.push(e);
-                            })
-                    } else {
-                        alert("You have actived this course before");
-                    }
-                }, 100);
-            } else {
-                alert('You must login first');
-                this.$router.push('/login');
-            }
+
+            this.checkBought(course.courseId);
+            setTimeout(() => {
+                if (this.isBought === 'Unactivated') {
+                    axios.post('/students/cart/' + course.courseId, course, { withCredentials: true })
+                        .then(response => {
+                            alert(response.data.msg);
+                        })
+                        .catch(e => {
+                            this.errors.push(e);
+                        })
+                } else if (this.isBought === 'Activated') {
+                    alert("You have actived this course before");
+                }
+            }, 100);
+
         },
         getText(event) {
             const clickedElement = event.target;
@@ -247,12 +248,7 @@ h1 {
 
             }
 
-            h5 {
-                margin-top: 20px;
-                margin-left: 50%;
-                transform: translateX(-50%);
-                font-weight: 700;
-            }
+           
 
             button {
                 position: absolute;
@@ -270,6 +266,30 @@ h1 {
                     background-color: #000000;
                     transform: scale(1.1);
                 }
+            }
+            .fee {
+                font-weight: 600;
+                font-size: 1.2rem;
+                display: flex;
+              
+                h5 {
+                margin-top: 18px;
+                margin-left: 43%;
+                
+                transform: translateX(-50%);
+                font-weight: 700;
+            }
+                #image {
+                    // margin-left: 10px;
+                    margin-top: 5%;
+                    margin-left: -8%;
+                    img {
+                        width: 30px;
+                        height: auto;
+                        border: none;
+                    }
+                }
+
             }
 
             #ins {
@@ -310,4 +330,5 @@ h1 {
 
 .alert {
     background-color: white;
-}</style>
+}
+</style>

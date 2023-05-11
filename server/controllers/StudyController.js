@@ -164,7 +164,7 @@ class StudyController {
                 [sequelize.col('feedback_id'), 'feedbackId'],
                 [sequelize.col('rating'), 'feedbackRating'],
                 [sequelize.col('detail'), 'feedbackDetail'],
-                [sequelize.fn('CONVERT_TZ', sequelize.col('last_update'), '+00:00', '+07:00'), 'feedbackLastUpdateTime']
+                [sequelize.col('last_update'), 'feedbackLastUpdateTime']
             ],
             where: {
                 course_id: courseId

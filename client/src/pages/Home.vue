@@ -21,7 +21,7 @@
         </div>
         <br>
         <div class="intro">
-            <div v-if="student.userName" class="hello">Hello {{ student.lastName + ' ' + student.firstName + '!' }}, a
+            <div v-if="student.userName" class="hello">Hello {{ student.lastName + ' ' + student.firstName }}, a
                 passionate learner of DNA!</div>
             <div v-else class="hello">Hello, a passionate learner! <img src="../assets/img/wave.png" alt=""></div>
             <!-- <div id="tit">WHO ARE WE?</div> -->
@@ -140,7 +140,10 @@
                         <div id="ins">Created by: <span id="name"> {{ course.instructorFirstName + ' ' +
                             course.instructorLastName
                         }}</span></div>
-                        <div id="fee">{{ course.courseFee + ' VND' }}</div>
+                        <div class="fee">
+                            <div> {{ course.courseFee }} </div>
+                            <div id="image"> <img src="../assets/img/logo.png" alt="" id="img-coin"> </div>
+                        </div>
                     </div>
                 </li>
 
@@ -418,6 +421,7 @@ export default {
         font-weight: 500;
         margin-bottom: 160px;
         width: 90%;
+
         .hello {
             font-size: 2.4rem;
             font-weight: 650;
@@ -575,6 +579,7 @@ export default {
             border: 2px inset black;
         }
 
+
         .item {
             display: flex;
         }
@@ -610,14 +615,23 @@ export default {
                 margin-bottom: 10px;
             }
 
-            #fee {
+            .fee {
                 font-weight: 600;
                 font-size: 1.2rem;
-            }
-        }
+                display: flex;
 
-        #line {
-            border: 2px solid black;
+                #image {
+                    margin-left: 10px;
+                    margin-top: -2px;
+
+                    img {
+                        width: 25px;
+                        height: auto;
+                        border: none;
+                    }
+                }
+
+            }
         }
     }
 }
@@ -626,6 +640,7 @@ export default {
     margin-left: 130px;
     margin-right: 50px;
     margin-top: 50px;
+
     .titlee {
         font-size: 1.8rem;
         font-weight: 650;
@@ -672,4 +687,5 @@ export default {
 
 .space {
     min-height: 100px;
-}</style>
+}
+</style>

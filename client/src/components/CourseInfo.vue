@@ -24,13 +24,13 @@
                         </div>
                         <div class="insight">
                             <div id="rating">
-                                Rating: 
+                                Rating:
                                 <span id="rate"> {{ averageRating }}</span>
                                 <span id="star"><img src="../assets/img/star.png" alt=""></span>
                             </div>
                             <span id="num-of-student">
-                                Number of students: 
-                               {{ numOfStudents }}
+                                Number of students:
+                                {{ numOfStudents }}
                             </span>
                         </div>
                         <div id="created">
@@ -46,7 +46,9 @@
             <div class="body-intro">
                 <div id="course-content">
                     <div id="head"> Course content</div>
-                    
+                    <li v-for="chapter in this.courseDetail">
+
+                    </li>
                 </div>
             </div>
 
@@ -62,6 +64,28 @@
                         <input class="expand-text" type="checkbox">
                         <!-- <div id="qualifi">Qualification of instructor</div> -->
                     </span>
+                </div>
+            </div>
+
+            <div class="student-review">
+                <div id="head">Student thinks about this course</div>
+                <div class="show-feedbacks">
+                    <li v-for="feedback in this.feedbackDetails">
+                        <div id="image">
+                            <img :src="feedback.studentImage" alt="">
+                        </div>
+                        <div id="content">
+                            <div id="name"> {{ feedback.studentFirstName + ' ' + feedback.studentLastName }} <div
+                                    id="rating">{{ feedback.feedbackRating + ' ' }} <img src="../assets/img/star.png"
+                                        alt="">
+                                </div>
+                            </div>
+                            <!-- <div id="rating">{{ feedback.feedbackRating + ' ' }} <img src="../assets/img/star.png" alt="">
+                            </div> -->
+                            <div id="detail">{{ feedback.feedbackDetail }}</div>
+                            <div id="time">Created at:{{ ' ' + feedback.feedbackLastUpdateTime.slice(0, 10) }}</div>
+                        </div>
+                    </li>
                 </div>
             </div>
 
@@ -86,7 +110,10 @@
         </div>
         <div class="short-info">
             <img :src="course.image" alt="" id="img">
-            <div id="fee">{{ course.course_fee + ' VND' }}</div>
+            <div class="fee">
+                <div> {{ course.course_fee }}</div>
+                <div id="image"><img src="../assets/img/logo.png" alt=""></div>
+            </div>
             <br>
             <div>
                 <button id="add-to-cart" @click="addToCart(course)">Add to cart</button>
@@ -100,11 +127,12 @@
                 This course include:
                 <div class="time">
                     <span id="img"><img src="../assets/img/vid.png" alt=""></span>
-                    <span id="duration">{{ time_hour + ' hours ' + time_minute + ' mins ' + time_second + ' secs'  }}</span>
+                    <span id="duration">{{ time_hour + ' hours ' + time_minute + ' mins ' + time_second + ' secs' }}</span>
                 </div>
                 <div class="content">
                     <span id="img"><img src="../assets/img/chapter.png" alt=""></span>
-                    <span id="total-content">{{ this.numOfChapters + ' chapters, ' + this.numOfContents + ' articles' }}</span>
+                    <span id="total-content">{{ this.numOfChapters + ' chapters, ' + this.numOfContents + ' articles'
+                    }}</span>
                 </div>
             </div>
         </div>
@@ -157,9 +185,10 @@ export default {
             numOfFeedback: 0,
             averageRating: 0,
             totalTime: 0,
-            time_hour:0,
+            time_hour: 0,
             time_minute: 0,
             time_second: 0,
+            feedbackDetails: [],
         }
     },
     components: {
@@ -194,11 +223,11 @@ export default {
             this.category = this.course.categories;
             this.id_instructor = this.course.instructor_id;
             this.numOfStudents = res.data.numOfStudents,
-            this.numOfChapters = res.data.numOfChapters,
-            this.numOfContents = res.data.numOfContents,
-            this.numOfFeedback = res.data.feedbackCount,
-            this.averageRating = res.data.averageRating,
-            this.getInstructorInfo(this.id_instructor);
+                this.numOfChapters = res.data.numOfChapters,
+                this.numOfContents = res.data.numOfContents,
+                this.numOfFeedback = res.data.feedbackCount,
+                this.averageRating = res.data.averageRating,
+                this.getInstructorInfo(this.id_instructor);
         },
         async getInstructorInfo(id) {
             let res = await axios.get(`/instructor/info/${id}`, { withCredentials: true });
@@ -215,21 +244,27 @@ export default {
 
         },
         getTimeTotal() {
-            for(let i=0; i< this.courseDetail.length; i++) {
-               let res= this.courseDetail[i].contents;
-               for(let j=0; j<res.length; j++) {
-                this.totalTime += res[j].timeRequiredInSec;
-               }
+            for (let i = 0; i < this.courseDetail.length; i++) {
+                let res = this.courseDetail[i].contents;
+                for (let j = 0; j < res.length; j++) {
+                    this.totalTime += res[j].timeRequiredInSec;
+                }
             }
             this.time_hour = Math.floor(this.totalTime / 3600);
-            this.time_minute = Math.floor((this.totalTime - this.time_hour * 3600)/60)
-            this.time_second = this.totalTime - 3600*this.time_hour - 60*this.time_minute;
+            this.time_minute = Math.floor((this.totalTime - this.time_hour * 3600) / 60)
+            this.time_second = this.totalTime - 3600 * this.time_hour - 60 * this.time_minute;
         },
         async getCourseDetails() {
             let id = Number(window.location.href.split('/').slice(-1)[0]);
-            let content= await axios.get(`/courses/${id}/contents`, {withCredentials:true});
+            let content = await axios.get(`/courses/${id}/contents`, { withCredentials: true });
             this.courseDetail = content.data.contents;
             this.getTimeTotal();
+        },
+        async getFeedbackOfCourse() {
+            let id = Number(window.location.href.split('/').slice(-1)[0]);
+            let res = await axios.get(`/courses/${id}/reviews`, { withCredentials: true });
+            this.feedbackDetails = res.data.feedbacks;
+
         },
         convertData() {
             this.courses[0].courseId = this.course.course_id;
@@ -282,11 +317,12 @@ export default {
     },
     mounted() {
         this.getCourseInfo();
-       
+
         this.scrollToTop();
     },
     created() {
         this.getCourseDetails();
+        this.getFeedbackOfCourse();
     }
 
 }
@@ -299,11 +335,12 @@ export default {
 <style scoped lang="scss">
 .all {
     display: inline-flex;
-  
+
 
     .inf {
-       
+
         display: block;
+
         .box {
             border: 1px solid black;
             background-color: rgb(28, 29, 31);
@@ -371,10 +408,10 @@ export default {
                         margin-bottom: 10px;
 
                         #rating {
-                           
+
                             #star {
                                 margin-left: 20px;
-                                
+
                                 img {
                                     margin-top: -10px;
                                     width: auto;
@@ -390,7 +427,7 @@ export default {
                     }
 
                     #created {
-                     
+
                         margin-bottom: 10px;
 
                         #name-author {
@@ -400,7 +437,7 @@ export default {
                     }
 
                     #last-update {
-                      
+
                         color: #fff;
                         margin-bottom: 30px;
                     }
@@ -428,8 +465,8 @@ export default {
             // display: flex;
             .inf {
                 display: flex;
-                // border: 2px solid black;
                 width: 60%;
+
                 &:hover {
                     cursor: pointer;
                 }
@@ -438,6 +475,7 @@ export default {
             #part1 {
                 margin-left: 2%;
                 text-align: center;
+                margin-top: 3.5%;
 
                 #name {
                     font-weight: 700;
@@ -537,6 +575,67 @@ export default {
             }
         }
 
+        .student-review {
+            
+            margin-left: 7%;
+
+            // margin-top: 5%;
+            #head {
+                margin-top: 40px;
+                font-size: 2.3rem;
+                font-weight: 700;
+                margin-bottom: 40px;
+            }
+
+            li {
+                list-style: none;
+                display: flex;
+                margin-bottom: 50px;
+                
+            }
+
+            .show-feedbacks {
+                
+                #image {
+                    margin-left: 10%;
+
+                    img {
+                        clip-path: rectangle();
+                        width: 50%;
+                        height: auto;
+                    }
+                }
+
+                #content {
+                    margin-left: -5%;
+                    margin-top: 2px;
+                    #name {
+                        font-size: 1.1rem;
+                        font-weight: 600;
+                        display: flex;  
+                        margin-bottom: 10px;
+
+                        #rating {
+                            margin-left: 10px;
+                            img {
+                                width: 3%;
+                                margin-top: -5px;
+                            }
+                        }
+                    }
+                    #detail {
+                        margin-bottom: 10px;
+                        font-style: italic;
+                    }
+
+                    #time {
+
+                    }
+                }
+            }
+
+        }
+
         .related-course {
             margin-left: 7%;
             margin-bottom: 100px;
@@ -625,14 +724,24 @@ export default {
             padding: 0.15rem 0.15rem 0.15rem 0.15rem;
         }
 
-        #fee {
+        .fee {
             position: relative;
             margin-top: 20px;
             font-weight: 700;
             font-size: 2rem;
-            margin-left: 20px;
-            margin-bottom: 20px;
+            margin-left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 10px;
+            display: flex;
 
+            #image {
+                img {
+                    margin-left: 5px;
+                    margin-top: -10px;
+                    width: 55px;
+                    height: auto;
+                }
+            }
         }
 
         #add-to-cart {
@@ -664,30 +773,34 @@ export default {
             margin-left: 20px;
             font-size: 1rem;
             font-weight: 700;
+
             .time {
                 margin-top: 20px;
                 margin-bottom: 10px;
                 margin-left: 30px;
+
                 #img {
-                   img {
-                    width: 40px;
-                   }
+                    img {
+                        width: 40px;
+                    }
                 }
 
-                 #duration {
+                #duration {
                     margin-top: 8px;
                     margin-left: 8px;
-                 }
+                }
             }
 
             .content {
                 margin-bottom: 30px;
                 margin-left: 30px;
+
                 #img {
                     img {
-                    width: 40px;
-                   }
+                        width: 40px;
+                    }
                 }
+
                 #total-content {
                     margin-top: 8px;
                     margin-left: 8px;
