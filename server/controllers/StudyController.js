@@ -11,6 +11,7 @@ class StudyController {
         this.getLastTimeAccess = this.getLastTimeAccess.bind(this);
         this.getContents = this.getContents.bind(this);
         this.getContentLink = this.getContentLink.bind(this);
+        this.modifyFeedbackOfAStudent = this.modifyFeedbackOfAStudent.bind(this);
     }
 
     async getEnrollmentId(studentId, courseId) {
@@ -29,7 +30,7 @@ class StudyController {
     }
 
     async addFeedback(req, res, next) {
-        const courseId = req.body.courseId;
+        const courseId = req.params.courseId;
         const rating = req.body.rating;
         var detail = req.body.detail;
 
@@ -46,6 +47,19 @@ class StudyController {
             });
         }
 
+        const feedback = await Feedback.findOne({
+            attributes: ['feedback_id'],
+            where: {
+                enrollment_id: enrollmentId
+            }
+        });
+
+        if (feedback) {
+            return res.status(400).json({
+                msg: 'You can not add more feedbacks!'
+            });
+        }
+
         await Feedback.create({
             enrollment_id: enrollmentId,
             rating: rating,
@@ -59,12 +73,39 @@ class StudyController {
     }
 
     async modifyFeedbackOfAStudent(req, res, next) {
-        const feedbackId = req.body.feedbackId;
+        const courseId = req.params.courseId;
+        const feedbackId = req.params.feedbackId;
         const rating = req.body.rating;
         var detail = req.body.detail;
 
+        const studentId = req.session.studentId;
+
         if (typeof detail === 'undefined') {
             detail = null;
+        }
+
+        const enrollmentId = await this.getEnrollmentId(studentId, courseId);
+        if (!enrollmentId) {
+            return res.status(400).json({
+                msg: 'You have not enrolled in this course yet!'
+            });
+        }
+
+        const feedback = await Feedback.findOne({
+            attributes: ['feedback_id'],
+            where: {
+                enrollment_id: enrollmentId
+            }
+        });
+        if (!feedback) {
+            return res.status(400).json({
+                msg: 'You need to add feedback'
+            });
+        }
+        if (feedback.dataValues.feedback_id != feedbackId) {
+            return res.status(400).json({
+                msg: 'This feedback is not yours'
+            });
         }
 
         await Feedback.update({
@@ -195,7 +236,7 @@ class StudyController {
         });
     }
 
-    async getContent(req, res, next) {
+    async getContents(req, res, next) {
         const courseId = Number(req.params.courseId);
         
         const studentId = req.session.studentId;
