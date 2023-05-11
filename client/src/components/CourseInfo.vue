@@ -258,18 +258,16 @@ export default {
 <style scoped lang="scss">
 .all {
     display: inline-flex;
-
+  
 
     .inf {
-        // position: absolute;
+       
         display: block;
-
-
         .box {
             border: 1px solid black;
             background-color: rgb(28, 29, 31);
             color: #fff;
-            width: 1532.5px;
+            width: 1519px;
             margin-top: 50px;
             background-image: linear-gradient(to bottom, rgb(52, 73, 94) 10%, #000 80%);
 

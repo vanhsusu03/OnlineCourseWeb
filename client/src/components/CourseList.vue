@@ -5,7 +5,7 @@
             <img v-bind:src="course.courseImage" alt="" class="course-img" @click="showCourse(course.courseId)">
             <div class="course-content">
                 <h4 v-bind:title="course.courseTitle">{{ course.courseTitle }}</h4>
-                <div v-bind:title="course.courseDescription">{{ course.courseDescription }}</div>
+                <div v-bind:title="course.courseDescription" id="description">{{ course.courseDescription }}</div>
                 <div @click="redirectInstructorInfo(course.instructorId)" id="ins">By <span> {{ course.instructorFirstName +
                     ' ' + course.instructorLastName }}</span></div>
                 <h5>{{ course.courseFee + ' VND' }}</h5>
@@ -37,6 +37,7 @@
 
 <script>
 import axios from 'axios';
+import { mapState } from 'vuex';
 
 export default {
     name: 'CourseList',
@@ -113,20 +114,25 @@ export default {
             }
         },
         addToCart(course) {
-            this.checkBought(course.courseId);
-            setTimeout(() => {
-                if (this.isBought === 'Unactivated') {
-                    axios.post('/students/cart/' + course.courseId, course, { withCredentials: true })
-                        .then(response => {
-                            alert(response.data.msg);
-                        })
-                        .catch(e => {
-                            this.errors.push(e);
-                        })
-                } else {
-                    alert("You have actived this course before");
-                }
-            }, 100);
+            if (this.student.username) {
+                this.checkBought(course.courseId);
+                setTimeout(() => {
+                    if (this.isBought === 'Unactivated') {
+                        axios.post('/students/cart/' + course.courseId, course, { withCredentials: true })
+                            .then(response => {
+                                alert(response.data.msg);
+                            })
+                            .catch(e => {
+                                this.errors.push(e);
+                            })
+                    } else {
+                        alert("You have actived this course before");
+                    }
+                }, 100);
+            } else {
+                alert('You must login first');
+                this.$router.push('/login');
+            }
         },
         getText(event) {
             const clickedElement = event.target;
@@ -138,6 +144,9 @@ export default {
         redirectInstructorInfo(id) {
             this.$router.push(`/instructor/info/show/${id}`);
         }
+    },
+    computed: {
+        ...mapState(['student'])
     },
 
     // lấy dữ liệu khi component được tạo thành công
@@ -179,6 +188,8 @@ h1 {
     justify-content: space-between;
 
     .item {
+        border: 1px inset rgb(230, 230, 230);
+
         img:hover {
             cursor: pointer;
         }
@@ -222,11 +233,25 @@ h1 {
 
             div,
             h4 {
+                margin-left: 20px;
                 display: -webkit-box;
                 -webkit-line-clamp: 2;
                 -webkit-box-orient: vertical;
                 overflow: hidden;
                 margin-bottom: 5px;
+                font-size: 1.1rem;
+            }
+
+            h4 {
+                margin-top: 20px;
+
+            }
+
+            h5 {
+                margin-top: 20px;
+                margin-left: 50%;
+                transform: translateX(-50%);
+                font-weight: 700;
             }
 
             button {
@@ -285,5 +310,4 @@ h1 {
 
 .alert {
     background-color: white;
-}
-</style>
+}</style>
