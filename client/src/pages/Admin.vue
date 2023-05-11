@@ -48,12 +48,14 @@
                 <th>Title</th>
                 <th>Instrutor</th>
                 <th>Fee</th>
+                <th>Delete</th>
             </tr>
             <tr v-for="course in courses">
                 <td>{{ course.courseId }}</td>
                 <td>{{ course.courseTitle }}</td>
                 <td>{{ course.instructorFirstName }} {{ course.instructorLastName }}</td>
                 <td>{{ course.courseFee }}</td>
+                <td><button class="remove" @click="removeCourse(course.courseId)">Delete</button></td>
             </tr>
         </table>
         
@@ -96,6 +98,11 @@ export default {
         },
         removeAccount(id) {
             axios.post(`admin/delete/${id}`, {}, {
+                withCredentials: true
+            })
+        },
+        removeCourse(id) {
+            axios.post(`admin/delete/course/${id}`, {}, {
                 withCredentials: true
             })
         },
