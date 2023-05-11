@@ -1,5 +1,5 @@
 <template>
-<h1 class="title">Web Control</h1>
+<h1 class="web-title">Web Control</h1>
 <!-- {{ openChapter($event, 1) }} -->
 
 <div class="tab">
@@ -18,6 +18,7 @@
                 <th>Email</th>
                 <th>Coin</th>
                 <th class="change-coin">Change Coin</th>
+                <th>Delete</th>
             </tr>
             <tr v-for="account in accounts">
                 <td>{{ account.student_id }}</td>
@@ -32,6 +33,7 @@
                         <div v-else v-on:click="changeAccount(account.student_id)">Save</div>
                     </button>
                 </td>
+                <td><button class="remove" @click="removeAccount(account.student_id)">Delete</button></td>
             </tr>
         </table>
         
@@ -46,12 +48,14 @@
                 <th>Title</th>
                 <th>Instrutor</th>
                 <th>Fee</th>
+                <th>Delete</th>
             </tr>
             <tr v-for="course in courses">
                 <td>{{ course.courseId }}</td>
                 <td>{{ course.courseTitle }}</td>
                 <td>{{ course.instructorFirstName }} {{ course.instructorLastName }}</td>
                 <td>{{ course.courseFee }}</td>
+                <td><button class="remove" @click="removeCourse(course.courseId)">Delete</button></td>
             </tr>
         </table>
         
@@ -89,6 +93,16 @@ export default {
         },
         changeAccount(id) {
             axios.post(`admin/change/${id}/${this.accounts[id-1].coin}`, {}, {
+                withCredentials: true
+            })
+        },
+        removeAccount(id) {
+            axios.post(`admin/delete/${id}`, {}, {
+                withCredentials: true
+            })
+        },
+        removeCourse(id) {
+            axios.post(`admin/delete/course/${id}`, {}, {
                 withCredentials: true
             })
         },
@@ -133,7 +147,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.title {
+.web-title {
     margin: 20px 0;
     text-align: center;
 }

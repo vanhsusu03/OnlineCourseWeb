@@ -1,7 +1,4 @@
 <template>
-<h1 class="title">Studying</h1>
-<!-- {{ content }} -->
-<!-- {{ openChapter($event, 1) }} -->
 <div v-if="begin">
     {{ openTabs(content[0].chapterId) }}
     {{ openChapter(content[0].contents[0].contentId) }}
@@ -9,16 +6,24 @@
 </div>
 
 <div class="tab">
-    <div v-for="chapter in content">
+    <h5 style="padding: 10px 10px; background-color: white;">Contents Of Course:</h5>
+    <div v-for="(chapter,index) in content" :key="chapter.chapterId">
         <div class="sub-title">
+            <div class="limit chapter-title">{{ index + 1 }}. {{chapter.chapterTitle}}</div>
             <div class="container" :class="{ change: openTab[chapter.contents[0].contentId] }" v-on:click="openTabs(chapter.chapterId);">
                 <div class="bar1"></div>
                 <div class="bar2"></div>
                 <div class="bar3"></div>
             </div>
-            <h5 class="limit">{{chapter.chapterTitle}}</h5>
         </div>
-        <button class="tablinks" :class="{ active: openContent[cont.contentId], open: openTab[cont.contentId]}" v-for="cont in chapter.contents" v-on:click=" openChapter(cont.contentId)"><div class="limit">{{ cont.contentTitle }}</div></button>
+        <button class="tablinks" :class="{ active: openContent[cont.contentId], open: openTab[cont.contentId]}" v-for="(cont,index) in chapter.contents" v-on:click=" openChapter(cont.contentId)">
+            <div class="limit">
+                {{index + 1}}. {{ cont.contentTitle }}
+            </div>
+            <div class="time">
+                {{ parseInt( cont.timeRequiredInSec / 60 ) }}:{{ cont.timeRequiredInSec - parseInt( cont.timeRequiredInSec / 60 )*60 }}
+            </div>
+        </button>
     </div>
 
     <!-- {{ openChapter($even, 1) }} -->
@@ -26,13 +31,14 @@
 
 <div v-for="chapter in content">
     <div v-for="cont in chapter.contents" class="tabcontent" :class="{ active: openContent[cont.contentId]}">
-        <div>
+        <div class="video">
             <video width="1000" controls style="" class="course-video">
                 <source :src="cont.link" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
-            <h2 style="margin-left: 80px;">{{cont.contentTitle}}</h2>
+            
         </div>
+        <h2>{{cont.contentTitle}}</h2>
     </div>
 </div>
 
@@ -46,7 +52,9 @@ export default {
     name: 'StudyPage',
     methods: {
         openChapter(content_id) {
-
+            document.querySelectorAll('video').forEach(vid => {
+                vid.currentTime=0;
+                vid.pause();});
             for (let i = 0; i < this.openContent.length; i++) {
                 this.openContent[i] = false;
                 if (i === content_id) {
@@ -148,7 +156,7 @@ body {
 
 /* Style the tab */
 .tab {
-    float: left;
+    float: right;
     border: 1px solid #ccc;
     background-color: #f1f1f1;
     width: 20%;
@@ -158,17 +166,23 @@ body {
     .sub-title {
         display: flex;
         // margin-left: -50px;
-        padding-left: 0;
+        // padding-left: 0;
+        padding: 5px 0;
 
         .container {
-            margin-left: 0;
+            // position: abs;
+            margin-left: 240px;
         }
 
-        h5 {
+        .chapter-title {
             position: absolute;
             // margin-left: -40px;
-            margin-left: 60px;
-            margin-top: 5px;
+            width: 240px;
+            margin-left: 10px;
+            // margin-top: 5px;
+            padding: 5px;
+            font-weight: 500;
+            font-size: 18px;
         }
     }
 }
@@ -176,15 +190,24 @@ body {
 /* Style the buttons inside the tab */
 .tab button {
     display: none;
-    background-color: inherit;
+    background-color: white;
     color: black;
-    padding: 22px 16px;
+    padding: 8px 24px;
+    padding-right: 10px;
     width: 100%;
+    // height: 100px;
     border: none;
+    border-bottom: 1px solid #ccc;
     outline: none;
     text-align: left;
     cursor: pointer;
     font-size: 17px;
+    // margin-left: 5px;
+
+    .time {
+        font-size: 14px;
+        margin-left: 18px;
+    }
 }
 
 /* Change background color of buttons on hover */
@@ -199,6 +222,9 @@ button.active {
 
 .tabcontent.active {
     display: block;
+    button {
+        font-weight: 500;
+    }
 }
 
 .tablinks.open {
@@ -208,12 +234,19 @@ button.active {
 /* Style the tab content */
 .tabcontent {
     float: left;
-    padding: 0px 12px;
+    // padding: 0px 12px;
     border: 1px solid #ccc;
     width: 80%;
     border-left: none;
     height: auto;
     display: none;
+    .video {
+        width: 100%;
+        background-color: black;
+    }
+    h2 {
+        margin:20px 80px;
+    }
 }
 
 /* Clear floats after the tab */
@@ -253,7 +286,8 @@ button.active {
 
 .course-video {
     position: relative;
-    margin: 10px 0;
+    margin-top: 10px;
+    // margin: 10px 0;
     margin-left: 50%;
     transform: translateX(-50%);
 }

@@ -1,6 +1,6 @@
 <template>
     <div class="aboutus">
-        <h1 class="title">About us</h1>
+        <h1 class="web-title">About us</h1>
         <h4 class="sub-title">Meet the DNATeam</h4>
         <ul>
             <li v-for="member in teams">
@@ -20,7 +20,7 @@
     </div>
 
     <div class="aboutweb">
-        <h2 class="title">About our website</h2>
+        <h2 class="web-title">About our website</h2>
         <div class="content">Introducing a dynamic and innovative big exercise group dedicated to exploring online learning
             websites, specifically within the domain of software technology. Comprised of four passionate individuals, this
             group brings together a diverse range of expertise and experiences in the field. With a shared enthusiasm for
@@ -80,7 +80,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.title {
+.web-title {
     text-align: center;
     margin-top: 20px;
 }
