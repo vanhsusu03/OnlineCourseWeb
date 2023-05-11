@@ -1,5 +1,5 @@
 <template>
-    <h1>All our courses for you </h1>
+    <h1 style="width: 480px;">All our courses for you </h1>
     <ul v-if="courses && courses.length" class="listCourse">
         <li v-for="course in courses" class="item">
             <img v-bind:src="course.courseImage" alt="" class="course-img" @click="showCourse(course.courseId)">
@@ -281,4 +281,9 @@ h1 {
             background-color: #ddd;
         }
     }
-}</style>
+}
+
+.alert {
+    background-color: white;
+}
+</style>

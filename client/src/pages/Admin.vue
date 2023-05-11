@@ -1,5 +1,5 @@
 <template>
-<h1 class="title">Web Control</h1>
+<h1 class="web-title">Web Control</h1>
 <!-- {{ openChapter($event, 1) }} -->
 
 <div class="tab">
@@ -147,7 +147,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.title {
+.web-title {
     margin: 20px 0;
     text-align: center;
 }

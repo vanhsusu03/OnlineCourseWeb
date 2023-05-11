@@ -13,7 +13,7 @@
                             <div>By {{ course.instructorFirstName + ' ' + course.instructorLastName }}</div>
                             <div>{{ course.courseDescription}}</div>
                         </div>
-                        <div class="button">
+                        <div class="buy-button">
                             <button v-on:click="removeCourse(course.courseId)">Remove</button><br>
                             <button v-on:click="moveToSave(course.courseId)">Save For Later</button>
                         </div>
@@ -34,7 +34,7 @@
                             <div>By {{ course.courseInstructor }}</div>
                             <div>{{ course.courseDescription}}</div>
                         </div>
-                        <div class="button">
+                        <div class="buy-button">
                             <button v-on:click="removeCourse(course.courseId)">Remove</button><br>
                             <button v-on:click="moveToCart(course.courseId)">Move To Cart</button>
                         </div>
@@ -46,7 +46,7 @@
         <br>
     </div>
     <div class="total">
-        <h3 class="title">Total:</h3>
+        <h3 class="total-title">Total:</h3>
         <h2>{{ getTotal() }} VND</h2>
         <button v-on:click="openPayment()">Payment</button>
     </div>
@@ -164,13 +164,15 @@ export default {
 .content {
     display: flex;
     margin-left: 50px;
+    width: 750px;
 
     .total {
         margin-left: 100px;
         margin-top: 50px;
 
-        .title {
+        .total-title {
             color: gray;
+            // text-align: center;
         }
 
         button {
@@ -179,7 +181,7 @@ export default {
             background-color: rgb(0, 128, 128);
             padding: 10px;
             color: #fff;
-            width: 100%;
+            width: 200px;
             border: none;
             border-radius: 30px;
         }
@@ -204,6 +206,7 @@ export default {
         background-color: white;
         // margin: 10px 0;
         // min-width: 200px;
+        width: 100%;
         padding: 5px 10px;
         box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
 
@@ -236,9 +239,10 @@ export default {
             border: none;
             background-color: white;
             margin: 5px 0;
-            margin-left: 150px;
+            margin-left: 20px;
             color: rgb(0, 128, 128);
             font-weight: 500;
+            width: 150px;
         }
 
         .cost {
