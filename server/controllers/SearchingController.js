@@ -67,7 +67,6 @@ class SearchingController {
                 [sequelize.col('course_fee'), 'courseFee'],
                 [sequelize.col('first_name'), 'instructorFirstName'],
                 [sequelize.col('last_name'), 'instructorLastName'],
-                // [sequelize.fn('AVG', sequelize.col('rating')), 'rating']
             ],
             where:
             {
@@ -96,6 +95,11 @@ class SearchingController {
             nest: true,
         });
         let result = coursesByCategory.concat(courses);
+        result = result.filter((obj, index, self) =>
+            index === self.findIndex((o) =>
+                o.courseId === obj.courseId
+            )
+        );
         if (!result) {
             return res.status(200).json('No result');
         } else {
@@ -314,7 +318,7 @@ class SearchingController {
         }
     }
 
-    
+
 }
 
 
