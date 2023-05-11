@@ -24,17 +24,20 @@
                         </div>
                         <div class="insight">
                             <div id="rating">
-                                Rating:
+                                Rating: 
+                                <span id="rate"> {{ averageRating }}</span>
+                                <span id="star"><img src="../assets/img/star.png" alt=""></span>
                             </div>
                             <span id="num-of-student">
-                                Number of students:
+                                Number of students: 
+                               {{ numOfStudents }}
                             </span>
                         </div>
                         <div id="created">
                             Created by: <span id="name-author"> {{ this.instructor_fullname }}</span>
                         </div>
                         <div id="last-update">
-                            Last update:
+                            Release date: {{ course.release_date }}
                         </div>
                     </div>
                 </div>
@@ -42,9 +45,8 @@
 
             <div class="body-intro">
                 <div id="course-content">
-                    Course content
-                    <!-- laays tuwngf chapter -->
-                    <!-- <li></li> -->
+                    <div id="head"> Course content</div>
+                    
                 </div>
             </div>
 
@@ -86,7 +88,6 @@
             <img :src="course.image" alt="" id="img">
             <div id="fee">{{ course.course_fee + ' VND' }}</div>
             <br>
-            <br>
             <div>
                 <button id="add-to-cart" @click="addToCart(course)">Add to cart</button>
             </div>
@@ -97,7 +98,14 @@
             <br>
             <div id="intro">
                 This course include:
-
+                <div class="time">
+                    <span id="img"><img src="../assets/img/vid.png" alt=""></span>
+                    <span id="duration">{{ time_hour + ' hours ' + time_minute + ' mins ' + time_second + ' secs'  }}</span>
+                </div>
+                <div class="content">
+                    <span id="img"><img src="../assets/img/chapter.png" alt=""></span>
+                    <span id="total-content">{{ this.numOfChapters + ' chapters, ' + this.numOfContents + ' articles' }}</span>
+                </div>
             </div>
         </div>
     </div>
@@ -142,6 +150,16 @@ export default {
             instructor_bio: "",
             courseofAuth: [],
             isBought: "",
+            courseDetail: [],
+            numOfStudents: 0,
+            numOfChapters: 0,
+            numOfContents: 0,
+            numOfFeedback: 0,
+            averageRating: 0,
+            totalTime: 0,
+            time_hour:0,
+            time_minute: 0,
+            time_second: 0,
         }
     },
     components: {
@@ -175,6 +193,11 @@ export default {
             this.course = res.data.info;
             this.category = this.course.categories;
             this.id_instructor = this.course.instructor_id;
+            this.numOfStudents = res.data.numOfStudents,
+            this.numOfChapters = res.data.numOfChapters,
+            this.numOfContents = res.data.numOfContents,
+            this.numOfFeedback = res.data.feedbackCount,
+            this.averageRating = res.data.averageRating,
             this.getInstructorInfo(this.id_instructor);
         },
         async getInstructorInfo(id) {
@@ -190,6 +213,23 @@ export default {
                     this.courseofAuth = respone.data.courses;
                 })
 
+        },
+        getTimeTotal() {
+            for(let i=0; i< this.courseDetail.length; i++) {
+               let res= this.courseDetail[i].contents;
+               for(let j=0; j<res.length; j++) {
+                this.totalTime += res[j].timeRequiredInSec;
+               }
+            }
+            this.time_hour = Math.floor(this.totalTime / 3600);
+            this.time_minute = Math.floor((this.totalTime - this.time_hour * 3600)/60)
+            this.time_second = this.totalTime - 3600*this.time_hour - 60*this.time_minute;
+        },
+        async getCourseDetails() {
+            let id = Number(window.location.href.split('/').slice(-1)[0]);
+            let content= await axios.get(`/courses/${id}/contents`, {withCredentials:true});
+            this.courseDetail = content.data.contents;
+            this.getTimeTotal();
         },
         convertData() {
             this.courses[0].courseId = this.course.course_id;
@@ -242,10 +282,11 @@ export default {
     },
     mounted() {
         this.getCourseInfo();
+       
         this.scrollToTop();
     },
     created() {
-
+        this.getCourseDetails();
     }
 
 }
@@ -330,7 +371,16 @@ export default {
                         margin-bottom: 10px;
 
                         #rating {
-                            // position: absolute;
+                           
+                            #star {
+                                margin-left: 20px;
+                                
+                                img {
+                                    margin-top: -10px;
+                                    width: auto;
+                                    height: 30px;
+                                }
+                            }
                         }
 
                         #num-of-student {
@@ -340,7 +390,7 @@ export default {
                     }
 
                     #created {
-                        // position: absolute;
+                     
                         margin-bottom: 10px;
 
                         #name-author {
@@ -350,12 +400,12 @@ export default {
                     }
 
                     #last-update {
-                        // position: absolute;
+                      
+                        color: #fff;
                         margin-bottom: 30px;
                     }
                 }
 
-                // }
 
             }
         }
@@ -614,6 +664,35 @@ export default {
             margin-left: 20px;
             font-size: 1rem;
             font-weight: 700;
+            .time {
+                margin-top: 20px;
+                margin-bottom: 10px;
+                margin-left: 30px;
+                #img {
+                   img {
+                    width: 40px;
+                   }
+                }
+
+                 #duration {
+                    margin-top: 8px;
+                    margin-left: 8px;
+                 }
+            }
+
+            .content {
+                margin-bottom: 30px;
+                margin-left: 30px;
+                #img {
+                    img {
+                    width: 40px;
+                   }
+                }
+                #total-content {
+                    margin-top: 8px;
+                    margin-left: 8px;
+                }
+            }
         }
 
     }
