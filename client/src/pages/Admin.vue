@@ -1,5 +1,5 @@
 <template>
-<h1 class="title">Web Control</h1>
+<h1 class="web-title">Web Control</h1>
 <!-- {{ openChapter($event, 1) }} -->
 
 <div class="tab">
@@ -48,12 +48,14 @@
                 <th>Title</th>
                 <th>Instrutor</th>
                 <th>Fee</th>
+                <th>Delete</th>
             </tr>
             <tr v-for="course in courses">
                 <td>{{ course.courseId }}</td>
                 <td>{{ course.courseTitle }}</td>
                 <td>{{ course.instructorFirstName }} {{ course.instructorLastName }}</td>
                 <td>{{ course.courseFee }}</td>
+                <td><button class="remove" @click="removeCourse(course.courseId)">Delete</button></td>
             </tr>
         </table>
         
@@ -99,6 +101,11 @@ export default {
                 withCredentials: true
             })
         },
+        removeCourse(id) {
+            axios.post(`admin/delete/course/${id}`, {}, {
+                withCredentials: true
+            })
+        },
         fillArrayChange() {
             for(let i=0; i < this.accounts.length; i++) {
                 this.changeCoin.push(false);
@@ -140,7 +147,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.title {
+.web-title {
     margin: 20px 0;
     text-align: center;
 }

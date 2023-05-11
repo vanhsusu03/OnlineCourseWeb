@@ -88,7 +88,7 @@
             <br>
             <br>
             <div>
-                <button id="add-to-cart">Add to cart</button>
+                <button id="add-to-cart" @click="addToCart(course)">Add to cart</button>
             </div>
             <br>
             <div>
@@ -126,8 +126,9 @@ export default {
             course: Object,
             courses: [{
                 courseId: Number,
-                courseImage: "",
                 courseTitle: "",
+                courseDescription: "",
+                courseImage: "",
                 courseFee: Number,
                 instructorFirstName: "",
                 instructorLastName: ""
@@ -140,6 +141,7 @@ export default {
             instructor_email: "",
             instructor_bio: "",
             courseofAuth: [],
+            isBought: "",
         }
     },
     components: {
@@ -189,13 +191,17 @@ export default {
                 })
 
         },
-        openPayment() {
-            let modal = document.getElementById("myModal");
+        convertData() {
             this.courses[0].courseId = this.course.course_id;
             this.courses[0].courseTitle = this.course.title;
             this.courses[0].courseImage = this.course.image;
             this.courses[0].courseFee = this.course.course_fee;
-            this.courses[0].instructorFirstName = this.course.instructor;
+            this.courses[0].instructorFirstName = this.instructor_fullname;
+            this.courses[0].courseDescription = this.course.description;
+        },
+        openPayment() {
+            let modal = document.getElementById("myModal");
+            this.convertData();
             modal.style.display = "block";
             this.openingPayment = true;
         },
@@ -203,6 +209,29 @@ export default {
             let modal = document.getElementById("myModal");
             modal.style.display = "none";
             this.openingPayment = false;
+        },
+        addToCart(course) {
+            this.checkBought(course.course_id);
+            this.convertData();
+            setTimeout(() => {
+                if (this.isBought === 'Unactivated') {
+                    axios.post('/students/cart/' + course.course_id, this.courses[0], { withCredentials: true })
+                        .then(response => {
+                            alert(response.data.msg);
+                        })
+                        .catch(e => {
+                            this.errors.push(e);
+                        })
+                } else {
+                    alert("You have actived this course before");
+                }
+            }, 100);
+        },
+        checkBought(id) {
+            axios.post(`/course/state/${id}`, {}, { withCredentials: true })
+                .then(response => {
+                    this.isBought = response.data.msg;
+                });
         },
     },
     watch: {

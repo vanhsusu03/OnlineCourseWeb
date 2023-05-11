@@ -8,7 +8,11 @@ const {
         Cart,
         Feedback,
         Enrollment,
+        Chapter,
+        Content,
         Deposit,
+        Order,
+        Order_detail
     }
 } = require('../models');
 const bcrypt = require("bcrypt");
@@ -36,21 +40,87 @@ class AdminController {
 
     //POST /admin/:courseId
     async deleteCourse(req, res, next) {
-        const courseId = req.params.studentId;
+        const courseId = req.params.courseId;
         if (courseId) {
-            await Course.destroy({
-                include: [{
-                    model: Enrollment,
-                }, {
-                    model: Cart,
-                }],
+            //Delete order
+            const carts = await Cart.findAll({
                 where: {
                     course_id: courseId,
                 }
-            })
-            return res.status(200).json({ msg: 'Delete course successfully' });
+            });
+            await Promise.all(carts.map(cart => cart.destroy()));
+
+            //Delete chapter
+            const chapters = await Chapter.findAll({
+                where: {
+                    course_id: courseId,
+                },
+            });
+            await Promise.all(chapters.map(async chapter => {
+                const contents = await Content.findAll({
+                    where: {
+                        chapter_id: chapter.chapter_id,
+                    }
+                });
+                await Promise.all(contents.map(content => content.destroy()));
+                await chapter.destroy();
+            }));
+
+            //Delete course_category
+            const courseCategories = await Course_category.findAll({
+                where: {
+                    course_id: courseId,
+                }
+            });
+            await Promise.all(courseCategories.map(courseCategory => courseCategory.destroy()));
+
+            //Delete enrollment
+            const enrollments = await Enrollment.findAll({
+                where: {
+                    course_id: courseId,
+                },
+            });
+            await Promise.all(enrollments.map(async enrollment => {
+                const feedback = await Feedback.findOne({
+                    where: {
+                        enrollment_id: enrollment.enrollment_id
+                    }
+                });
+                await feedback.destroy();
+                const progress = await Progress.findOne({
+                    where: {
+                        enrollment_id: enrollment.enrollment_id
+                    }
+                });
+                await progress.destroy();
+                await enrollment.destroy();
+            }));
+
+            //Delete order_detail
+            const orderDetails = await Order_detail.findAll({
+                where: {
+                    course_id: courseId,
+                },
+            });
+            await Promise.all(orderDetails.map(async orderDetail => {
+                const payment = await Payment.findOne({
+                    where: {
+                        order_detail_id: orderDetail.order_detail_id
+                    }
+                });
+                await payment.destroy();
+                await orderDetail.destroy();
+            }));
+
+            //Delete course
+            await Course.destroy({
+                where: {
+                    course_id: courseId,
+                }
+            });
+            return res.status(200).json({msg: 'Delete course successfully'});
         } else {
-            return res.status(200).json({ msg: 'Course not found' });
+            return res.status(200).json({msg: 'Course not found'});
         }
     }
 
