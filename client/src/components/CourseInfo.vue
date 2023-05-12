@@ -151,7 +151,7 @@
 
 <script>
 import axios from 'axios';
-import { mapMutations } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
 import Payment from '@/pages/Payment.vue';
 import { shallowReactive } from 'vue';
 
@@ -275,10 +275,12 @@ export default {
             this.courses[0].courseDescription = this.course.description;
         },
         openPayment() {
-            let modal = document.getElementById("myModal");
-            this.convertData();
-            modal.style.display = "block";
-            this.openingPayment = true;
+            if (isLogin) {
+                let modal = document.getElementById("myModal");
+                this.convertData();
+                modal.style.display = "block";
+                this.openingPayment = true;
+            }
         },
         closePayment() {
             let modal = document.getElementById("myModal");
@@ -308,6 +310,9 @@ export default {
                     this.isBought = response.data.msg;
                 });
         },
+    },
+    computed: {
+        ...mapState['isLogin']
     },
     watch: {
         '$route'() {
@@ -576,7 +581,7 @@ export default {
         }
 
         .student-review {
-            
+
             margin-left: 7%;
 
             // margin-top: 5%;
@@ -591,11 +596,11 @@ export default {
                 list-style: none;
                 display: flex;
                 margin-bottom: 50px;
-                
+
             }
 
             .show-feedbacks {
-                
+
                 #image {
                     margin-left: 10%;
 
@@ -609,28 +614,29 @@ export default {
                 #content {
                     margin-left: -5%;
                     margin-top: 2px;
+
                     #name {
                         font-size: 1.1rem;
                         font-weight: 600;
-                        display: flex;  
+                        display: flex;
                         margin-bottom: 10px;
 
                         #rating {
                             margin-left: 10px;
+
                             img {
                                 width: 3%;
                                 margin-top: -5px;
                             }
                         }
                     }
+
                     #detail {
                         margin-bottom: 10px;
                         font-style: italic;
                     }
 
-                    #time {
-
-                    }
+                    #time {}
                 }
             }
 
@@ -860,4 +866,5 @@ export default {
     color: #000;
     text-decoration: none;
     cursor: pointer;
-}</style>
+}
+</style>

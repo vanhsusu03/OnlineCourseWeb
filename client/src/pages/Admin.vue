@@ -1,76 +1,109 @@
 <template>
-<h1 class="web-title">Web Control</h1>
-<!-- {{ openChapter($event, 1) }} -->
+    <h1 class="web-title">Web Controller</h1>
+    <!-- {{ openChapter($event, 1) }} -->
 
-<div class="tab">
-    <button class="tablinks" v-on:click="openChapter($event, 'account')">Accounts Control</button>
-    <button class="tablinks" v-on:click="openChapter($event, 'course')">Courses Control</button>
-    <button class="tablinks" v-on:click="openChapter($event, 'instructor')">Instructors Control</button>
-</div>
-
-<div class="tabcontent" id="account">
-    <div style="display: flex;">
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Coin</th>
-                <th class="change-coin">Change Coin</th>
-                <th>Delete</th>
-            </tr>
-            <tr v-for="account in accounts">
-                <td>{{ account.student_id }}</td>
-                <td>{{ account.first_name }} {{ account.last_name }}</td>
-                <td>{{ account.username }}</td>
-                <td>{{ account.email }}</td>
-                <td class="change-coin" v-if="!changeCoin[account.student_id]">{{ account.coin }}</td>
-                <td v-else><input type="number" v-model="account.coin"></td>
-                <td>
-                    <button class="change" v-on:click="changeCoin[account.student_id]=!changeCoin[account.student_id]">
-                        <div v-if="!changeCoin[account.student_id]">Change Coin</div>
-                        <div v-else v-on:click="changeAccount(account.student_id)">Save</div>
-                    </button>
-                </td>
-                <td><button class="remove" @click="removeAccount(account.student_id)">Delete</button></td>
-            </tr>
-        </table>
-        
+    <div class="tab">
+        <button class="tablinks" v-on:click="openChapter($event, 'account')">Accounts Control</button>
+        <button class="tablinks" v-on:click="openChapter($event, 'course')">Courses Control</button>
+        <button class="tablinks" v-on:click="openChapter($event, 'instructor')">Instructors Control</button>
     </div>
 
-</div>
-<div class="tabcontent" id="course">
-    <div style="display: flex;">
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Instrutor</th>
-                <th>Fee</th>
-                <th>Delete</th>
-            </tr>
-            <tr v-for="course in courses">
-                <td>{{ course.courseId }}</td>
-                <td>{{ course.courseTitle }}</td>
-                <td>{{ course.instructorFirstName }} {{ course.instructorLastName }}</td>
-                <td>{{ course.courseFee }}</td>
-                <td><button class="remove" @click="removeCourse(course.courseId)">Delete</button></td>
-            </tr>
-        </table>
-        
+    <div class="tabcontent" id="account">
+        <div style="display: flex;">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Coin</th>
+                    <th class="change-coin">Change Coin</th>
+                    <th>Delete</th>
+                </tr>
+                <tr v-for="account in accounts">
+                    <td>{{ account.student_id }}</td>
+                    <td>{{ account.first_name }} {{ account.last_name }}</td>
+                    <td>{{ account.username }}</td>
+                    <td>{{ account.email }}</td>
+                    <td class="change-coin" v-if="!changeCoin[account.student_id]">{{ account.coin }}</td>
+                    <td v-else><input type="number" v-model="account.coin"></td>
+                    <td>
+                        <button class="change" v-on:click="changeCoin[account.student_id] = !changeCoin[account.student_id]">
+                            <div v-if="!changeCoin[account.student_id]">Change Coin</div>
+                            <div v-else v-on:click="changeAccount(account.student_id)">Save</div>
+                        </button>
+                    </td>
+                    <td><button class="remove" @click="removeAccount(account.student_id)">Delete</button></td>
+                </tr>
+            </table>
+
+        </div>
+
     </div>
-</div>
-<div class="tabcontent" id="instructor">
-    Hello 2
-</div>
-<div class="tabcontent" id="order">
-    Hello 3
-</div>
-<div class="clearfix"></div>
+    <div class="tabcontent" id="course">
+        <div style="display: flex;">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Instrutor</th>
+                    <th>Fee</th>
+                    <th>Delete</th>
+                </tr>
+                <tr v-for="course in courses">
+                    <td>{{ course.courseId }}</td>
+                    <td>{{ course.courseTitle }}</td>
+                    <td>{{ course.instructorFirstName }} {{ course.instructorLastName }}</td>
+                    <td>{{ course.courseFee }}</td>
+                    <td><button class="remove" @click="removeCourse(course.courseId)">Delete</button></td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+    <div class="tabcontent" id="instructor">
+        <div style="display: flex;">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Coin</th>
+                    <th class="change-coin">Change Coin</th>
+                    <th>Number of courses</th>
+                    <th>Delete</th>
+                </tr>
+                <tr v-for="account in instructors">
+                    <td>{{ account.student_id }}</td>
+                    <td>{{ account.first_name }} {{ account.last_name }}</td>
+                    <td>{{ account.username }}</td>
+                    <td>{{ account.email }}</td>
+                    <td class="change-coin" v-if="!changeCoin[account.student_id]">{{ account.coin }}</td>
+                    <td v-else><input type="number" v-model="account.coin"></td>
+    
+                    <td>
+                        <button class="change" v-on:click="changeCoin[account.student_id] = !changeCoin[account.student_id]">
+                            <div v-if="!changeCoin[account.student_id]">Change Coin</div>
+                            <div v-else v-on:click="changeAccount(account.student_id)">Save</div>
+                        </button>
+                    </td>
+                    <td class="num-course">{{ account.numOfStudents }}</td>
+                    <td><button class="remove" @click="removeAccount(account.student_id)">Delete</button></td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+    <div class="tabcontent" id="order">
+        Hello 3
+    </div>
+    <div class="clearfix"></div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     name: 'Admin',
     methods: {
@@ -92,7 +125,7 @@ export default {
             evt.target.classList.add('active');
         },
         changeAccount(id) {
-            axios.post(`admin/change/${id}/${this.accounts[id-1].coin}`, {}, {
+            axios.post(`admin/change/${id}/${this.accounts[id - 1].coin}`, {}, {
                 withCredentials: true
             })
         },
@@ -107,7 +140,7 @@ export default {
             })
         },
         fillArrayChange() {
-            for(let i=0; i < this.accounts.length; i++) {
+            for (let i = 0; i < this.accounts.length; i++) {
                 this.changeCoin.push(false);
             }
         }
@@ -118,13 +151,13 @@ export default {
             courses: [],
             instructors: [],
             orders: [],
-            changeCoin: []
+            changeCoin: [],
         }
     },
     created() {
         axios.get('/admin/accounts', {
-                withCredentials: true
-            })
+            withCredentials: true
+        })
             .then(response => {
                 this.accounts = response.data;
                 this.fillArrayChange();
@@ -134,10 +167,20 @@ export default {
             })
 
         axios.get('/admin/courses', {
-                withCredentials: true
-            })
+            withCredentials: true
+        })
             .then(response => {
                 this.courses = response.data;
+            })
+            .catch(e => {
+                this.errors.push(e)
+            })
+
+        axios.get('/admin/instructors', {
+            withCredentials: true
+        })
+            .then(response => {
+                this.instructors = response.data;
             })
             .catch(e => {
                 this.errors.push(e)
@@ -155,10 +198,16 @@ export default {
 * {
     box-sizing: border-box
 }
-
+h1 {
+    color: rgb(52,73,94);
+    font-size: 4rem;
+    font-weight: 700;
+    margin-bottom: 100px;
+}
 body {
     font-family: "Lato", sans-serif;
 }
+
 
 /* Style the tab */
 .tab {
@@ -185,6 +234,7 @@ body {
             margin-top: 5px;
         }
     }
+    margin-bottom: 50px;
 }
 
 /* Style the buttons inside the tab */
@@ -198,7 +248,8 @@ body {
     outline: none;
     text-align: left;
     cursor: pointer;
-    font-size: 17px;
+    font-size: 1.3rem;
+    border-bottom: 1px inset black;
 }
 
 /* Change background color of buttons on hover */
@@ -221,6 +272,7 @@ body {
     height: auto;
     display: none;
     position: relative;
+
     #change-coin {
         position: absolute;
         right: 80px;
@@ -259,7 +311,8 @@ tr:nth-child(even) {
     background-color: #dddddd;
 }
 
-.remove, .change {
+.remove,
+.change {
     // background-color: none;
     border: none;
     background: none;

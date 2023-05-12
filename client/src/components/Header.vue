@@ -18,9 +18,11 @@
         <RouterLink v-if="!student.userName" @click="scrollToTop" to="/aboutus">
             <div class="aboutus"> About us</div>
         </RouterLink>
-        <RouterLink v-if="student.userName" @click="scrollToTop" to="/mycourses">
-            <div class="mycourse">My courses</div>
-        </RouterLink>
+        <div v-if="student.userName" @click="scrollToTop" >
+            <div v-if="admin === 'admin'" class="admin" @click="showAdminDashboard">Admin Dashboard</div>
+            <div v-else class="mycourse" @click="showMyCourses">My courses</div>
+        </div>
+        <!-- <RouterLink v-if="admin" @click="scrollToTop" to="/admin">Admin Dashboard</RouterLink> -->
 
 
         <RouterLink @click="scrollToTop()" to="/login" v-if="!student.userName">
@@ -62,7 +64,7 @@
                     <RouterLink @click.prevent="unshowDropDown" to="/cart">My Cart</RouterLink>
                 </div>
                 <div>
-                    <RouterLink to="/mycourses" @click.prevent="unshowDropDown">My Courses</RouterLink>
+                    <RouterLink v-if="!admin" to="/mycourses" @click.prevent="unshowDropDown">My Courses</RouterLink>
                 </div>
                 <div>
                     <RouterLink @click.prevent="unshowDropDown" to="/deposit">Deposit</RouterLink>
@@ -147,6 +149,12 @@ export default {
             this.dropdownselect = false;
             this.scrollToTop();
         },
+        showAdminDashboard() {
+            this.$router.push('/admin');
+        },
+        showMyCourses() {
+            this.$router.push('/mycourses');
+        },
         scrollToTop() {
             let nav_bar = document.querySelector('.header .navbar');
             nav_bar.classList.remove('active');
@@ -169,7 +177,7 @@ export default {
     },
     watch: {
         '$route'() {
-            this.$refs.anyName.reset(); 
+            this.$refs.anyName.reset();
         },
     },
 }
@@ -222,7 +230,17 @@ export default {
         font-weight: 500;
         margin-top: 15px;
         margin-left: 3.7%;
+        font-size: 1.16rem;
+        cursor: pointer;
     }
+    .admin {
+        position: absolute;
+        font-weight: 500;
+        margin-top: 15.5px;
+        margin-left: 1.5%;
+        font-size: 1.16rem;
+        cursor: pointer;
+        }
 
     .become {
         position: absolute;
