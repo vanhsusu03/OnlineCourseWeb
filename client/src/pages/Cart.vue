@@ -1,90 +1,93 @@
 <template>
-<h1 class="pagetitle">Shopping Cart</h1>
-<div style="margin-left: 50px;" v-if="checkNoCart()">
-    <h2>You don't have any courses in your cart. You can refer to some of the courses below:</h2>
-    <ul v-if="listCourses && listCourses.length">
-        <li v-for="course of listCourses" style="display: flex; margin: 20px 0">
+    <h1 class="pagetitle">Shopping Cart</h1>
+    <div style="margin-left: 50px;" v-if="checkNoCart()">
+        <h2>You don't have any courses in your cart. You can refer to some of the courses below:</h2>
+        <ul v-if="listCourses && listCourses.length">
+            <li v-for="course of listCourses" style="display: flex; margin: 20px 0" class="course">
                 <div>
-                    <RouterLink :to="{path: '/course/info/' + course.courseId}" class="course-img">
+                    <RouterLink :to="{ path: '/course/info/' + course.courseId }" class="course-img">
                         <img v-bind:src="course.courseImage" alt="" class="course-img">
                     </RouterLink>
                 </div>
-            
-            <div style="margin-left: 10px;">
-                <h4 v-bind:title="course.courseTitle">{{ course.courseTitle }}</h4>
-                <!-- <div>{{ course.instructor }}</div> -->
-                <div class="desc" v-bind:title="course.courseDescription">{{course.courseDescription}}</div>
-                <div>{{ course.courseFee }} VND</div>
-                <div>By <span style="font-weight: 500;">{{ course.instructorFirstName }} {{ course.instructorLastName }}</span></div>
-            </div>
-        </li>
-    </ul>
-</div>
-    
-<div class="content" v-else>
-    <div>
-        <h5>{{ courses.length }} Course in Cart</h5>
-        <div class="cart">
-            <div class="cart-content">
-                <ul>
-                    <li v-for="course in courses">
-                        <img :src="course.courseImage" alt="">
-                        <div class="course-content">
-                            <h3>{{ course.courseTitle }}</h3>
-                            <div>By {{ course.instructorFirstName + ' ' + course.instructorLastName }}</div>
-                            <div>{{ course.courseDescription}}</div>
-                        </div>
-                        <div class="buy-button">
-                            <button v-on:click="removeCourse(course.courseId)">Remove</button><br>
-                            <button v-on:click="moveToSave(course.courseId)">Save For Later</button>
-                        </div>
-                        <div class="cost">{{ course.courseFee }} VND</div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <br>
-        <h5>Saved for later</h5>
-        <div class="cart">
-            <div class="cart-content">
-                <ul>
-                    <li v-for="course in saved">
-                        <img :src="course.courseImage" alt="">
-                        <div class="course-content">
-                            <h3>{{ course.courseTitle }}</h3>
-                            <div>By {{ course.courseInstructor }}</div>
-                            <div>{{ course.courseDescription}}</div>
-                        </div>
-                        <div class="buy-button">
-                            <button v-on:click="removeCourse(course.courseId)">Remove</button><br>
-                            <button v-on:click="moveToCart(course.courseId)">Move To Cart</button>
-                        </div>
-                        <div class="cost">{{ course.courseFee }} VND</div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <br>
+
+                <div style="margin-left: 10px;">
+                    <h4 v-bind:title="course.courseTitle">{{ course.courseTitle }}</h4>
+                    <!-- <div>{{ course.instructor }}</div> -->
+                    <div class="desc" v-bind:title="course.courseDescription">{{ course.courseDescription }}</div>
+                    <div id="fee">{{ course.courseFee }} <img src="../assets/img/logo.png" alt=""></div>
+                    <div>By <span style="font-weight: 500;">{{ course.instructorFirstName }} {{ course.instructorLastName
+                    }}</span></div>
+                </div>
+            </li>
+        </ul>
     </div>
-    <div class="total">
-        <h3 class="total-title">Total:</h3>
-        <h2>{{ getTotal() }} VND</h2>
-        <button v-on:click="openPayment()">Payment</button>
+
+    <div class="content" v-else>
+        <div>
+            <h5>{{ courses.length }} course(s) in cart</h5>
+            <div class="cart">
+                <div class="cart-content">
+                    <ul>
+                        <li v-for="course in courses">
+                            <img :src="course.courseImage" alt="" @click="showCourse(course.courseId)">
+                            <div class="course-content">
+                                <h3>{{ course.courseTitle }}</h3>
+                                <div id="by">By {{ course.instructorFirstName + ' ' + course.instructorLastName }}</div>
+                                <div id="des">{{ course.courseDescription }}</div>
+                            </div>
+                            <div class="buy-button">
+                                <button v-on:click="removeCourse(course.courseId)">Remove</button><br>
+                                <button v-on:click="moveToSave(course.courseId)">Save For Later</button>
+                            </div>
+                            <div class="cost">{{ course.courseFee }} <img src="../assets/img/logo.png" alt=""></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <br>
+            <h5>Saved for later</h5>
+            <div class="cart">
+                <div class="cart-content">
+                    <ul>
+                        <li v-for="course in saved">
+                            <img :src="course.courseImage" alt="">
+                            <div class="course-content">
+                                <h3>{{ course.courseTitle }}</h3>
+                                <div>By {{ course.courseInstructor }}</div>
+                                <div>{{ course.courseDescription }}</div>
+                            </div>
+                            <div class="buy-button">
+                                <button v-on:click="removeCourse(course.courseId)">Remove</button><br>
+                                <button v-on:click="moveToCart(course.courseId)">Move To Cart</button>
+                            </div>
+                            <div class="cost">{{ course.courseFee }} <img src="../assets/img/logo.png" alt=""></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <br>
+        </div>
+        <div class="total">
+            <h3 class="total-title">Total:</h3>
+            <h2>{{ getTotal() }}<img src="../assets/img/logo.png" alt=""></h2>
+            <button v-on:click="openPayment()">Payment</button>
+        </div>
     </div>
-</div>
-<!-- <div id="myModal" class="modal">
+    <!-- <div id="myModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
         <p>Some text in the Modal..</p>
     </div>
 
 </div> -->
-<div class="modal" id="myModal">
-    <div class="modal-content">
-        <span class="close" v-on:click="closePayment()">&times;</span>
-        <p><Payment :numOfCourses="courses.length" :courses="courses" :saved="saved" :isInCart="true"></Payment></p>
+    <div class="modal" id="myModal">
+        <div class="modal-content">
+            <span class="close" v-on:click="closePayment()">&times;</span>
+            <p>
+                <Payment :numOfCourses="courses.length" :courses="courses" :saved="saved" :isInCart="true"></Payment>
+            </p>
+        </div>
     </div>
-</div>
 </template>
 
 <script>
@@ -126,13 +129,13 @@ export default {
         getRandomCourse() {
             let coursesCopy = [...this.listCourses]; // create a copy of the array to avoid modifying the original
             // loop 8 times or until there are no more elements to choose from
-                for (let i = 0; i < 8 && coursesCopy.length > 0; i++) {
-                    let randomIndex = Math.floor(Math.random() * coursesCopy.length); // choose a random index
-                    this.randomCourses.push(coursesCopy[randomIndex]); // add the chosen element to the randomCourses array
-                    coursesCopy.splice(randomIndex, 1); // remove the chosen element from the coursesCopy array
-                }
-                this.listCourses = this.randomCourses;
-            },
+            for (let i = 0; i < 8 && coursesCopy.length > 0; i++) {
+                let randomIndex = Math.floor(Math.random() * coursesCopy.length); // choose a random index
+                this.randomCourses.push(coursesCopy[randomIndex]); // add the chosen element to the randomCourses array
+                coursesCopy.splice(randomIndex, 1); // remove the chosen element from the coursesCopy array
+            }
+            this.listCourses = this.randomCourses;
+        },
         getTotal() {
             let sum = 0;
             for (let i = 0; i < this.courses.length; i++) {
@@ -146,6 +149,15 @@ export default {
                     this.saved.push(this.courses[i])
                     this.courses.splice(i, 1)
                 }
+            }
+        },
+        async showCourse(id) {
+            let check = await axios.post(`/course/state/${id}`, {}, { withCredentials: true });
+            let states = check.data.msg;
+            if (states === 'Unactivated') {
+                this.$router.push(`/course/info/${id}`);
+            } else if (states === 'Activated') {
+                this.$router.push(`/study/${id}`);
             }
         },
         async removeCourse(id) {
@@ -168,8 +180,8 @@ export default {
         },
         getInfo() {
             axios.get('/students/cart/', {
-                    withCredentials: true
-                })
+                withCredentials: true
+            })
                 .then(response => {
                     this.courses = response.data.coursesInCart
                 })
@@ -196,21 +208,58 @@ export default {
     computed: {
         ...mapState(['student', 'admin', 'miniCartChange'])
     },
-    
+
 }
 </script>
 
 <style lang="scss" scoped>
 .pagetitle {
     margin-left: 50px;
-    margin-top: 30px;
-    margin-bottom: 20px;
+    margin-top: 50px;
+    margin-bottom: 40px;
+    font-size: 3rem;
+    font-weight: 700;
+    color: rgb(52, 73, 94);
+}
+
+h2 {
+    margin-left: 20px;
+    color: #880000;
+    margin-bottom: 40px;
+    font-weight: 660;
+
+    img {
+        width: 40px;
+        margin-top: -8px;
+        margin-left: 8px;
+    }
+}
+
+
+li {
+    border-bottom: 1px inset rgb(230, 230, 230);
+
+    #fee {
+        font-weight: 600;
+
+        img {
+            width: 30px;
+
+        }
+    }
 }
 
 .content {
     display: flex;
     margin-left: 50px;
     width: 750px;
+
+    h5 {
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        font-weight: 650;
+        color: #880000;
+    }
 
     .total {
         margin-left: 100px;
@@ -274,6 +323,18 @@ export default {
             .course-content {
                 margin-left: 20px;
                 width: 500px;
+
+                h3 {
+                    font-size: 1rem;
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+
+                }
+
+                #by,
+                #des {
+                    margin-top: 10px;
+                }
             }
         }
 
@@ -286,6 +347,7 @@ export default {
             background-color: white;
             margin: 5px 0;
             margin-left: 20px;
+            margin-top: 20px;
             color: rgb(0, 128, 128);
             font-weight: 500;
             width: 150px;
@@ -297,6 +359,11 @@ export default {
             font-size: 20px;
             color: rgb(0, 128, 128);
             font-weight: 500;
+
+            img {
+                width: 40px;
+                margin-left: 10px;
+            }
         }
     }
 
@@ -351,5 +418,4 @@ export default {
     color: #000;
     text-decoration: none;
     cursor: pointer;
-}
-</style>
+}</style>

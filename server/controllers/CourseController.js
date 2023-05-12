@@ -199,7 +199,6 @@ class CourseController {
                     }
                 ]
             })
-            console.log(courses);
             return res.status(200).json(courses);
         }
     }

@@ -75,9 +75,54 @@ class InstructorController {
             res.status(200).json('You must be an instructor');
         }
     }
+
+
+    async getInstructorInfoInStudying(req, res, next) {
+        const courseId = req.params.courseId;
+        let instructorId = (await Course.findOne({
+            attributes: ['instructor_id'],
+            where: {
+                course_id: courseId,
+            }
+        })).dataValues.instructor_id;
+
+        if (instructorId) {
+            let instructorInfo = await Instructor.findOne({
+                where: {
+                    instructor_id: instructorId,
+                },
+                attributes: [[sequelize.col('introduction_brief'), 'instructorBio'],
+                // 'birthday',
+               ],
+                include: [{
+                    model: Student,
+                    attributes: [
+                        'student_id',
+                        [sequelize.fn('concat', sequelize.col('first_name'), ' ',
+                            sequelize.col('last_name')), 'instructorFullName'],
+                            'birthday',
+                            'image',
+                            'phone',
+                            'email',
+                    ],
+                },
+                ],
+            });
+            return res.status(200).json(
+                {
+                    msg: 'Get ok',
+                    result: instructorInfo,
+                }
+            );
+        } else {
+            res.status(200).json('You must be an instructor');
+        }
+    }
+
     //GET /courseof/:instructorId
     async getCoursesOfInstructor(req, res, next) {
         const instructorId = Number(req.params.instructorId);
+
         if (instructorId) {
             let courses = await Course.findAll({
                 where: {
