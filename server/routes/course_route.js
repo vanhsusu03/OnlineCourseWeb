@@ -16,6 +16,6 @@ router.get('/courses/:categoryName', courseController.showCoursesByCategoryName)
 
 router.get('/courses', courseController.showAllCourses);
 
-router.post('/courses/:courseId/contents', courseController.getContents);
+router.get('/courses/:courseId/contents', courseController.getContents);
 
 module.exports = router;

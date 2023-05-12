@@ -93,7 +93,7 @@
                 <div class="head">
                     Courses of <span id="inss">{{ instructor_fullname }}</span></div>
                 <div class="show-course">
-                    <li v-for="course in this.courseofAuth" @click.prevent="showCourse(course.course_id)" class="item">
+                    <li v-for="course in this.courseofAuth.slice(0,5)" @click.prevent="showCourse(course.course_id)" class="item">
                         <div id="img">
                             <span><img :src="course.image" alt=""></span>
                         </div>
@@ -153,7 +153,6 @@
 import axios from 'axios';
 import { mapMutations, mapState } from 'vuex';
 import Payment from '@/pages/Payment.vue';
-import { shallowReactive } from 'vue';
 
 export default {
     name: 'CourseInfo',
@@ -213,7 +212,7 @@ export default {
             if (states === 'Unactivated') {
                 this.$router.push(`/course/info/${id}`);
             } else if (states === 'Activated') {
-                this.$router.push(`/course/detail/${id}`);
+                this.$router.push(`/study/${id}`);
             }
         },
         async getCourseInfo() {
@@ -240,8 +239,19 @@ export default {
             await axios.get(`/courseof/${id}`, { withCredentials: true })
                 .then(respone => {
                     this.courseofAuth = respone.data.courses;
+                    this.getRandomCourse();
                 })
 
+        },
+        getRandomCourse() {
+            let coursesCopy = [...this.courseofAuth]; // create a copy of the array to avoid modifying the original
+            // loop 8 times or until there are no more elements to choose from
+            for (let i = 0; i < 3 && coursesCopy.length > 0; i++) {
+                let randomIndex = Math.floor(Math.random() * coursesCopy.length); // choose a random index
+                this.randomCourses.push(coursesCopy[randomIndex]); // add the chosen element to the randomCourses array
+                coursesCopy.splice(randomIndex, 1); // remove the chosen element from the coursesCopy array
+            }
+            this.courseofAuth = this.randomCourses;
         },
         getTimeTotal() {
             for (let i = 0; i < this.courseDetail.length; i++) {
@@ -312,7 +322,7 @@ export default {
         },
     },
     computed: {
-        ...mapState['isLogin','miniCartChange']
+        ...mapState(['isLogin','miniCartChange'])
     },
     watch: {
         '$route'() {
@@ -322,12 +332,12 @@ export default {
     },
     mounted() {
         this.getCourseInfo();
-
+        this.getCourseDetails();
+        this.getFeedbackOfCourse();
         this.scrollToTop();
     },
     created() {
-        this.getCourseDetails();
-        this.getFeedbackOfCourse();
+       
     }
 
 }

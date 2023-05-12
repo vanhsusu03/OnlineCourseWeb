@@ -129,7 +129,7 @@ export default {
                 keyw: "",
             },
             searchResult: [],
-            coin: 47,
+            coin: 0,
         }
     },
     components: {
@@ -142,8 +142,8 @@ export default {
         studentCoinChange() {
             return this.getStudentCoinChange;
         },
-        getStudentCoin() {
-            axios.get('/account/info', {withCredentials: true})
+        async getStudentCoin() {
+            await axios.get('/account/info', {withCredentials: true})
             .then(respone => {
                 this.coin = respone.data.coin;
             })
@@ -186,7 +186,7 @@ export default {
     computed: {
         ...mapState(['student', 'admin', 'studentCoinChange'])
     },
-    created() {
+    mounted() {
         this.getStudentCoin();
     },
     watch: {

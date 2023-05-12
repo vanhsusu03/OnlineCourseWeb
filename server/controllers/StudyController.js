@@ -31,21 +31,21 @@ class StudyController {
 
     async addFeedback(req, res, next) {
         const courseId = req.params.courseId;
-        const rating = req.body.rating;
-        var detail = req.body.detail;
-
+        const rating = Number(req.body.feedbackScore);
+        
+        var detail = req.body.feedbackComment;
         const studentId = req.session.studentId;
 
-        if (typeof detail === 'undefined') {
+        if (detail === "") {
             detail = null;
         }
 
         const enrollmentId = await this.getEnrollmentId(studentId, courseId);
-        if (!enrollmentId) {
-            return res.status(400).json({
-                msg: 'You have not enrolled in this course yet!'
-            });
-        }
+        // if (!enrollmentId) {
+        //     return res.status(400).json({
+        //         msg: 'You have not enrolled in this course yet!'
+        //     });
+        // }
 
         const feedback = await Feedback.findOne({
             attributes: ['feedback_id'],
@@ -53,10 +53,10 @@ class StudyController {
                 enrollment_id: enrollmentId
             }
         });
-
+        
         if (feedback) {
-            return res.status(400).json({
-                msg: 'You can not add more feedbacks!'
+            return res.status(200).json({
+                msg: 'You have already submitted feedbacks!'
             });
         }
 
@@ -121,9 +121,9 @@ class StudyController {
         });
     }
 
-    async getFeedbackOfAStudent(req, res, next) {
+    async getFeedbackOfStudent(req, res, next) {
         const courseId = req.params.courseId;
-        const studentId = req.params.studentId;
+        const studentId = req.session.studentId;
 
         const feedback = await Enrollment.findOne({
             attributes: [ 

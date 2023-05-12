@@ -206,12 +206,12 @@ export default {
             if (states === 'Unactivated') {
                 this.$router.push(`/course/info/${id}`);
             } else if (states === 'Activated') {
-                this.$router.push(`/course/detail/${id}`);
+                this.$router.push(`/study/${id}`);
             }
         },
         async getResultSearch() {
             let id = String(window.location.href.split('/').slice(-1)[0]);
-            this.keySearch = id;
+            this.keySearch = id.replace(/%20/g, ' ');
             await axios.get(`/searching/${id}`, { withCredentials: true })
                 .then(response => {
                     this.numSearch = response.data.number;
