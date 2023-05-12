@@ -26,7 +26,7 @@
 
 <script>
 import axios from 'axios';
-import { mapState } from 'vuex';
+import { mapMutations,mapState } from 'vuex';
 export default {
     name: 'Payment',
     data() {
@@ -41,6 +41,7 @@ export default {
         isInCart: true
     },
     methods: {
+        ...mapMutations(['setStudentCoinChange']),
         getSavingIds() {
             for (let i = 0; i < this.saved.length; i++) {
                 this.savingCourseIds.push(this.saved[i].courseId);
@@ -64,6 +65,7 @@ export default {
                 } else if(confirm("Are you sure to pay for these courses?")){
                     
                     axios.post('/students/payment/cart', this.savingCourseIds, {withCredentials: true});
+                    this.setStudentCoinChange("change");
                     this.$router.push('/');
                 }
             } else {
@@ -72,6 +74,7 @@ export default {
                 } else if(confirm("Are you sure to pay for this courses?")){
                     // alert("OK");
                     axios.post('/students/payment/course',this.courses[0], {withCredentials: true});
+                    this.setStudentCoinChange("change");
                     this.$router.push('/');
                 }
             }
@@ -80,7 +83,7 @@ export default {
         }
     },
     computed: {
-        ...mapState(['student'])
+        ...mapState(['student','studentCoinChange'])
     },
     created() {
         axios.get('/students/coin', {

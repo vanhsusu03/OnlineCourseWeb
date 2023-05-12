@@ -98,17 +98,20 @@ export default {
             }
             
             let res = await axios.post('/edit/info', this.form, { withCredentials: true });
-            // let err = res.data.msg;
+            let err = res.data.msg;
+            if(err === 'Update info successful') {
 
+            
             // if (err === 'Username is already exists' || err === 'Email is already exists'
             //     || err === 'Phone number is already exists') {
             //     this.clearForms();
             //     alert(err);
 
             // } else {
-                alert('Update info successfully');
+                alert(err);
                 this.updateInfos();
                 this.$router.push('/');
+            }
             // }
         },
 

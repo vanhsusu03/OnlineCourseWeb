@@ -21,6 +21,18 @@ export default {
 
     getCourseIDShowing(state) {
       return state.courseIDShowing;
+    },
+
+    getMiniCartChange(state) {
+      return state.miniCartChange;
+    },
+
+    getStudentCoinChange(state) {
+      return state.studentCoinChange;
+    },
+
+    getAdminChange(state) {
+      return state.adminChange;
     }
   
   }
