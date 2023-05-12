@@ -212,6 +212,7 @@ class AdminController {
                     course_id: courseId,
                 }
             });
+            console.log('Delete course successfully');
             return res.status(200).json({msg: 'Delete course successfully'});
         } else {
             return res.status(200).json({msg: 'Course not found'});
@@ -328,7 +329,19 @@ class AdminController {
     }
 
     //GET /admin/instructor
-    async showInstructor(req,res,next){
+    async showAllInstructors(req,res,next){
+
+    }
+
+    async createChapter(req,res,next){
+
+    }
+
+    async createContents(req,res,next){
+
+    }
+
+    async addCourse(req,res,next){
 
     }
 }

@@ -105,7 +105,7 @@
                     </div>
             </div>
         </div>
-    </div
+    </div>
     
     <div class="tabcontent" id="account">
         <div style="display: flex;">
@@ -140,6 +140,7 @@
         </div>
 
     </div>
+</div>
 
     <div class="tabcontent" id="instructor">
         <div style="display: flex;">

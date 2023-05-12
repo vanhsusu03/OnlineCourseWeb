@@ -444,6 +444,10 @@ class CourseController {
         });
         return res.status(200).json(courses);
     }
+
+    async getContents(req,res,next){
+
+    }
 }
 
 module.exports = new CourseController();
