@@ -6,6 +6,6 @@ const router = express.Router();
 router.post('/teaching', instructorController.createInstructor);
 
 router.get('/instructor/info/:instructorId', instructorController.getInstructorInfo);
-router.get('/courseof/:instructorId', instructorController.getCoursesOfInstructor);
+router.get('/courseof/instructor', instructorController.getCoursesOfInstructor);
 
 module.exports = router;

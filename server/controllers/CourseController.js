@@ -82,7 +82,8 @@ class CourseController {
     //POST /courses/create
     async addCourse(req, res, next) {
         // console.log(req.body);
-        const {courseTitle, courseDescription, courseImage, courseFee, instructorId} = req.body;
+        const instructorId = req.session.studentId;
+        const {courseTitle, courseDescription, courseImage, courseFee} = req.body;
         console.log(instructorId);
         const now = new Date();
         const vietnamDate = format(now, 'yyyy-MM-dd', { timeZone: 'Asia/Ho_Chi_Minh' });

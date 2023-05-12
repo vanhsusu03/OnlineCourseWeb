@@ -18,4 +18,5 @@ router.get('/admin/courses', adminController.showCourses);
 router.get('/admin/accounts', adminController.showAccounts);
 router.post('/course/:courseId/create', adminController.createChapter);
 router.post('/chapter/contents/create', adminController.createContents);
+router.post('/courses/create', adminController.addCourse);
 module.exports = router;

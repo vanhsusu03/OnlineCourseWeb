@@ -1,7 +1,7 @@
 <template>
     <h1>My Course </h1>
     <div style="margin-left: 50px;" v-if="checkNoCourse()">
-        <h2>You don't have any course. You can refer to some of the courses below:</h2>
+        <h2>You don't have any courses. You can refer to some of the courses below:</h2>
         <!-- {{ listCourses }} -->
         <ul v-if="listCourses && listCourses.length">
         <li v-for="course of listCourses" style="display: flex; margin: 20px 0">
