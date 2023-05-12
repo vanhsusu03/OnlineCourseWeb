@@ -169,9 +169,8 @@
 
 <script>
 import axios from 'axios';
-import {
-    mapMutations
-} from 'vuex';
+
+import { mapMutations, mapState } from 'vuex';
 import Payment from '@/pages/Payment.vue';
 import {
     shallowReactive
@@ -258,6 +257,7 @@ export default {
                     this.openTab.push(false);
                 }
         },
+        ...mapMutations(['scrollToTop','setMiniCartChange']),
         onScroll(event) {
             const scrollPosition = window.pageYOffset;
             if (scrollPosition > 200) {
@@ -349,10 +349,11 @@ export default {
             this.courses[0].courseDescription = this.course.description;
         },
         openPayment() {
-            let modal = document.getElementById("myModal");
-            this.convertData();
-            modal.style.display = "block";
-            this.openingPayment = true;
+                let modal = document.getElementById("myModal");
+                this.convertData();
+                modal.style.display = "block";
+                this.openingPayment = true;
+            
         },
         closePayment() {
             let modal = document.getElementById("myModal");
@@ -369,6 +370,7 @@ export default {
                         })
                         .then(response => {
                             alert(response.data.msg);
+                            this.setMiniCartChange("change");
                         })
                         .catch(e => {
                             this.errors.push(e);
@@ -386,6 +388,9 @@ export default {
                     this.isBought = response.data.msg;
                 });
         },
+    },
+    computed: {
+        ...mapState['isLogin','miniCartChange']
     },
     watch: {
         '$route'() {
@@ -936,6 +941,7 @@ export default {
     cursor: pointer;
 }
 
+
 .limit {
     display: -webkit-box;
     -webkit-line-clamp: 1;
@@ -1094,3 +1100,4 @@ body {
     transform: translateX(-50%);
 }
 </style>
+

@@ -34,9 +34,9 @@ class AdminController {
                     student_id: studentId,
                 }
             })
-            return res.status(200).json({msg: 'Delete account successfully'});
+            return res.status(200).json({ msg: 'Delete account successfully' });
         } else {
-            return res.status(200).json({msg: 'Account not found'});
+            return res.status(200).json({ msg: 'Account not found' });
         }
     }
 
@@ -120,9 +120,9 @@ class AdminController {
                     course_id: courseId,
                 }
             });
-            return res.status(200).json({msg: 'Delete course successfully'});
+            return res.status(200).json({ msg: 'Delete course successfully' });
         } else {
-            return res.status(200).json({msg: 'Course not found'});
+            return res.status(200).json({ msg: 'Course not found' });
         }
     }
 
@@ -239,8 +239,18 @@ class AdminController {
     async showAccounts(req, res, next) {
         return res.status(200).json(await Student.findAll());
     }
+    //Get /admin/instructors
+    async showAllInstructors(req, res, next) {
 
-    //POST /course/:courseId/create
+        return res.status(200).json(
+            await Student.findAll({
+                // attributes: [],
+                where: {
+                    is_instructor: 1,
+                },
+            })
+        )
+    }    //POST /course/:courseId/create
     async createChapter(req, res, next) {
         // console.log(req.body);
         const courseId = Number(req.params.courseId);

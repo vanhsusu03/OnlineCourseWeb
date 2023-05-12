@@ -111,7 +111,7 @@ export default {
         Payment
     },
     methods: {
-        ...mapMutations(['scrollToTop', 'setMiniCart']),
+        ...mapMutations(['scrollToTop', 'setMiniCartChange']),
         openPayment() {
             let modal = document.getElementById("myModal");
             // alert("hio");
@@ -152,6 +152,7 @@ export default {
             await axios.post(`/students/cart/${id}/delete`, {}, {
                 withCredentials: true
             });
+            this.setMiniCartChange("change");
             this.getInfo();
             // this.setUpdateMiniCart(true);
             this.$router.push('/cart');
@@ -193,7 +194,7 @@ export default {
             });
     },
     computed: {
-        ...mapState(['student', 'admin', 'miniCart'])
+        ...mapState(['student', 'admin', 'miniCartChange'])
     },
     
 }
