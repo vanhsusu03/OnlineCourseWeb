@@ -29,6 +29,10 @@ export default {
 
     getStudentCoinChange(state) {
       return state.studentCoinChange;
+    },
+
+    getAdminChange(state) {
+      return state.adminChange;
     }
   
   }

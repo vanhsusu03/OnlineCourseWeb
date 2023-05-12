@@ -39,7 +39,7 @@
 
 
 
-        <div v-if="student.userName" class="logged">
+        <div v-if="student.userName" class="logged" ref="log">
             <img src="../assets/img/user.png" id="user" @click.prevent="showDropDown">
             <div v-if="dropdownselect" class="drop-down-select" @mouseleave="unshowDropDown">
                 <div style="display: flex;" class="top-info">
@@ -129,7 +129,7 @@ export default {
                 keyw: "",
             },
             searchResult: [],
-            coin: 0,
+            coin: 47,
         }
     },
     components: {

@@ -28,7 +28,8 @@
                     <td class="change-coin" v-if="!changeCoin[account.student_id]">{{ account.coin }}</td>
                     <td v-else><input type="number" v-model="account.coin"></td>
                     <td>
-                        <button class="change" v-on:click="changeCoin[account.student_id] = !changeCoin[account.student_id]">
+                        <button class="change"
+                            v-on:click="changeCoin[account.student_id] = !changeCoin[account.student_id]">
                             <div v-if="!changeCoin[account.student_id]">Change Coin</div>
                             <div v-else v-on:click="changeAccount(account.student_id)">Save</div>
                         </button>
@@ -41,6 +42,7 @@
 
     </div>
     <div class="tabcontent" id="course">
+        <button class="add-course" @click="openPayment(1)">Add Course</button>
         <div style="display: flex;">
             <table>
                 <tr>
@@ -49,6 +51,7 @@
                     <th>Instrutor</th>
                     <th>Fee</th>
                     <th>Delete</th>
+                    <th>Change</th>
                 </tr>
                 <tr v-for="course in courses">
                     <td>{{ course.courseId }}</td>
@@ -56,6 +59,9 @@
                     <td>{{ course.instructorFirstName }} {{ course.instructorLastName }}</td>
                     <td>{{ course.courseFee }}</td>
                     <td><button class="remove" @click="removeCourse(course.courseId)">Delete</button></td>
+                    <td><button class="remove"
+                            @click="openPayment(2); dataAddChapter.addChapterId = course.courseId; getChapter(course.courseId)">Change</button>
+                    </td>
                 </tr>
             </table>
 
@@ -81,9 +87,10 @@
                     <td>{{ account.email }}</td>
                     <td class="change-coin" v-if="!changeCoin[account.student_id]">{{ account.coin }}</td>
                     <td v-else><input type="number" v-model="account.coin"></td>
-    
+
                     <td>
-                        <button class="change" v-on:click="changeCoin[account.student_id] = !changeCoin[account.student_id]">
+                        <button class="change"
+                            v-on:click="changeCoin[account.student_id] = !changeCoin[account.student_id]">
                             <div v-if="!changeCoin[account.student_id]">Change Coin</div>
                             <div v-else v-on:click="changeAccount(account.student_id)">Save</div>
                         </button>
@@ -98,15 +105,91 @@
     <div class="tabcontent" id="order">
         Hello 3
     </div>
+    <div class="modal" id="myModal1">
+        <div class="modal-content">
+            <span class="close" v-on:click="closePayment(1)">&times;</span>
+            <div class="add-content">
+                <form>
+                    <div class="course-title" style="display: flex;">
+                        <h5 class="title-txt">Title: </h5>
+                        <input type="text" v-model="course.courseTitle">
+                    </div>
+                    <div class="course-desc" style="display: flex;">
+                        <h5 class="desc-txt">Description: </h5>
+                        <input type="text" v-model="course.courseDescription">
+                    </div>
+                    <div class="course-image" style="display: flex;">
+                        <h5 class="img-txt">Image Link: </h5>
+                        <input type="text" v-model="course.courseImage">
+                    </div>
+                    <div class="course-fee" style="display: flex;">
+                        <h5 class="fee-txt">Course Fee: </h5>
+                        <input type="number" v-model="course.courseFee">
+                    </div>
+                    <div class="course-ins" style="display: flex;">
+                        <h5 class="ins-txt">Instructor ID: </h5>
+                        <input type="number" v-model="course.instructorId">
+                    </div>
+                </form>
+                <button class="add-button" @click="addCourse()">Add Course</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="myModal2">
+        <div class="modal-content">
+            <span class="close" v-on:click="closePayment(2)" >&times;</span>
+            <button @click="dataAddChapter.isAddChapter = !dataAddChapter.isAddChapter">Add Chapter</button>
+            <div v-if="dataAddChapter.isAddChapter" style="display: flex;">
+                <h5>Chapter Title:</h5>
+                <input type="text" v-model="dataAddChapter.chapterTitle">
+                <button @click="addChapter(dataAddChapter.addChapterId);">Add</button>
+            </div>
+            <button @click="dataAddContent.isAddContent = !dataAddContent.isAddContent">Add Content</button>
+            <div v-if="dataAddContent.isAddContent">
+                <div style="display: flex;">
+                    <h5>Chapter Id:</h5>
+                    <input type="number" v-model="dataAddContent.chapterId">
+                </div>
+                <div style="display: flex;">
+                    <h5>Content Title:</h5>
+                    <input type="text" v-model="dataAddContent.contentTitle">
+                </div>
+                <div style="display: flex;">
+                    <h5>Time Required In Sec:</h5>
+                    <input type="number" v-model="dataAddContent.timeRequiredInSec">
+                </div>
+                <div style="display: flex;">
+                    <h5>Content Link:</h5>
+                    <input type="text" v-model="dataAddContent.contentLink">
+                </div>
+                <button @click="addContents()">Add</button>
+
+            </div>
+            <div class="change-course">
+                <div v-for="(chapter, index) in content">
+                    {{ index + 1 }}. ID: {{ chapter.chapterId }} Title: {{ chapter.chapterTitle }}
+                    <div v-for="(cont, index) in chapter.contents" style="margin-left: 20px;">
+                        {{ index + 1 }}. {{ cont.contentTitle }} <br>
+                        Link: {{ cont.contentLink }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="clearfix"></div>
 </template>
 
 <script>
-import axios from 'axios';
+import { mapMutations, mapGetters, mapState } from 'vuex';
 
 export default {
     name: 'Admin',
     methods: {
+        ...mapMutations(['setAdminChange']),
+        ...mapGetters(['getAdminChange']),
+        adminChange() {
+            return this.getAdminChange;
+        },
         openChapter(evt, nameTab) {
             // Declare all variables
             var i, tabcontent, tablinks;
@@ -143,6 +226,114 @@ export default {
             for (let i = 0; i < this.accounts.length; i++) {
                 this.changeCoin.push(false);
             }
+        },
+        openPayment(num) {
+            var modal
+            if (num === 1) {
+                modal = document.getElementById("myModal1");
+            } else if (num === 2) {
+                modal = document.getElementById("myModal2");
+            }
+
+            // alert("hio");
+            modal.style.display = "block";
+            this.openingPayment = true;
+        },
+        closePayment(num) {
+            var modal
+            if (num === 1) {
+                modal = document.getElementById("myModal1");
+            } else if (num === 2) {
+                modal = document.getElementById("myModal2");
+            }
+            modal.style.display = "none";
+            this.openingPayment = false;
+        },
+        addCourse() {
+            axios.post('courses/create', this.course, { withCredentials: true })
+                .then(res => {
+                    alert(res.data.msg);
+                    this.setAdminChange("change");
+                    this.closePayment(1);
+                });
+        },
+        getChapter(id) {
+            axios.post(`/courses/${id}/contents`, {}, {
+                withCredentials: true
+            })
+                .then(response => {
+                    this.content = response.data.contents;
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                })
+        },
+        addChapter(id) {
+            axios.post(`/course/${id}/create`, this.dataAddChapter, { withCredentials: true })
+                .then(res => {
+                    alert(res.data.msg);
+                    // this.dataAddChapter.chapterTitle = "";
+                    // location.reload();
+                    
+                    this.resetAddChapter();
+
+                });
+        },
+        addContents() {
+            // alert("ok");
+            axios.post('/chapter/contents/create', this.dataAddContent, { WithComponent: true })
+                .then(res => {
+                    alert(res.data.msg);
+                    // this.dataAddChapter.chapterTitle = "";
+                    this.resetAddContent();
+                    // location.reload();
+                });
+        },
+        resetAddContent() {
+            this.dataAddContent.chapterId = Number,
+                this.dataAddContent.contentTypeId = 1,
+                this.dataAddContent.contentTitle = "",
+                this.dataAddContent.timeRequiredInSec = Number,
+                this.dataAddContent.isOpenForFree = 0,
+                this.dataAddContent.contentLink = "",
+                this.dataAddContent.isAddContent = false
+        },
+        resetAddChapter() {
+            //    this.dataAddChapter.addChapterId = Number,
+            this.dataAddChapter.chapterTitle = "",
+                this.dataAddChapter.isAddChapter = false
+        },
+        getAllInfo() {
+            axios.get('/admin/accounts', {
+                withCredentials: true
+            })
+                .then(response => {
+                    this.accounts = response.data;
+                    this.fillArrayChange();
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                })
+
+            axios.get('/admin/courses', {
+                withCredentials: true
+            })
+                .then(response => {
+                    this.courses = response.data;
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                })
+
+            axios.get('/admin/instructors', {
+                withCredentials: true
+            })
+                .then(response => {
+                    this.instructors = response.data;
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                })
         }
     },
     data() {
@@ -152,39 +343,44 @@ export default {
             instructors: [],
             orders: [],
             changeCoin: [],
+            course: {
+                courseTitle: "",
+                courseDescription: "",
+                courseImage: "",
+                courseFee: Number,
+                instructorId: Number
+            },
+            content: [],
+            dataAddChapter: {
+                addChapterId: Number,
+                chapterTitle: "",
+                isAddChapter: false,
+            },
+            dataAddContent: {
+                chapterId: Number,
+                contentTypeId: 1,
+                contentTitle: "",
+                timeRequiredInSec: Number,
+                isOpenForFree: 0,
+                contentLink: "",
+                isAddContent: false,
+            }
+
+        }
+    },
+    computed: {
+        ...mapState(['adminChange'])
+    },
+    watch: {
+        adminChange(newValue) {
+            console.log(`miniCartChange changed to ${newValue}`);
+            this.getAllInfo();
+            // alert('Add successful');
+            this.$store.commit('setAdminChange', '');
         }
     },
     created() {
-        axios.get('/admin/accounts', {
-            withCredentials: true
-        })
-            .then(response => {
-                this.accounts = response.data;
-                this.fillArrayChange();
-            })
-            .catch(e => {
-                this.errors.push(e)
-            })
-
-        axios.get('/admin/courses', {
-            withCredentials: true
-        })
-            .then(response => {
-                this.courses = response.data;
-            })
-            .catch(e => {
-                this.errors.push(e)
-            })
-
-        axios.get('/admin/instructors', {
-            withCredentials: true
-        })
-            .then(response => {
-                this.instructors = response.data;
-            })
-            .catch(e => {
-                this.errors.push(e)
-            })
+        this.getAllInfo();
     }
 }
 </script>
@@ -198,12 +394,14 @@ export default {
 * {
     box-sizing: border-box
 }
+
 h1 {
-    color: rgb(52,73,94);
+    color: rgb(52, 73, 94);
     font-size: 4rem;
     font-weight: 700;
     margin-bottom: 100px;
 }
+
 body {
     font-family: "Lato", sans-serif;
 }
@@ -234,6 +432,7 @@ body {
             margin-top: 5px;
         }
     }
+
     margin-bottom: 50px;
 }
 
@@ -323,5 +522,56 @@ tr:nth-child(even) {
 
 .change-coin {
     width: 200px;
+}
+
+/* The Modal (background) */
+.modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    padding-top: 100px;
+    /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+/* The Close Button */
+.close {
+    color: #aaaaaa;
+    // float: right;
+    position: absolute;
+    right: 10px;
+    top: 0px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
 }
 </style>

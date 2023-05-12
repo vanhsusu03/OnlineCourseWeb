@@ -19,5 +19,8 @@ export default {
     },
     setStudentCoinChange(state,studentCoinChange) {
       state.studentCoinChange = studentCoinChange;
+    },
+    setAdminChange(state, adminChange) {
+      state.adminChange = adminChange;
     }
   }

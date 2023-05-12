@@ -12,12 +12,14 @@ const {
         Content,
         Deposit,
         Order,
-        Order_detail
+        Order_detail,
+        Content_type
     }
 } = require('../models');
 const bcrypt = require("bcrypt");
 const { where } = require("sequelize");
 const bcryptRound = 10;
+const { format } = require('date-fns');
 const sequelize = require('sequelize');
 const db = require("../models");
 
@@ -200,6 +202,39 @@ class AdminController {
         }))
     }
 
+    //POST /courses/create
+    async addCourse(req, res, next) {
+        // console.log(req.body);
+        const {courseTitle, courseDescription, courseImage, courseFee, instructorId} = req.body;
+        console.log(instructorId);
+        const now = new Date();
+        const vietnamDate = format(now, 'yyyy-MM-dd', { timeZone: 'Asia/Ho_Chi_Minh' });
+        if (instructorId) {
+            // let instructor = await Student.findOne({
+            //     include: {
+            //         model: Instructor,
+            //         where: {
+            //             instructor_id: instructorId,
+            //         },
+            //     },
+            // }
+            // );
+
+            await Course.create({
+                instructor_id: instructorId,
+                title: courseTitle,
+                description: courseDescription,
+                image: courseImage,
+                release_date: vietnamDate,
+                course_fee: courseFee, 
+
+            })
+            return res.status(200).json({ msg: 'Add course successfully!' })
+        } else {
+            return res.status(200).json({ msg: 'You must be an instructor!' });
+        }
+    }
+
     //GET /admin/accounts
     async showAccounts(req, res, next) {
         return res.status(200).json(await Student.findAll());
@@ -215,7 +250,42 @@ class AdminController {
                 },
             })
         )
+    }    //POST /course/:courseId/create
+    async createChapter(req, res, next) {
+        // console.log(req.body);
+        const courseId = Number(req.params.courseId);
+        const chapterTitle = req.body.chapterTitle;
+        if (courseId) {
+            await Chapter.create({
+                course_id: courseId,
+                title: chapterTitle
+
+            })
+            return res.status(200).json({ msg: 'Add chapter successfully!' })
+        } else {
+            return res.status(200).json({ msg: 'You must be an instructor!' });
+        }
     }
+
+    //POST /chapter/contents/create
+    async createContents(req, res, next) {
+        const {chapterId, contentTypeId, contentTitle, timeRequiredInSec, isOpenForFree, contentLink, check} = req.body;
+        if (chapterId) {
+            await Content.create({
+                chapter_id: chapterId,
+                content_type_id: contentTypeId,
+                title: contentTitle,
+                time_required_in_sec: timeRequiredInSec,
+                is_open_for_free: isOpenForFree,
+                link: contentLink
+
+            })
+            return res.status(200).json({ msg: 'Add content successfully!' })
+        } else {
+            return res.status(200).json({ msg: 'You must be an instructor!' });
+        }
+    }
+
 }
 
 

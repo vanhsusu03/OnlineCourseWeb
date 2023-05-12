@@ -275,12 +275,11 @@ export default {
             this.courses[0].courseDescription = this.course.description;
         },
         openPayment() {
-            if (isLogin) {
                 let modal = document.getElementById("myModal");
                 this.convertData();
                 modal.style.display = "block";
                 this.openingPayment = true;
-            }
+            
         },
         closePayment() {
             let modal = document.getElementById("myModal");

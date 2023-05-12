@@ -5,6 +5,7 @@ export default {
     isLogin: false,
     miniCartChange: "",
     studentCoinChange: "",
+    adminChange: "",
     isSearching: false,
     courseIDshowing: 0,
 };
