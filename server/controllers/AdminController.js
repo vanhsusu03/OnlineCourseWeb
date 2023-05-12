@@ -35,9 +35,11 @@ class AdminController {
                     student_id: studentId,
                 }
             });
-            await Promise.all(carts.map(async cart => {
-                await cart.destroy();
-            }));
+            if (carts) {
+                await Promise.all(carts.map(async cart => {
+                    await cart.destroy();
+                }))
+            }
 
             //Delete deposit
             const deposits = await Deposit.findAll({
@@ -45,9 +47,11 @@ class AdminController {
                     customer_id: studentId,
                 }
             });
-            await Promise.all(deposits.map(async deposit => {
-                await deposit.destroy();
-            }));
+            if (deposits) {
+                await Promise.all(deposits.map(async deposit => {
+                    await deposit.destroy();
+                }));
+            }
 
             //Delete enrollment
             const enrollments = await Cart.findAll({
@@ -55,9 +59,11 @@ class AdminController {
                     student_id: studentId,
                 }
             });
-            await Promise.all(enrollments.map(async enrollment => {
-                await enrollment.destroy();
-            }));
+            if (enrollments) {
+                await Promise.all(enrollments.map(async enrollment => {
+                    await enrollment.destroy();
+                }));
+            }
 
             //Delete instructor
             const instructor = await Instructor.findOne({
@@ -65,14 +71,18 @@ class AdminController {
                     instructor_id: studentId,
                 },
             });
-            const courses = await Course.findAll({
-                where: {
-                    instructor_id: instructor.instructor_id,
+            if (instructor) {
+                const courses = await Course.findAll({
+                    where: {
+                        instructor_id: instructor.instructor_id,
+                    }
+                });
+                if (courses) {
+                    await Promise.all(courses.map(async course => {
+                        await course.destroy();
+                    }));
                 }
-            });
-            await Promise.all(courses.map(async course => {
-                await course.destroy();
-            }));
+            }
 
             //Delete order
             const orders = await Order.findAll({
@@ -80,15 +90,17 @@ class AdminController {
                     customer_id: studentId,
                 },
             });
-            await Promise.all(orders.map(async order => {
-                const orderDetails = await Order_detail.findAll({
-                    where: {
-                        order_id: order.order_id,
-                    }
-                });
-                await Promise.all(orderDetails.map(orderDetail => orderDetail.destroy()));
-                await order.destroy();
-            }));
+            if (orders) {
+                await Promise.all(orders.map(async order => {
+                    const orderDetails = await Order_detail.findAll({
+                        where: {
+                            order_id: order.order_id,
+                        }
+                    });
+                    await Promise.all(orderDetails.map(orderDetail => orderDetail.destroy()));
+                    await order.destroy();
+                }));
+            }
 
             await Student.destroy({
                 where: {
@@ -102,7 +114,7 @@ class AdminController {
         }
     }
 
-    //POST /admin/:courseId
+//POST /admin/:courseId
     async deleteCourse(req, res, next) {
         const courseId = req.params.courseId;
         if (courseId) {
@@ -188,7 +200,7 @@ class AdminController {
         }
     }
 
-    //POST /admin/:studentId
+//POST /admin/:studentId
     async editStudentInfo(req, res, next) {
         const studentId = req.params.student_id;
         const {firstname, lastname, email, username, oldPassword, newPassword, phone, birth, coin} = req.body;
@@ -220,7 +232,7 @@ class AdminController {
         }
     }
 
-    //POST /admin/:courseId
+//POST /admin/:courseId
     async editCourse(req, res, next) {
         let courseId = req.params.courseId;
         if (courseId) {
@@ -238,7 +250,7 @@ class AdminController {
         }
     }
 
-    //GET /admin/courses
+//GET /admin/courses
     async showCourses(req, res, next) {
         const courses = await Course.findAll({
                 order: [
@@ -249,13 +261,13 @@ class AdminController {
         return res.status(200).json(courses);
     }
 
-    //GET /admin/accounts
+//GET /admin/accounts
     async showAccounts(req, res, next) {
         const accounts = await Student.findAll();
         return res.status(200).json(accounts);
     }
 
-    //GET /admin/orders
+//GET /admin/orders
     async showOrders(req, res, next) {
         const orders = await Order.findAll({
                 attributes: [
