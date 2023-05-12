@@ -41,7 +41,7 @@
 
 </div>
 <div class="tabcontent" id="course">
-    <button class="add-course" @click="openPayment(1)">Add Course</button>
+    <button class="add-course btn" @click="openPayment(1)">Add Course</button>
     <div style="display: flex;">
         <table>
             <tr>
@@ -64,70 +64,68 @@
         
     </div>
 </div>
-<div class="tabcontent" id="instructor">
-    Hello 2
-</div>
-<div class="tabcontent" id="order">
-    Hello 3
-</div>
 <div class="modal" id="myModal1">
     <div class="modal-content">
         <span class="close" v-on:click="closePayment(1)">&times;</span>
+        <h2 style="text-align: center;">Add your course</h2>
         <div class="add-content">
             <form>
-                <div class="course-title" style="display: flex;">
+                <div class="course-title info">
                     <h5 class="title-txt">Title: </h5>
-                    <input type="text" v-model="course.courseTitle">
+                    <input class="sub" type="text" v-model="course.courseTitle">
                 </div>
-                <div class="course-desc" style="display: flex;">
+                <div class="course-desc info">
                     <h5 class="desc-txt">Description: </h5>
-                    <input type="text" v-model="course.courseDescription">
+                    <input class="sub" type="text" v-model="course.courseDescription">
                 </div>
-                <div class="course-image" style="display: flex;">
+                <div class="course-image info">
                     <h5 class="img-txt">Image Link: </h5>
-                    <input type="text" v-model="course.courseImage">
+                    <input class="sub" type="text" v-model="course.courseImage">
                 </div>
-                <div class="course-fee" style="display: flex;">
+                <div class="course-fee info">
                     <h5 class="fee-txt">Course Fee: </h5>
-                    <input type="number" v-model="course.courseFee">
+                    <input class="sub" type="number" v-model="course.courseFee">
                 </div>
-                <div class="course-ins" style="display: flex;">
+                <div class="course-ins info">
                     <h5 class="ins-txt">Instructor ID: </h5>
-                    <input type="number" v-model="course.instructorId">
+                    <input class="sub" type="number" v-model="course.instructorId">
                 </div>
             </form>
-            <button class="add-button" @click="addCourse()">Add Course</button>
+            <button class="add-button btn" @click="addCourse()">Add Course</button>
         </div>
     </div>
 </div>
 <div class="modal" id="myModal2">
     <div class="modal-content">
         <span class="close" v-on:click="closePayment(2)">&times;</span>
-        <button @click="dataAddChapter.isAddChapter=!dataAddChapter.isAddChapter">Add Chapter</button>
-        <div v-if="dataAddChapter.isAddChapter" style="display: flex;">
+        <button class="btn" @click="dataAddChapter.isAddChapter=!dataAddChapter.isAddChapter">Add Chapter</button>
+        <div class="input-cont" v-if="dataAddChapter.isAddChapter">
+            <div  class="info">
             <h5>Chapter Title:</h5>
-            <input type="text" v-model="dataAddChapter.chapterTitle">
-            <button @click="addChapter(dataAddChapter.addChapterId);">Add</button>
+            <input class="sub" type="text" v-model="dataAddChapter.chapterTitle">
+            <button class="btn" @click="addChapter(dataAddChapter.addChapterId);">Add</button>
         </div>
-        <button @click="dataAddContent.isAddContent=!dataAddContent.isAddContent">Add Content</button>
-        <div v-if="dataAddContent.isAddContent" >
-            <div style="display: flex;">
+        </div>
+        
+        <button class="btn" @click="dataAddContent.isAddContent=!dataAddContent.isAddContent">Add Content</button>
+        <div v-if="dataAddContent.isAddContent"  class="input-cont">
+            <div class="info">
                 <h5>Chapter Id:</h5>
-                <input type="number" v-model="dataAddContent.chapterId">
+                <input class="sub" type="number" v-model="dataAddContent.chapterId">
             </div>
-            <div style="display: flex;">
+            <div class="info">
                 <h5>Content Title:</h5>
-                <input type="text" v-model="dataAddContent.contentTitle">
+                <input class="sub" type="text" v-model="dataAddContent.contentTitle">
             </div>
-            <div style="display: flex;">
+            <div class="info">
                 <h5>Time Required In Sec:</h5>
-                <input type="number" v-model="dataAddContent.timeRequiredInSec">
+                <input class="sub" type="number" v-model="dataAddContent.timeRequiredInSec">
             </div>
-            <div style="display: flex;">
+            <div class="info">
                 <h5>Content Link:</h5>
-                <input type="text" v-model="dataAddContent.contentLink">
+                <input class="sub" type="text" v-model="dataAddContent.contentLink">
             </div>
-            <button @click="addContents()">Add</button>
+            <button class="btn" @click="addContents()">Add</button>
             
         </div>
         <div class="change-course">
@@ -216,7 +214,7 @@ export default {
             });
         },
         getChapter(id) {
-            axios.post(`/courses/${id}/contents`, {}, {
+            axios.get(`/courses/${id}/contents`, {}, {
                 withCredentials: true
             })
             .then(response => {
@@ -452,7 +450,7 @@ tr:nth-child(even) {
     /* Stay in place */
     z-index: 1;
     /* Sit on top */
-    padding-top: 100px;
+    padding-top: 0px;
     /* Location of the box */
     left: 0;
     top: 0;
@@ -493,5 +491,66 @@ tr:nth-child(even) {
     color: #000;
     text-decoration: none;
     cursor: pointer;
+}
+
+form, .input-cont {
+    background-color: white;
+        top: 30%;
+        margin: 20px 0;
+        margin-left: 50%;
+        transform: translateX(-50%);
+        width: 30%;
+        box-shadow: -0.5rem -0.5rem 1rem rgba($color: #000000, $alpha: 0.1), 0.5rem 0.5rem 1rem rgba($color: #000000, $alpha: 0.1);
+        border: 0.1rem solid rgba($color: #000000, $alpha: 0.05);
+        padding: 2rem;
+        border-radius: 1rem;
+        animation: fadeUp 0.4s linear;
+
+    .error {
+        position: absolute;
+        font-weight: 600;
+        color: red;
+        font-size: 1.2vw;
+
+    }
+}
+
+.info {
+    margin: 5px 0;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.sub {
+    margin-bottom: 10px;
+    padding: 5px 5px;
+    width: 250px;
+    border-radius: 5px;
+}
+
+.btn {
+    margin-top: 20px;
+    padding: 10px 25px;
+    margin-left: 50%;
+    font-size: 20px;
+    font-weight: 500;
+    border-style: none;
+    border-radius: 10px;
+    transform: translateX(-50%);
+    background-color: rgb(0, 128, 128);
+    color: white;
+    &:hover {
+        
+        margin-top: 20px;
+    padding: 10px 25px;
+    margin-left: 50%;
+    font-size: 20px;
+    font-weight: 500;
+    border-style: none;
+    border-radius: 10px;
+    transform: translateX(-50%);
+    background-color: rgb(0, 128, 128);
+    // transform: scale(1.1);
+    }
 }
 </style>

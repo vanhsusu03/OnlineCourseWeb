@@ -69,6 +69,7 @@ class StudentController {
                     return res.status(200).json({
                         msg: 'Successfully login',
                         redirect: '/account/info',
+                        id: student.student_id,
                         userName: student.username,
                         firstName: student.first_name,
                         lastName: student.last_name,
