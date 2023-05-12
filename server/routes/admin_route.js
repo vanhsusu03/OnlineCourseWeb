@@ -16,4 +16,6 @@ router.post('/admin/change/:studentId/:coin', adminController.editStudentInfo);
 router.post('/admin/change/:courseId', adminController.editCourse);
 router.get('/admin/courses', adminController.showCourses);
 router.get('/admin/accounts', adminController.showAccounts);
+router.post('/course/:courseId/create', adminController.createChapter);
+router.post('/chapter/contents/create', adminController.createContents);
 module.exports = router;
