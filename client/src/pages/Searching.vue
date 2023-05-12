@@ -36,7 +36,10 @@
                         <div id="descr">{{ res.courseDescription }}</div>
                         <div id="ins">Created by: <span id="name"> {{ res.instructorFirstName + ' ' + res.instructorLastName
                         }}</span></div>
-                        <div id="fee">{{ res.courseFee + ' VND' }}</div>
+                        <div class="fee">
+                            <div> {{ res.courseFee }} </div>
+                            <div id="image"> <img src="../assets/img/logo.png" alt="" id="img-coin"> </div>
+                        </div>
                     </div>
                 </li>
             </div>
@@ -203,12 +206,12 @@ export default {
             if (states === 'Unactivated') {
                 this.$router.push(`/course/info/${id}`);
             } else if (states === 'Activated') {
-                this.$router.push(`/course/detail/${id}`);
+                this.$router.push(`/study/${id}`);
             }
         },
         async getResultSearch() {
             let id = String(window.location.href.split('/').slice(-1)[0]);
-            this.keySearch = id;
+            this.keySearch = id.replace(/%20/g, ' ');
             await axios.get(`/searching/${id}`, { withCredentials: true })
                 .then(response => {
                     this.numSearch = response.data.number;
@@ -256,7 +259,7 @@ export default {
         margin-bottom: 40px;
 
         select {
-            
+
             width: 100%;
             padding: 5px;
             font-size: 16px;
@@ -267,7 +270,7 @@ export default {
             background-image: linear-gradient(45deg, transparent 50%, #ccc 50%), linear-gradient(135deg, #ccc 50%, transparent 50%), linear-gradient(to right, #ccc, #ccc);
             /* Adds custom arrow */
             background-position: calc(100% - 20px) calc(1em + 2px), calc(100% - 15px) calc(1em + 2px), 100% 0;
-            background-size: 0 0, 0 0,0 0;
+            background-size: 0 0, 0 0, 0 0;
             /* Adjusts arrow size */
             background-repeat: no-repeat;
 
@@ -364,7 +367,7 @@ export default {
                 label {
                     margin-left: 10px;
                     font-size: 1.15rem;
-                    color: rgb(52,73,94);
+                    color: rgb(52, 73, 94);
                     margin-bottom: 10px;
                 }
 
@@ -427,9 +430,22 @@ export default {
                     margin-bottom: 10px;
                 }
 
-                #fee {
+                .fee {
                     font-weight: 600;
                     font-size: 1.2rem;
+                    display: flex;
+
+                    #image {
+                        margin-left: 10px;
+                        margin-top: -2px;
+
+                        img {
+                            width: 25px;
+                            height: auto;
+                            border: none;
+                        }
+                    }
+
                 }
             }
 
@@ -458,4 +474,5 @@ export default {
             background-color: #ddd;
         }
     }
-}</style>
+}
+</style>

@@ -16,12 +16,12 @@
                     <button id="view-all-course" @click.prevent="redirectViewCourses">View all courses</button>
                     <button id="sign-up" @click.prevent="redirectSignUp">Sign Up</button>
                 </div>
-                <div class="intro">By @DNA team, UET 21-25</div>
+                <div class="intro-1">By @DNA team, UET 21-25</div>
             </div>
         </div>
         <br>
         <div class="intro">
-            <div v-if="student.userName" class="hello">Hello {{ student.lastName + ' ' + student.firstName + '!' }}, a
+            <div v-if="student.userName" class="hello">Hello {{ student.lastName + ' ' + student.firstName }}, a
                 passionate learner of DNA!</div>
             <div v-else class="hello">Hello, a passionate learner! <img src="../assets/img/wave.png" alt=""></div>
             <!-- <div id="tit">WHO ARE WE?</div> -->
@@ -140,7 +140,10 @@
                         <div id="ins">Created by: <span id="name"> {{ course.instructorFirstName + ' ' +
                             course.instructorLastName
                         }}</span></div>
-                        <div id="fee">{{ course.courseFee + ' VND' }}</div>
+                        <div class="fee">
+                            <div> {{ course.courseFee }} </div>
+                            <div id="image"> <img src="../assets/img/logo.png" alt="" id="img-coin"> </div>
+                        </div>
                     </div>
                 </li>
 
@@ -151,7 +154,9 @@
         <div class="addition">
             <h2 class="titlee">Become an instructor</h2>
             <div class="boxx">
-                <span id="introo"> <div>Instructors from around the world teach millions of students on DNA. We provide the tools and skills to teach what you love. Wanna join with us?</div> 
+                <span id="introo">
+                    <div>Instructors from around the world teach millions of students on DNA. We provide the tools and
+                        skills to teach what you love. Wanna join with us?</div>
                     <button id="sign-up" @click.prevent="redirectSignUp">Sign Up</button>
                 </span>
                 <span id="img"><img src="../assets/img/ins.png"></span>
@@ -212,7 +217,7 @@ export default {
             if (states === 'Unactivated') {
                 this.$router.push(`/course/info/${id}`);
             } else if (states === 'Activated') {
-                this.$router.push(`/course/detail/${id}`);
+                this.$router.push(`/study/${id}`);
             }
         },
     },
@@ -222,7 +227,7 @@ export default {
     created() {
         axios.get('/courses', { withCredentials: true })
             .then(response => {
-                this.courses = response.data
+                this.courses = response.data;
                 this.getRandomCourse();
             })
             .catch(e => {
@@ -268,11 +273,11 @@ export default {
                 opacity: 1;
             }
 
-            45% {
+            50% {
                 opacity: 1;
             }
 
-            55% {
+            75% {
                 opacity: 0;
             }
 
@@ -295,11 +300,11 @@ export default {
                 opacity: 0;
             }
 
-            45% {
+            50% {
                 opacity: 0;
             }
 
-            55% {
+            75% {
                 opacity: 1;
             }
 
@@ -335,6 +340,10 @@ export default {
             img {
                 margin-top: 20%;
                 width: 150px;
+            }
+
+            .intro-1 {
+                margin-top: 12%;
             }
 
             .quote-line-1 {
@@ -404,16 +413,6 @@ export default {
         }
     }
 
-    .dna {
-        text-align: center;
-
-        .text {
-            font-size: 3rem;
-            font-weight: 700;
-            color: rgb(52, 73, 94);
-        }
-    }
-
     .intro {
         color: #000;
         left: 20px;
@@ -421,6 +420,7 @@ export default {
         font-size: 1.1rem;
         font-weight: 500;
         margin-bottom: 160px;
+        width: 90%;
 
         .hello {
             font-size: 2.4rem;
@@ -497,13 +497,6 @@ export default {
 
     .hello {
         display: flex;
-
-        .hi {
-            font-weight: 550;
-            font-size: 2.2rem;
-            left: 50px;
-
-        }
 
         .body {
             font-weight: 600;
@@ -586,6 +579,7 @@ export default {
             border: 2px inset black;
         }
 
+
         .item {
             display: flex;
         }
@@ -602,7 +596,7 @@ export default {
 
             #title {
                 font-weight: 600;
-                font-size: 1.25rem;
+                font-size: 1.15rem;
                 margin-bottom: 10px;
             }
 
@@ -621,14 +615,23 @@ export default {
                 margin-bottom: 10px;
             }
 
-            #fee {
+            .fee {
                 font-weight: 600;
                 font-size: 1.2rem;
-            }
-        }
+                display: flex;
 
-        #line {
-            border: 2px solid black;
+                #image {
+                    margin-left: 10px;
+                    margin-top: -2px;
+
+                    img {
+                        width: 25px;
+                        height: auto;
+                        border: none;
+                    }
+                }
+
+            }
         }
     }
 }
@@ -636,47 +639,50 @@ export default {
 .addition {
     margin-left: 130px;
     margin-right: 50px;
-        .titlee {
-            font-size: 1.8rem;
+    margin-top: 50px;
+
+    .titlee {
+        font-size: 1.8rem;
         font-weight: 650;
         color: rgb(52, 73, 94);
         margin-bottom: 20px;
-        }
+    }
 
-        .boxx{
-            display: flex;
-            #introo {
-                margin-left: 50px;
-                width: 50%;
-                margin-top: 11%;
-                font-size: 1.4rem;
-                font-weight: 700;
-                color: rgb(52,73,94);
-                display: block;
-                #sign-up {
-                    margin-left: 50%;
-                    transform: translateX(-60%);
-                    margin-top: 10%;
-                    background-color: transparent;
-                    color: #000;
-                    font-size: 1.1rem;
-                    font-weight: 600;
-                    padding: 8px;
-                    width: 30%;
-                    border: 3px inset rgb(52,73,94);
+    .boxx {
+        display: flex;
 
-                    &:hover {
-                        font-weight: 500;
-                        background-color: rgb(52,73,94);
-                        color: #fff;
-                    }
+        #introo {
+            margin-left: 50px;
+            width: 50%;
+            margin-top: 11%;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: rgb(52, 73, 94);
+            display: block;
+
+            #sign-up {
+                margin-left: 50%;
+                transform: translateX(-60%);
+                margin-top: 10%;
+                background-color: transparent;
+                color: #000;
+                font-size: 1.1rem;
+                font-weight: 600;
+                padding: 8px;
+                width: 30%;
+                border: 3px inset rgb(52, 73, 94);
+
+                &:hover {
+                    font-weight: 500;
+                    background-color: rgb(52, 73, 94);
+                    color: #fff;
                 }
             }
-             #img {
-
-             }
         }
-    
+
+        #img {}
+    }
+
 }
 
 .space {

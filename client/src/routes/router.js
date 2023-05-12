@@ -19,6 +19,7 @@ import StudyPage from '../pages/StudyPage';
 import Admin from '../pages/Admin';
 // import EditInfo from '../components/EditInfo.vue';
 import PurchaseHistory from '../pages/PurchaseHistory.vue';
+import InstructorManage from '../pages/InstructorManage';
 
 import store from '@/store/index';
 
@@ -37,6 +38,7 @@ const routes = [
     {  path: "/become/instructor", name: "BecomeInstructor", component: BecomeInstructor},
     {  path: "/instructor/info/show/:instructorId", name: "InstructorInfox", component: InstructorInfo},
     {  path: "/purchase/history", name: "PurchaseHistory", component: PurchaseHistory},
+    {  path: "/instructor/manage", name: "InstructorManage", component: InstructorManage},
     {  path: "/course/detail/:courseId", name: "CourseDetail", component: CourseDetail},
     {  path: "/study/:courseId", name: "StudyPage", component: StudyPage},
     {  path: "/admin", name: "Admin", component: Admin},

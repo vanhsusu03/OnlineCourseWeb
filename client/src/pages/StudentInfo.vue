@@ -7,8 +7,7 @@
                 <br>
                 <button class="tablinks" v-on:click="openCity($event, 'changepass')" @click="setButtonFalse">Change
                     Password</button> <br>
-                <button class="tablinks" v-on:click="openCity($event, 'mycourse')" @click="setButtonFalse">My Courses</button>
-                <br>
+                
             </div>
             <div v-if="this.isInProfilePage">
                 <div v-if="!this.showEditInfo" class="inf">
@@ -54,10 +53,6 @@
 
             <div id="changepass" class="tabcontent" style="display: none;">
                 <ChangePass></ChangePass>
-            </div>
-
-            <div id="mycourse" class="tabcontent" style="display: none;">
-                <MyCourses></MyCourses>
             </div>
         </div>
     </div>
@@ -131,7 +126,7 @@ export default {
 
 <style scoped lang="scss">
 .page {
-    background-color: rgb(0, 128, 128);
+    background-color: rgb(52,73,94);
     padding: 30px 0;
 }
 

@@ -1,4 +1,5 @@
 const sequelize = require('sequelize');
+const { format } = require('date-fns');
 const {
     models: {Course, Course_category, Category, Instructor, Enrollment, Student, Feedback,
         Chapter, Content, Content_type}
@@ -80,25 +81,31 @@ class CourseController {
 
     //POST /courses/create
     async addCourse(req, res, next) {
-        let instructorId = req.session.instructorId;
+        // console.log(req.body);
+        const instructorId = req.session.studentId;
+        const {courseTitle, courseDescription, courseImage, courseFee} = req.body;
+        console.log(instructorId);
+        const now = new Date();
+        const vietnamDate = format(now, 'yyyy-MM-dd', { timeZone: 'Asia/Ho_Chi_Minh' });
         if (instructorId) {
-            let instructor = await Student.findOne({
-                include: {
-                    model: Instructor,
-                    where: {
-                        instructor_id: instructorId,
-                    },
-                },
-            }
-            );
-            let instructorFirstName = instructor.first_name;
-            let instructorLastName = instructor.last_name;
+            // let instructor = await Student.findOne({
+            //     include: {
+            //         model: Instructor,
+            //         where: {
+            //             instructor_id: instructorId,
+            //         },
+            //     },
+            // }
+            // );
+
             await Course.create({
-                instructorId: instructorId,
-                title: req.body.title,
-                description: req.body.description,
-                image: req.body.description,
-                courseFee: req.body.courseFee,
+                instructor_id: instructorId,
+                title: courseTitle,
+                description: courseDescription,
+                image: courseImage,
+                release_date: vietnamDate,
+                course_fee: courseFee, 
+
             })
             return res.status(200).json({ msg: 'Add course successfully!' })
         } else {
@@ -192,7 +199,6 @@ class CourseController {
                     }
                 ]
             })
-            console.log(courses);
             return res.status(200).json(courses);
         }
     }
@@ -356,7 +362,7 @@ class CourseController {
     }
 
     async getContents(req, res, next) {
-        const courseId = req.params.courseId;
+        const courseId = Number(req.params.courseId);
 
         const contents = await Chapter.findAll({
             attributes: [ 
@@ -372,6 +378,7 @@ class CourseController {
                     [sequelize.col('content_id'), 'contentId'],
                     [sequelize.col('title'), 'contentTitle'],
                     [sequelize.col('time_required_in_sec'), 'timeRequiredInSec'],
+                    [sequelize.col('link'), 'contentLink'],
                 ],
                 order: [
                     [sequelize.col('content_id'), 'ASC']
@@ -395,6 +402,7 @@ class CourseController {
             contents: contents
         });
     }
+    
 }
 
 module.exports = new CourseController();
