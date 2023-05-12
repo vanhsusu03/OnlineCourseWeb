@@ -41,7 +41,6 @@
 
 </div>
 <div class="tabcontent" id="course">
-    {{ content }}
     <button class="add-course" @click="openPayment(1)">Add Course</button>
     <div style="display: flex;">
         <table>
@@ -108,7 +107,7 @@
         <div v-if="dataAddChapter.isAddChapter" style="display: flex;">
             <h5>Chapter Title:</h5>
             <input type="text" v-model="dataAddChapter.chapterTitle">
-            <button @click="addChapter(dataAddChapter.addChapterId)">Add</button>
+            <button @click="addChapter(dataAddChapter.addChapterId);">Add</button>
         </div>
         <button @click="dataAddContent.isAddContent=!dataAddContent.isAddContent">Add Content</button>
         <div v-if="dataAddContent.isAddContent" >
@@ -231,8 +230,10 @@ export default {
             axios.post(`/course/${id}/create`, this.dataAddChapter, {withCredentials: true})
             .then(res=>{
                 alert(res.data.msg);
-                this.dataAddChapter.chapterTitle = "";
-                location.reload();
+                // this.dataAddChapter.chapterTitle = "";
+                // location.reload();
+                this.resetAddChapter();
+                
             });
         },
         addContents() {
@@ -240,9 +241,24 @@ export default {
             axios.post('/chapter/contents/create', this.dataAddContent, {WithComponent: true})
             .then(res=>{
                 alert(res.data.msg);
-                this.dataAddChapter.chapterTitle = "";
-                location.reload();
+                // this.dataAddChapter.chapterTitle = "";
+                this.resetAddContent();
+                // location.reload();
             });
+        },
+        resetAddContent() {
+           this.dataAddContent.chapterId = Number,
+           this.dataAddContent.contentTypeId = 1,
+           this.dataAddContent.contentTitle = "",
+           this.dataAddContent.timeRequiredInSec = Number,
+           this.dataAddContent.isOpenForFree = 0,
+           this.dataAddContent.contentLink = "",
+           this.dataAddContent.isAddContent = false
+        },
+        resetAddChapter() {
+        //    this.dataAddChapter.addChapterId = Number,
+           this.dataAddChapter.chapterTitle = "",
+           this.dataAddChapter.isAddChapter = false
         }
     },
     data() {

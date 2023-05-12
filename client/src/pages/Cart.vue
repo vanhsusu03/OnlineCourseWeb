@@ -1,6 +1,27 @@
 <template>
 <h1 class="pagetitle">Shopping Cart</h1>
-<div class="content">
+<div style="margin-left: 50px;" v-if="checkNoCart()">
+    <h2>You don't have any courses in your cart. You can refer to some of the courses below:</h2>
+    <ul v-if="listCourses && listCourses.length">
+        <li v-for="course of listCourses" style="display: flex; margin: 20px 0">
+                <div>
+                    <RouterLink :to="{path: '/course/info/' + course.courseId}" class="course-img">
+                        <img v-bind:src="course.courseImage" alt="" class="course-img">
+                    </RouterLink>
+                </div>
+            
+            <div style="margin-left: 10px;">
+                <h4 v-bind:title="course.courseTitle">{{ course.courseTitle }}</h4>
+                <!-- <div>{{ course.instructor }}</div> -->
+                <div class="desc" v-bind:title="course.courseDescription">{{course.courseDescription}}</div>
+                <div>{{ course.courseFee }} VND</div>
+                <div>By <span style="font-weight: 500;">{{ course.instructorFirstName }} {{ course.instructorLastName }}</span></div>
+            </div>
+        </li>
+    </ul>
+</div>
+    
+<div class="content" v-else>
     <div>
         <h5>{{ courses.length }} Course in Cart</h5>
         <div class="cart">
@@ -82,6 +103,8 @@ export default {
             courses: [],
             saved: [],
             openingPayment: false,
+            listCourses: [],
+            randomCourses: []
         }
     },
     components: {
@@ -100,6 +123,16 @@ export default {
             modal.style.display = "none";
             this.openingPayment = false;
         },
+        getRandomCourse() {
+            let coursesCopy = [...this.listCourses]; // create a copy of the array to avoid modifying the original
+            // loop 8 times or until there are no more elements to choose from
+                for (let i = 0; i < 8 && coursesCopy.length > 0; i++) {
+                    let randomIndex = Math.floor(Math.random() * coursesCopy.length); // choose a random index
+                    this.randomCourses.push(coursesCopy[randomIndex]); // add the chosen element to the randomCourses array
+                    coursesCopy.splice(randomIndex, 1); // remove the chosen element from the coursesCopy array
+                }
+                this.listCourses = this.randomCourses;
+            },
         getTotal() {
             let sum = 0;
             for (let i = 0; i < this.courses.length; i++) {
@@ -142,10 +175,22 @@ export default {
                 .catch(e => {
                     this.errors.push(e)
                 })
+        },
+        checkNoCart() {
+            if (this.courses.length === 0) return true;
+            return false;
         }
     },
     created() {
-        this.getInfo()
+        this.getInfo();
+        axios.get('/courses', { withCredentials: true })
+            .then(response => {
+                this.listCourses = response.data;
+                this.getRandomCourse();
+            })
+            .catch(e => {
+                this.errors.push(e)
+            });
     },
     computed: {
         ...mapState(['student', 'admin', 'miniCart'])

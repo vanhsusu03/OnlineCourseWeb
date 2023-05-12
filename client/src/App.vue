@@ -33,7 +33,7 @@ export default {
   mounted() {
     setTimeout(() => {
       this.loading = false;
-    }, 4500);
+    }, 100);
   },
   created() {
     this.checkLogin();
