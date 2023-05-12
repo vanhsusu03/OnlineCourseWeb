@@ -10,7 +10,7 @@ class StudentController {
 
     async signUp(req, res, next) {
         const {firstname, lastname, email, username, password, phone, birth} = req.body;
-        const today = await db.sequelize.query("SELECT DATE(NOW()) as today", { type: db.sequelize.QueryTypes.SELECT });
+        const today = await db.sequelize.query("SELECT DATE(NOW()) as today", {type: db.sequelize.QueryTypes.SELECT});
         console.log(today[0].today);
 
         try {
@@ -64,7 +64,6 @@ class StudentController {
                 } else {
                     req.session.isLogin = true;
                     req.session.studentId = student.student_id;
-                    console.log(req.session);
                     return res.status(200).json({
                         msg: 'Successfully login',
                         redirect: '/account/info',
@@ -125,38 +124,23 @@ class StudentController {
     async updateInfo(req, res, next) {
         const {username, email, firstname, lastname, phone, birth} = req.body;
         try {
-            // const checkEmail = await Student.findOne(
-            //     {
-            //         where:{
-            //             email: email,
-            //             student_id:{
-            //                 [Op.ne]:req.session.student_id,
-            //             }
-            //         }
-            //     });
+            const checkPhone = await Student.findOne(
+                {
+                    where:{
+                        phone: phone,
+                        student_id:{
+                            [Op.ne]:req.session.student_id,
+                        }
+                    }
+                });
 
-            // const checkPhone = await Student.findOne(
-            //     {
-            //         where:{
-            //             phone: phone,
-            //             student_id:{
-            //                 [Op.ne]:req.session.student_id,
-            //             }
-            //         }
-            //     });
-
-            // if (checkEmail || checkPhone) {
-            //     if(checkEmail){
-            //         return res.status(201).json({
-            //             msg: 'Email is already exists',
-            //         });
-            //     }
-            //     if (checkPhone){
-            //         return res.status(201).json({
-            //             msg: 'Phone is already exists',
-            //         });
-            //     }
-            // }
+            if (checkPhone) {
+                if (checkPhone){
+                    return res.status(201).json({
+                        msg: 'Phone number is already exists',
+                    });
+                }
+            }
 
             await Student.update(
                 {

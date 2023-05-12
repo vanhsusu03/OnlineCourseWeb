@@ -26,7 +26,7 @@ CREATE TABLE instructor (
   introduction_brief VARCHAR(3000) NOT NULL,
   transfer_info VARCHAR(200) NOT NULL, -- BankName_AccountNumber_NameOfBankAccount
   PRIMARY KEY (instructor_id),
-  CONSTRAINT fk_instructor_student FOREIGN KEY (instructor_id) REFERENCES student (student_id) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT fk_instructor_student FOREIGN KEY (instructor_id) REFERENCES student (student_id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE course (
@@ -39,15 +39,15 @@ CREATE TABLE course (
   course_fee MEDIUMINT UNSIGNED NOT NULL,
   is_closed BOOLEAN NOT NULL DEFAULT FALSE,
   PRIMARY KEY (course_id),
-  CONSTRAINT fk_course_instructor FOREIGN KEY (instructor_id) REFERENCES instructor (instructor_id) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT fk_course_instructor FOREIGN KEY (instructor_id) REFERENCES instructor (instructor_id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE cart (
   student_id MEDIUMINT UNSIGNED NOT NULL,
   course_id SMALLINT UNSIGNED NOT NULL,
   PRIMARY KEY (student_id, course_id),
-  CONSTRAINT fk_cart_student FOREIGN KEY (student_id) REFERENCES student (student_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT fk_cart_course FOREIGN KEY (course_id) REFERENCES course (course_id) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT fk_cart_student FOREIGN KEY (student_id) REFERENCES student (student_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT fk_cart_course FOREIGN KEY (course_id) REFERENCES course (course_id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE deposit (
@@ -56,7 +56,7 @@ CREATE TABLE deposit (
   amount INT UNSIGNED NOT NULL,
   deposit_time DATETIME NOT NULL,
   PRIMARY KEY (deposit_id),
-  CONSTRAINT fk_deposit_order FOREIGN KEY (customer_id) REFERENCES student (student_id) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT fk_deposit_order FOREIGN KEY (customer_id) REFERENCES student (student_id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `order` (
@@ -64,7 +64,7 @@ CREATE TABLE `order` (
   customer_id MEDIUMINT UNSIGNED NOT NULL,
   order_time DATETIME NOT NULL,
   PRIMARY KEY (order_id),
-  CONSTRAINT fk_order_student FOREIGN KEY (customer_id) REFERENCES student (student_id) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT fk_order_student FOREIGN KEY (customer_id) REFERENCES student (student_id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE order_detail (
@@ -72,8 +72,8 @@ CREATE TABLE order_detail (
   order_id INT UNSIGNED NOT NULL,
   course_id SMALLINT UNSIGNED NOT NULL,
   PRIMARY KEY (order_detail_id),
-  CONSTRAINT fk_order_detail_order FOREIGN KEY (order_id) REFERENCES `order` (order_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT fk_order_detail_course FOREIGN KEY (course_id) REFERENCES course (course_id) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT fk_order_detail_order FOREIGN KEY (order_id) REFERENCES `order` (order_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT fk_order_detail_course FOREIGN KEY (course_id) REFERENCES course (course_id) ON DELETE CASCADECASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE payment (
@@ -82,7 +82,7 @@ CREATE TABLE payment (
   amount MEDIUMINT UNSIGNED NOT NULL,
   PRIMARY KEY (payment_id),
   UNIQUE(order_detail_id),
-  CONSTRAINT fk_payment_order_detail FOREIGN KEY (order_detail_id) REFERENCES order_detail (order_detail_id) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT fk_payment_order_detail FOREIGN KEY (order_detail_id) REFERENCES order_detail (order_detail_id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE category (
@@ -95,8 +95,8 @@ CREATE TABLE course_category (
   course_id SMALLINT UNSIGNED NOT NULL,
   category_id TINYINT UNSIGNED NOT NULL,
   PRIMARY KEY (course_id, category_id),
-  CONSTRAINT fk_course_category_category FOREIGN KEY (category_id) REFERENCES category (category_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT fk_course_category_course FOREIGN KEY (course_id) REFERENCES course (course_id) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT fk_course_category_category FOREIGN KEY (category_id) REFERENCES category (category_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT fk_course_category_course FOREIGN KEY (course_id) REFERENCES course (course_id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE chapter (
@@ -104,7 +104,7 @@ CREATE TABLE chapter (
   course_id SMALLINT UNSIGNED NOT NULL,
   title VARCHAR(200) NOT NULL,
   PRIMARY KEY (chapter_id),
-  CONSTRAINT fk_chapter_course FOREIGN KEY (course_id) REFERENCES course (course_id) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT fk_chapter_course FOREIGN KEY (course_id) REFERENCES course (course_id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE content_type (
@@ -117,12 +117,13 @@ CREATE TABLE content (
   content_id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
   chapter_id MEDIUMINT UNSIGNED NOT NULL,
   content_type_id TINYINT UNSIGNED NOT NULL,
+  title VARCHAR(200) NOT NULL,
   time_required_in_sec SMALLINT UNSIGNED NOT NULL,
   is_open_for_free BOOLEAN NOT NULL DEFAULT FALSE,
-  link VARCHAR(300) NOT NULL,
+  link VARCHAR(1000) NOT NULL,
   PRIMARY KEY (content_id),
-  CONSTRAINT fk_content_chapter FOREIGN KEY (chapter_id) REFERENCES chapter (chapter_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT fk_content_content_type FOREIGN KEY (content_type_id) REFERENCES content_type (type_id) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT fk_content_chapter FOREIGN KEY (chapter_id) REFERENCES chapter (chapter_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT fk_content_content_type FOREIGN KEY (content_type_id) REFERENCES content_type (type_id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE enrollment (
@@ -132,8 +133,8 @@ CREATE TABLE enrollment (
   enrollment_date DATE NOT NULL,
   PRIMARY KEY (enrollment_id),
   UNIQUE(student_id, course_id),
-  CONSTRAINT fk_enrollment_course FOREIGN KEY (course_id) REFERENCES course (course_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT fk_enrollment_student FOREIGN KEY (student_id) REFERENCES student (student_id) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT fk_enrollment_course FOREIGN KEY (course_id) REFERENCES course (course_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT fk_enrollment_student FOREIGN KEY (student_id) REFERENCES student (student_id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE feedback (
@@ -144,7 +145,7 @@ CREATE TABLE feedback (
   last_update DATETIME NOT NULL,
   PRIMARY KEY (feedback_id),
   UNIQUE(enrollment_id),
-  CONSTRAINT fk_feedback_enrollment FOREIGN KEY (enrollment_id) REFERENCES enrollment (enrollment_id) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT fk_feedback_enrollment FOREIGN KEY (enrollment_id) REFERENCES enrollment (enrollment_id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE progress (
@@ -154,5 +155,5 @@ CREATE TABLE progress (
   is_completed BOOLEAN DEFAULT FALSE,
   PRIMARY KEY (progress_id),
   UNIQUE(enrollment_id),
-  CONSTRAINT fk_progress_enrollment FOREIGN KEY (enrollment_id) REFERENCES enrollment (enrollment_id) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT fk_progress_enrollment FOREIGN KEY (enrollment_id) REFERENCES enrollment (enrollment_id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
