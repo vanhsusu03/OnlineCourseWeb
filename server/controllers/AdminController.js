@@ -19,6 +19,7 @@ const {
 const bcrypt = require("bcrypt");
 const { where } = require("sequelize");
 const bcryptRound = 10;
+const { format } = require('date-fns');
 const sequelize = require('sequelize');
 const db = require("../models");
 
@@ -199,6 +200,39 @@ class AdminController {
                 }
             }]
         }))
+    }
+
+    //POST /courses/create
+    async addCourse(req, res, next) {
+        // console.log(req.body);
+        const {courseTitle, courseDescription, courseImage, courseFee, instructorId} = req.body;
+        console.log(instructorId);
+        const now = new Date();
+        const vietnamDate = format(now, 'yyyy-MM-dd', { timeZone: 'Asia/Ho_Chi_Minh' });
+        if (instructorId) {
+            // let instructor = await Student.findOne({
+            //     include: {
+            //         model: Instructor,
+            //         where: {
+            //             instructor_id: instructorId,
+            //         },
+            //     },
+            // }
+            // );
+
+            await Course.create({
+                instructor_id: instructorId,
+                title: courseTitle,
+                description: courseDescription,
+                image: courseImage,
+                release_date: vietnamDate,
+                course_fee: courseFee, 
+
+            })
+            return res.status(200).json({ msg: 'Add course successfully!' })
+        } else {
+            return res.status(200).json({ msg: 'You must be an instructor!' });
+        }
     }
 
     //GET /admin/accounts

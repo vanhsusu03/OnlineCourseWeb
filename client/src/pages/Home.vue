@@ -227,7 +227,7 @@ export default {
     created() {
         axios.get('/courses', { withCredentials: true })
             .then(response => {
-                this.courses = response.data
+                this.courses = response.data;
                 this.getRandomCourse();
             })
             .catch(e => {

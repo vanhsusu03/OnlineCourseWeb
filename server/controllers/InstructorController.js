@@ -75,9 +75,9 @@ class InstructorController {
             res.status(200).json('You must be an instructor');
         }
     }
-    //GET /courseof/:instructorId
+    //GET /courseof/instructor
     async getCoursesOfInstructor(req, res, next) {
-        const instructorId = req.params.instructorId;
+        const instructorId = req.session.studentId;
         if (instructorId) {
             let courses = await Course.findAll({
                 where: {
