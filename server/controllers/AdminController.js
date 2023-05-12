@@ -12,7 +12,8 @@ const {
         Content,
         Deposit,
         Order,
-        Order_detail
+        Order_detail,
+        Content_type
     }
 } = require('../models');
 const bcrypt = require("bcrypt");
@@ -205,6 +206,41 @@ class AdminController {
         return res.status(200).json(await Student.findAll());
     }
 
+    //POST /course/:courseId/create
+    async createChapter(req, res, next) {
+        // console.log(req.body);
+        const courseId = Number(req.params.courseId);
+        const chapterTitle = req.body.chapterTitle;
+        if (courseId) {
+            await Chapter.create({
+                course_id: courseId,
+                title: chapterTitle
+
+            })
+            return res.status(200).json({ msg: 'Add chapter successfully!' })
+        } else {
+            return res.status(200).json({ msg: 'You must be an instructor!' });
+        }
+    }
+
+    //POST /chapter/contents/create
+    async createContents(req, res, next) {
+        const {chapterId, contentTypeId, contentTitle, timeRequiredInSec, isOpenForFree, contentLink, check} = req.body;
+        if (chapterId) {
+            await Content.create({
+                chapter_id: chapterId,
+                content_type_id: contentTypeId,
+                title: contentTitle,
+                time_required_in_sec: timeRequiredInSec,
+                is_open_for_free: isOpenForFree,
+                link: contentLink
+
+            })
+            return res.status(200).json({ msg: 'Add content successfully!' })
+        } else {
+            return res.status(200).json({ msg: 'You must be an instructor!' });
+        }
+    }
 
 }
 
