@@ -9,7 +9,7 @@
                         <h3>{{ course.courseTitle }}</h3>
                         <div>{{ course.instructorFirstName + ' ' + course.instructorLastName }}</div>
                         <div>{{ course.courseFee + ' vnd' }}</div>
-                        
+
                     </div>
                 </li>
             </ul>
@@ -21,7 +21,7 @@
 </template>
     
 <script>
-import { mapMutations, mapState } from 'vuex';
+import { mapMutations, mapState, mapGetters } from 'vuex';
 import axios from 'axios';
 export default {
     name: 'MiniCart',
@@ -31,7 +31,11 @@ export default {
         }
     },
     methods: {
-        ...mapMutations(['setMiniCart']),
+        ...mapMutations(['setMiniCartChange']),
+        ...mapGetters(['getMiniCartChange']),
+        miniCartChange() {
+            return this.getMiniCartChange;
+        },
         getTotal() {
             let sum = 0;
             for (let i = 0; i < this.courses.length; i++) {
@@ -49,12 +53,21 @@ export default {
                 })
         }
     },
+    computed: {
+        ...mapState(['miniCartChange']),
+    },
+    watch: {
+        miniCartChange(newValue) {
+            console.log(`miniCartChange changed to ${newValue}`);
+            this.getCourseInfo();
+            // alert('Add successful');
+            this.$store.commit('setMiniCartChange', '');
+        }
+    },
     created() {
-            this.getCourseInfo()
+        this.getCourseInfo()
     },
-    compyted: {
-        ...mapState(['miniCart']),
-    },
+
 }
 
 </script>
@@ -79,7 +92,7 @@ export default {
 
     .cart-content {
         position: absolute;
-        z-index: 1;
+        z-index: 3;
         display: none;
         background-color: white;
         left: -200px;
@@ -135,4 +148,5 @@ export default {
         }
     }
 
-}</style>
+}
+</style>

@@ -9,7 +9,9 @@ class StudyController {
         this.addFeedback = this.addFeedback.bind(this);
         this.updateLastTimeAccess = this.updateLastTimeAccess.bind(this);
         this.getLastTimeAccess = this.getLastTimeAccess.bind(this);
-        this.getContent = this.getContent.bind(this);
+        this.getContents = this.getContents.bind(this);
+        this.getContentLink = this.getContentLink.bind(this);
+        this.modifyFeedbackOfAStudent = this.modifyFeedbackOfAStudent.bind(this);
     }
 
     async getEnrollmentId(studentId, courseId) {
@@ -28,7 +30,7 @@ class StudyController {
     }
 
     async addFeedback(req, res, next) {
-        const courseId = req.body.courseId;
+        const courseId = req.params.courseId;
         const rating = req.body.rating;
         var detail = req.body.detail;
 
@@ -45,6 +47,19 @@ class StudyController {
             });
         }
 
+        const feedback = await Feedback.findOne({
+            attributes: ['feedback_id'],
+            where: {
+                enrollment_id: enrollmentId
+            }
+        });
+
+        if (feedback) {
+            return res.status(400).json({
+                msg: 'You can not add more feedbacks!'
+            });
+        }
+
         await Feedback.create({
             enrollment_id: enrollmentId,
             rating: rating,
@@ -58,12 +73,39 @@ class StudyController {
     }
 
     async modifyFeedbackOfAStudent(req, res, next) {
-        const feedbackId = req.body.feedbackId;
+        const courseId = req.params.courseId;
+        const feedbackId = req.params.feedbackId;
         const rating = req.body.rating;
         var detail = req.body.detail;
 
+        const studentId = req.session.studentId;
+
         if (typeof detail === 'undefined') {
             detail = null;
+        }
+
+        const enrollmentId = await this.getEnrollmentId(studentId, courseId);
+        if (!enrollmentId) {
+            return res.status(400).json({
+                msg: 'You have not enrolled in this course yet!'
+            });
+        }
+
+        const feedback = await Feedback.findOne({
+            attributes: ['feedback_id'],
+            where: {
+                enrollment_id: enrollmentId
+            }
+        });
+        if (!feedback) {
+            return res.status(400).json({
+                msg: 'You need to add feedback'
+            });
+        }
+        if (feedback.dataValues.feedback_id != feedbackId) {
+            return res.status(400).json({
+                msg: 'This feedback is not yours'
+            });
         }
 
         await Feedback.update({
@@ -122,7 +164,7 @@ class StudyController {
                 [sequelize.col('feedback_id'), 'feedbackId'],
                 [sequelize.col('rating'), 'feedbackRating'],
                 [sequelize.col('detail'), 'feedbackDetail'],
-                [sequelize.fn('CONVERT_TZ', sequelize.col('last_update'), '+00:00', '+07:00'), 'feedbackLastUpdateTime']
+                [sequelize.col('last_update'), 'feedbackLastUpdateTime']
             ],
             where: {
                 course_id: courseId
@@ -194,7 +236,7 @@ class StudyController {
         });
     }
 
-    async getContent(req, res, next) {
+    async getContents(req, res, next) {
         const courseId = Number(req.params.courseId);
         
         const studentId = req.session.studentId;
@@ -212,6 +254,9 @@ class StudyController {
                 [sequelize.col('Chapter.chapter_id'), 'chapterId'],
                 [sequelize.col('Chapter.title'), 'chapterTitle']
             ],
+            order: [
+                ['chapterId', 'ASC']
+            ],
             include: {
                 model: Content,
                 attributes: [
@@ -220,7 +265,9 @@ class StudyController {
                     [sequelize.col('time_required_in_sec'), 'timeRequiredInSec'],
                     'link'
                 ],
-                required: true,
+                order: [
+                    [sequelize.col('content_id'), 'ASC']
+                ],
                 include: {
                     model: Content_type,
                     attributes: [
@@ -238,6 +285,39 @@ class StudyController {
 
         return res.status(200).json({
             contents: contents
+        });
+    }
+
+    async getContentLink(req, res, next) {
+        const courseId = req.params.courseId;
+        const contentId = req.params.contentId;
+        
+        const studentId = req.session.studentId;
+
+        const enrollmentId = await this.getEnrollmentId(studentId, courseId);
+        if (!enrollmentId) {
+            return res.status(400).json({
+                msg: 'You have not enrolled in this course yet!'
+            });
+        }
+
+        const link = await Chapter.findOne({
+            attributes: [],
+            include: {
+                model: Content,
+                attributes: [ 'link' ],
+                where: { 
+                    content_id: contentId 
+                }
+            },
+            required: true,
+            where: { 
+                course_id: courseId 
+            }
+        });
+
+        return res.status(200).json({
+            contentLink: link.dataValues.contents[0].link
         });
     }
 }

@@ -52,7 +52,7 @@ export default {
         }
     },
     methods: {
-        ...mapMutations(['scrollToTop', 'setStudent', 'setLogged']),
+        ...mapMutations(['scrollToTop', 'setStudent', 'setLogged', 'setAdmin']),
         async login() {
             // eslint-disable-next-line no-undef
             let data = await axios.post('/login', this.form, { withCredentials: true });
@@ -62,7 +62,12 @@ export default {
             } else if (err === 'Invalid password') {
                 this.passwordError.push(err);
             }
-            else {
+            else if(err === 'admin') {
+                this.setStudent(data.data);
+                this.setAdmin("admin");
+                this.setLogged(true);
+                this.$router.push('/admin');
+            } else {
                 this.setStudent(data.data);
                 this.setLogged(true);
                 this.$router.push('/');
@@ -70,7 +75,7 @@ export default {
         },
         async getCart() { },
         async handleSubmit(event) {
-    
+
             this.usernameError = [];
             this.passwordError = [];
 
@@ -83,7 +88,7 @@ export default {
             if (!this.form.password) {
                 this.passwordError.push('Please enter your password');
             }
-            if (!this.usernameError.length == 0 || !this.passwordError.length == 0) {  
+            if (!this.usernameError.length == 0 || !this.passwordError.length == 0) {
                 event.preventDefault();
             }
             else {
@@ -92,6 +97,9 @@ export default {
                 await this.login();
             }
         }
+    },
+    created() {
+        this.scrollToTop();
     }
 }
 </script>
@@ -121,10 +129,11 @@ export default {
 
 .login {
     position: relative;
+
     /* text-align: center; */
-    .error-box{
+    .error-box {
         border: 1px solid red;
-        background-color: rgb(255,106,106);
+        background-color: rgb(255, 106, 106);
         position: absolute;
         margin-top: -20%;
         margin-left: 50%;
@@ -146,20 +155,21 @@ li {
 
 form {
     background-color: white;
-        top: 30%;
-        margin-left: 50%;
-        transform: translateX(-50%);
-        width: 30%;
-        box-shadow: -0.5rem -0.5rem 1rem rgba($color: #000000, $alpha: 0.1), 0.5rem 0.5rem 1rem rgba($color: #000000, $alpha: 0.1);
-        border: 0.1rem solid rgba($color: #000000, $alpha: 0.05);
-        padding: 2rem;
-        border-radius: 1rem;
-        animation: fadeUp 0.4s linear;
-        .error {
-          font-size: 1.1rem;
-          color: rgba($color: #f32f2f, $alpha: 1.0);
-          font-weight: 600;
-        }
+    top: 30%;
+    margin-left: 50%;
+    transform: translateX(-50%);
+    width: 30%;
+    box-shadow: -0.5rem -0.5rem 1rem rgba($color: #000000, $alpha: 0.1), 0.5rem 0.5rem 1rem rgba($color: #000000, $alpha: 0.1);
+    border: 0.1rem solid rgba($color: #000000, $alpha: 0.05);
+    padding: 2rem;
+    border-radius: 1rem;
+    animation: fadeUp 0.4s linear;
+
+    .error {
+        font-size: 1.1rem;
+        color: rgba($color: #f32f2f, $alpha: 1.0);
+        font-weight: 600;
+    }
 }
 
 .info {

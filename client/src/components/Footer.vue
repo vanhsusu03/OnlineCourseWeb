@@ -1,9 +1,9 @@
 <template>
 <footer>
     <div class="main-content">
-        <div class="left box">
+        <div class="left footer-box">
             <h2 class="head-content">About us</h2>
-            <div class="content">
+            <div class="body-content">
                 <p>Our online learning websites have become a popular way for people to access education on a variety of subjects. They offer a flexible and convenient way for learners to study at their own pace and from anywhere in the world. Online learning provides access to high-quality education that may not be available in traditional classroom settings. Learners can benefit from interactive tools and resources that enhance their understanding of the course material.</p>
                 <div class="social">
                     <a href="https://www.facebook.com/vietanh.duongnguyen.7" target="_blank"><img src="../assets/img/face.png" class="fab"></a>
@@ -14,9 +14,9 @@
             </div>
         </div>
 
-        <div class="center box">
+        <div class="center footer-box">
             <h2>Address</h2>
-            <div class="content">
+            <div class="body-content">
                 <div class="place">
                     <img src="../assets/img/address.png" class="fas">
                     <span class="text">144, Xuan Thuy, Cau Giay, Ha Noi</span>
@@ -32,9 +32,9 @@
             </div>
         </div>
 
-        <div class="right box">
+        <div class="right footer-box">
             <h2>Contact us</h2>
-            <div class="content">
+            <div class="body-content">
                 <form action="#">
                     <div class="email">
                         <div class="text">Email *</div>
@@ -90,23 +90,23 @@ footer {
     display: flex;
 }
 
-.main-content .box {
+.main-content .footer-box {
     flex-basis: 50%;
     padding: 10px 20px;
 }
 
-.box h2 {
+.footer-box h2 {
     font-size: 1.125rem;
     font-weight: 600;
     text-transform: uppercase;
 }
 
-.box .content {
+.footer-box .body-content {
     position: relative;
     margin: 20px 0 0 0;
 }
 
-.box .content:before{
+.footer-box .body-content:before{
     position:absolute;
     content:'';
     top: -10px;
@@ -114,7 +114,7 @@ footer {
     width: 100%;
     background: #1a1a1a;
 }
-.box .content:after{
+.footer-box .body-content:after{
     position:absolute;
     content:'';
     top: -10px;
@@ -122,19 +122,19 @@ footer {
     width: 15%;
     background: white;
 }
-.left .content p {
+.left .body-content p {
     text-align: justify;
 }
 
-.left .content .social {
+.left .body-content .social {
     margin: 20px 0 0 0;
 }
 
-.left .content .social a {
+.left .body-content .social a {
     padding: 0 25px 0 0;
 }
 
-.left .content .social a img {
+.left .body-content .social a img {
     padding: 5px;
     height: 30px;
     text-align: center;
@@ -143,11 +143,11 @@ footer {
     transition: 0.3s;
 }
 
-.left .content .social a img:hover {
+.left .body-content .social a img:hover {
     background: #f12020;
 }
 
-.center .content .fas {
+.center .body-content .fas {
     background: #fff;
     height: 30px;
     width: 30px;
@@ -160,11 +160,11 @@ footer {
     position: relative;
 }
 
-.center .content .fas:hover {
+.center .body-content .fas:hover {
     background: #f12020;
 }
 
-.center .content .text {
+.center .body-content .text {
     line-height: 30px;
     font-size: 1.0625rem;
     font-weight: 500;

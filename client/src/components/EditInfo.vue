@@ -4,13 +4,13 @@
         <div class="profilecontent">
             Username:
             <span>
-               {{ student.userName }}
+               {{student.userName}}
             </span>
         </div>
         <div class="profilecontent">
             Email:
             <span>
-                {{ student.email }}
+                {{student.email}}
             </span>
         </div>
         <div class="profilecontent">
@@ -18,7 +18,7 @@
             <span>
                 <form>
                     <input type="text" id="firstname" class="sub" v-bind:placeholder="student.firstName"
-                           v-model="form.firstname">
+                        v-model="form.firstname">
 
                 </form>
             </span>
@@ -31,7 +31,7 @@
             <span>
                 <form>
                     <input type="text" id="lastname" class="sub" v-bind:placeholder="student.lastName"
-                           v-model="form.lastname">
+                        v-model="form.lastname">
 
                 </form>
             </span>
@@ -52,7 +52,7 @@
         <div class="profilecontent">
             Birthday:
             <span>
-                {{ student.birth }}
+                {{student.birth}}
             </span>
 
         </div>
@@ -64,8 +64,7 @@
 
 <script>
 import axios from 'axios';
-import {mapMutations, mapState} from 'vuex';
-
+import { mapMutations, mapState } from 'vuex';
 export default {
     name: 'EditInfo',
     data() {
@@ -86,8 +85,8 @@ export default {
 
         ...mapMutations(['setStudent', 'scrollToTop']),
         async edit() {
-            let data = await axios.get('/account/info', {withCredentials: true});
-
+            let data = await axios.get('/account/info', { withCredentials: true });
+            
             if (!this.form.firstname) {
                 this.form.firstname = data.data.firstname;
             }
@@ -97,19 +96,23 @@ export default {
             if (!this.form.phone) {
                 this.form.phone = data.data.phone;
             }
-
-            let res = await axios.post('/edit/info', this.form, {withCredentials: true});
+            
+            let res = await axios.post('/edit/info', this.form, { withCredentials: true });
             let err = res.data.msg;
+            if(err === 'Update info successful') {
 
-            if (err === 'Phone number is already exists') {
-                this.clearForms();
+            
+            // if (err === 'Username is already exists' || err === 'Email is already exists'
+            //     || err === 'Phone number is already exists') {
+            //     this.clearForms();
+            //     alert(err);
+
+            // } else {
                 alert(err);
-
-            } else {
-                alert('Update info successfully');
                 this.updateInfos();
                 this.$router.push('/');
             }
+            // }
         },
 
         clearForms() {
@@ -181,53 +184,53 @@ export default {
 
 <style scoped lang="scss">
 #profile {
-  margin-top: 20px;
-  font-size: 1.2vw;
-  margin-left: 40%;
+    margin-top: 20px;
+    font-size: 1.2vw;
+    margin-left: 40%;
 
-  img {
-    max-width: 40%;
-    margin-left: 60px;
-    border-radius: 50%;
-  }
-
-  .profilecontent {
-    margin: 10px 0;
-    // font-weight: 500;
-    display: flex;
-    position: relative;
-    font-weight: 500;
-
-    span {
-      left: 40%;
-      position: absolute;
-      width: 250px;
-
+    img {
+        max-width: 40%;
+        margin-left: 60px;
+        border-radius: 50%;
     }
 
-    form {
-      left: 18%;
+    .profilecontent {
+        margin: 10px 0;
+        // font-weight: 500;
+        display: flex;
+        position: relative;
+        font-weight: 500;
+
+        span {
+            left: 40%;
+            position: absolute;
+            width: 250px;
+
+        }
+
+        form {
+            left: 18%;
+        }
+
+
+        .error {
+            font-size: 1.1rem;
+            color: rgba($color: #f32f2f, $alpha: 1.0);
+            font-weight: 600;
+        }
     }
 
-
-    .error {
-      font-size: 1.1rem;
-      color: rgba($color: #f32f2f, $alpha: 1.0);
-      font-weight: 600;
+    button {
+        font-size: 1.1vw;
+        position: absolute;
+        margin-left: 23.5%;
+        margin-top: 0.75%;
+        padding: 4px;
+        min-width: 50px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        font-weight: 500;
     }
-  }
-
-  button {
-    font-size: 1.1vw;
-    position: absolute;
-    margin-left: 23.5%;
-    margin-top: 0.75%;
-    padding: 4px;
-    min-width: 50px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    font-weight: 500;
-  }
 
 }
 </style>

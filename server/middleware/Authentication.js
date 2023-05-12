@@ -9,7 +9,7 @@ const isAdmin = (req, res, next) => {
 };
 
 const isAlreadyLogin = (req, res, next) => {
-    if (typeof req.session.studentId !== 'undefined') {
+    if (typeof req.session.studentId != 'undefined') {
         return res.status(200).json({
             msg: 'Already login!',
             redirect: '/account/info'

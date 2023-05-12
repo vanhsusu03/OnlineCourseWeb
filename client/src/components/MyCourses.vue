@@ -1,5 +1,26 @@
 <template>
     <h1>My Course </h1>
+    <div style="margin-left: 50px;" v-if="checkNoCourse()">
+        <h2>You don't have any courses. You can refer to some of the courses below:</h2>
+        <!-- {{ listCourses }} -->
+        <ul v-if="listCourses && listCourses.length">
+        <li v-for="course of listCourses" style="display: flex; margin: 20px 0">
+                <div>
+                    <RouterLink :to="{path: '/course/info/' + course.courseId}" class="course-img">
+                        <img v-bind:src="course.courseImage" alt="" class="course-img">
+                    </RouterLink>
+                </div>
+            
+            <div style="margin-left: 10px;">
+                <h4 v-bind:title="course.courseTitle">{{ course.courseTitle }}</h4>
+                <!-- <div>{{ course.instructor }}</div> -->
+                <div class="desc" v-bind:title="course.courseDescription">{{course.courseDescription}}</div>
+                <div>{{ course.courseFee }} VND</div>
+                <div>By <span style="font-weight: 500;">{{ course.instructorFirstName }} {{ course.instructorLastName }}</span></div>
+            </div>
+        </li>
+    </ul>
+    </div>
     <ul v-if="courses && courses.length" class="listCourse">
         <li v-for="course of courses" class="item">
             <img v-bind:src="course.courseImage" alt="" class="course-img">
@@ -50,6 +71,7 @@
             return {
                 courses: [],
                 errors: [],
+                listCourses:[],
                 thisPage: 1,
                 begin: true,
                 isCalc: false,
@@ -58,7 +80,8 @@
                     status: true
                 }],
                 limit: 6,
-                list: document.getElementsByClassName("item")
+                list: document.getElementsByClassName("item"),
+                randomCourses: [],
             }
         },
         methods: {
@@ -70,6 +93,10 @@
             },
             scrollToTop() {
                 window.scrollTo(0, 0);
+            },
+            checkNoCourse() {
+                if (this.courses.length === 0) return true;
+                return false;
             },
             openCity(page) {
                 var tabcontent;
@@ -104,6 +131,16 @@
                     })
                 }
                 return numPages;
+            },
+            getRandomCourse() {
+            let coursesCopy = [...this.listCourses]; // create a copy of the array to avoid modifying the original
+            // loop 8 times or until there are no more elements to choose from
+                for (let i = 0; i < 8 && coursesCopy.length > 0; i++) {
+                    let randomIndex = Math.floor(Math.random() * coursesCopy.length); // choose a random index
+                    this.randomCourses.push(coursesCopy[randomIndex]); // add the chosen element to the randomCourses array
+                    coursesCopy.splice(randomIndex, 1); // remove the chosen element from the coursesCopy array
+                }
+                this.listCourses = this.randomCourses;
             },
             addToCart(id) {
                 axios.post(`/students/` + this.student.id + '/cart/' + id, {
@@ -146,6 +183,14 @@
                 .catch(e => {
                     this.errors.push(e)
                 });
+            axios.get('/courses', { withCredentials: true })
+            .then(response => {
+                this.listCourses = response.data;
+                this.getRandomCourse();
+            })
+            .catch(e => {
+                this.errors.push(e)
+            });
         }
     }
     </script>
