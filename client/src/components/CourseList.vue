@@ -41,7 +41,7 @@
 
 <script>
 import axios from 'axios';
-import { mapState } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
 
 export default {
     name: 'CourseList',
@@ -65,6 +65,7 @@ export default {
         }
     },
     methods: {
+        ...mapMutations(['setMiniCartChange']),
         scrollToTop() {
             window.scrollTo(0, 0);
         },
@@ -123,12 +124,15 @@ export default {
             setTimeout(() => {
                 if (this.isBought === 'Unactivated') {
                     axios.post('/students/cart/' + course.courseId, course, { withCredentials: true })
-                        .then(response => {
-                            alert(response.data.msg);
-                        })
+                    .then( respone => {
+                        alert(respone.data.msg);
+                        this.setMiniCartChange("change");
+                    })
                         .catch(e => {
                             this.errors.push(e);
-                        })
+                        });
+                
+                
                 } else if (this.isBought === 'Activated') {
                     alert("You have actived this course before");
                 }
@@ -147,7 +151,7 @@ export default {
         }
     },
     computed: {
-        ...mapState(['student'])
+        ...mapState(['student','miniCartChange'])
     },
 
     // lấy dữ liệu khi component được tạo thành công

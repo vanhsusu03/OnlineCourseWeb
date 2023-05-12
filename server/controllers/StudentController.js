@@ -142,6 +142,7 @@ class StudentController {
             firstname: student.first_name,
             lastname: student.last_name,
             birthday: student.birthday,
+            coin: student.coin,
         });
     }
 

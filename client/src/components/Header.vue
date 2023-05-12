@@ -50,7 +50,7 @@
                         <div style="font-size: 23px; font-weight: 500;">
                             <img src="../assets/img/logo.png" alt=""
                                 style="width: 25px; z-index: 3; padding: 0; margin: 0;">
-                            <span class="coin">{{ student.coin }}</span>
+                            <span class="coin">{{ this.coin }}</span>
                         </div>
                     </div>
                 </div>
@@ -116,7 +116,7 @@
 
 <script>
 import axios from 'axios';
-import { mapMutations, mapState } from 'vuex';
+import { mapMutations, mapState, mapGetters } from 'vuex';
 import Categories from './Categories.vue';
 import MiniCart from './MiniCart.vue';
 export default {
@@ -128,7 +128,8 @@ export default {
             form: {
                 keyw: "",
             },
-            searchResult: []
+            searchResult: [],
+            coin: 0,
         }
     },
     components: {
@@ -136,8 +137,18 @@ export default {
         MiniCart
     },
     methods: {
-        ...mapMutations(['setStudent', 'setLogged', 'setMiniCart']),
-
+        ...mapMutations(['setStudent', 'setLogged','setStudentCoinChange','setAdmin']),
+        ...mapGetters(['getStudentCoinChange']),
+        studentCoinChange() {
+            return this.getStudentCoinChange;
+        },
+        getStudentCoin() {
+            axios.get('/account/info', {withCredentials: true})
+            .then(respone => {
+                this.coin = respone.data.coin;
+            })
+            
+        },
         showMenu() {
             let nav_bar = document.querySelector('.header .navbar');
             nav_bar.classList.toggle('active');
@@ -163,7 +174,7 @@ export default {
         async handleLogout() {
             await axios.post('/logout', {}, { withCredentials: true });
             this.setStudent([]);
-            this.setAdmin(null);
+            this.setAdmin("");
             this.setLogged(false);
             this.unshowDropDown();
         },
@@ -173,12 +184,20 @@ export default {
         },
     },
     computed: {
-        ...mapState(['student', 'admin', 'miniCart'])
+        ...mapState(['student', 'admin', 'studentCoinChange'])
+    },
+    created() {
+        this.getStudentCoin();
     },
     watch: {
         '$route'() {
             this.$refs.anyName.reset();
         },
+        studentCoinChange(newValue) {
+            console.log(`miniCartChange changed to ${newValue}`);
+            this.getStudentCoin();
+            this.$store.commit('setStudentCoinChange', '');
+        }
     },
 }
 </script>

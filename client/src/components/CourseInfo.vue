@@ -195,7 +195,7 @@ export default {
         Payment
     },
     methods: {
-        ...mapMutations(['scrollToTop']),
+        ...mapMutations(['scrollToTop','setMiniCartChange']),
         onScroll(event) {
             const scrollPosition = window.pageYOffset;
             if (scrollPosition > 200) {
@@ -295,6 +295,7 @@ export default {
                     axios.post('/students/cart/' + course.course_id, this.courses[0], { withCredentials: true })
                         .then(response => {
                             alert(response.data.msg);
+                            this.setMiniCartChange("change");
                         })
                         .catch(e => {
                             this.errors.push(e);
@@ -312,7 +313,7 @@ export default {
         },
     },
     computed: {
-        ...mapState['isLogin']
+        ...mapState['isLogin','miniCartChange']
     },
     watch: {
         '$route'() {
