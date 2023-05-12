@@ -149,16 +149,13 @@ class StudentController {
     }
 
     async updateInfo(req, res, next) {
-        const { username, email, firstname, lastname, phone, birth } = req.body;
+        const {firstname, lastname, phonee } = req.body;
         try {
             await Student.update(
                 {
-                    username: username,
-                    email: email,
                     first_name: firstname,
                     last_name: lastname,
-                    phone: phone,
-                    birthday: birth,
+                    phone: req.body.phone,
                 },
                 {
                     where: { student_id: req.session.studentId },

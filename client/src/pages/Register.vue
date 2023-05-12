@@ -140,10 +140,6 @@ export default {
             } else if (this.form.password.length < 8) {
                 this.errorObj.passwordError.push('Minimum length of password is 8');
             }
-            // else if (!/^[A-Z]+$/.test(this.form.password) || !/[a-z]+$/.test(this.form.password)
-            //     || !/[0-9]+$/.test(this.form.password)) {
-            //     this.errorObj.passwordError.push('Password requires at least one upcase character, one number and one lowcase');
-            // }
 
             //phone 
             if (!this.form.phone) {

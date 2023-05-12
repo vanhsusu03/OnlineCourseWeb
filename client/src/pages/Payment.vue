@@ -16,7 +16,7 @@
         </ul>
     </div>
     <div class="total">
-        <h3 class="title">Total: {{ getTotal() }} VND</h3>
+        <h3 class="title">Total: {{ getTotal() }} <img src="../assets/img/logo.png" alt=""></h3>
         <h3 class="balance">Account balance: {{ student.coin }}</h3>
         <button v-on:click="pay(student.coin)">Pay</button>
         <!-- {{ savingCourseIds }} -->
@@ -94,6 +94,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+h4 {
+    margin-bottom: 20px;
+    font-weight: 650;
+    color: rgb(52,73,94);
+}
 .content {
     display: flex;
     // margin-left: 50px;
@@ -103,7 +108,11 @@ export default {
         margin-top: 0px;
 
         .title {
-            color: gray;
+            width: 100%;
+            color: #880000;
+            img {
+                width: 40px;
+            }
         }
 
         button {
@@ -120,6 +129,14 @@ export default {
 }
 .cart-content {
     // padding-left: 30px;
+    img {
+        margin-right: 10px;
+    }
+    h5 {
+        margin-top: 20px;
+        
+        font-size: 1rem;
+    }
     ul {
         padding: 5px 5px;
         padding-right: 30px;
@@ -136,6 +153,7 @@ export default {
 
             .course-content {
                 margin-left: 5px;
+                font-size: 0.9rem;
             }
         }
     }

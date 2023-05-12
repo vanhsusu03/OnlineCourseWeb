@@ -52,6 +52,10 @@ export default {
 h2 {
     text-align: center;
     margin: 10px 0;
+    margin-top: 50px;
+    font-size: 3rem;
+    font-weight: 660;
+    color: rgb(52,73,94);
 }
 table {
 //   font-family: arial, sans-serif;
@@ -85,7 +89,9 @@ div {
 
 
 tr:nth-child(even) {
-  background-color: #dddddd;
+  background-color: rgb(52,73,94);
+  color: rgb(240,240,240);
+  border: 1.5px solid white;
 }
 
 .counterCell:before {              
