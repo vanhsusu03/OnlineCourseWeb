@@ -5,10 +5,14 @@
             <img v-bind:src="course.courseImage" alt="" class="course-img" @click="showCourse(course.courseId)">
             <div class="course-content">
                 <h4 v-bind:title="course.courseTitle">{{ course.courseTitle }}</h4>
-                <div v-bind:title="course.courseDescription">{{ course.courseDescription }}</div>
+                <div v-bind:title="course.courseDescription" id="description">{{ course.courseDescription }}</div>
                 <div @click="redirectInstructorInfo(course.instructorId)" id="ins">By <span> {{ course.instructorFirstName +
                     ' ' + course.instructorLastName }}</span></div>
-                <h5>{{ course.courseFee + ' VND' }}</h5>
+                <div class="fee">
+                    <h5>{{ course.courseFee }}</h5>
+                    <div id="image"> <img src="../assets/img/logo.png" alt="" id="img-coin"> </div>
+                </div>
+
                 <button v-on:click="addToCart(course)">Add To Cart</button>
                 <!-- <div>{{ courseState[course.courseId] }}</div> -->
             </div>
@@ -37,6 +41,7 @@
 
 <script>
 import axios from 'axios';
+import { mapState } from 'vuex';
 
 export default {
     name: 'CourseList',
@@ -113,6 +118,7 @@ export default {
             }
         },
         addToCart(course) {
+
             this.checkBought(course.courseId);
             setTimeout(() => {
                 if (this.isBought === 'Unactivated') {
@@ -123,10 +129,11 @@ export default {
                         .catch(e => {
                             this.errors.push(e);
                         })
-                } else {
+                } else if (this.isBought === 'Activated') {
                     alert("You have actived this course before");
                 }
             }, 100);
+
         },
         getText(event) {
             const clickedElement = event.target;
@@ -138,6 +145,9 @@ export default {
         redirectInstructorInfo(id) {
             this.$router.push(`/instructor/info/show/${id}`);
         }
+    },
+    computed: {
+        ...mapState(['student'])
     },
 
     // lấy dữ liệu khi component được tạo thành công
@@ -179,6 +189,8 @@ h1 {
     justify-content: space-between;
 
     .item {
+        border: 1px inset rgb(230, 230, 230);
+
         img:hover {
             cursor: pointer;
         }
@@ -222,12 +234,21 @@ h1 {
 
             div,
             h4 {
+                margin-left: 20px;
                 display: -webkit-box;
                 -webkit-line-clamp: 2;
                 -webkit-box-orient: vertical;
                 overflow: hidden;
                 margin-bottom: 5px;
+                font-size: 1.1rem;
             }
+
+            h4 {
+                margin-top: 20px;
+
+            }
+
+           
 
             button {
                 position: absolute;
@@ -245,6 +266,30 @@ h1 {
                     background-color: #000000;
                     transform: scale(1.1);
                 }
+            }
+            .fee {
+                font-weight: 600;
+                font-size: 1.2rem;
+                display: flex;
+              
+                h5 {
+                margin-top: 18px;
+                margin-left: 43%;
+                
+                transform: translateX(-50%);
+                font-weight: 700;
+            }
+                #image {
+                    // margin-left: 10px;
+                    margin-top: 5%;
+                    margin-left: -8%;
+                    img {
+                        width: 30px;
+                        height: auto;
+                        border: none;
+                    }
+                }
+
             }
 
             #ins {

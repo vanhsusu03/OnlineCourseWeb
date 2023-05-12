@@ -167,9 +167,6 @@ export default {
     computed: {
         ...mapState(['student', 'admin', 'miniCart'])
     },
-    watch: {
-        
-    }
 }
 </script>
 
