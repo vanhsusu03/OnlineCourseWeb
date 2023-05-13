@@ -370,7 +370,6 @@ export default {
             for (let i = 0; i < this.accounts.length; i++) {
                 if (this.accounts[i].student_id === id) {
                     accCoin = this.accounts[i].coin;
-                    alert(accCoin);
                 }
             }
             axios.post(`admin/change/${id}/${accCoin}`, {}, {

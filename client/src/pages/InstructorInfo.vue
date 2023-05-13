@@ -77,13 +77,7 @@ export default {
 
         },
         async showCourse(id) {
-            let check = await axios.post(`/course/state/${id}`, {}, { withCredentials: true });
-            let states = check.data.msg;
-            if (states === 'Unactivated') {
-                this.$router.push(`/course/info/${id}`);
-            } else if (states === 'Activated') {
-                this.$router.push(`/course/detail/${id}`);
-            }
+            this.$router.push(`/course/info/${id}`)
         },
     },
     mounted() {
@@ -217,7 +211,7 @@ export default {
                     margin-left: 4%;
 
                     img {
-                        width: 100%;
+                        width: 15vw;
                         height: 100%;
                     }
 
@@ -279,9 +273,11 @@ export default {
     #part2 {
         margin-left: -80px;
         text-align: center;
+
         .image {
             border-radius: 4px;
             margin-bottom: 50px;
         }
     }
-}</style>
+}
+</style>
