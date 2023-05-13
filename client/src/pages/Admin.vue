@@ -383,6 +383,28 @@ export default {
             .then(res=>{
                 alert(res.data.msg);
             });
+            setTimeout(() =>{
+                axios.get('/admin/accounts', {
+                withCredentials: true
+            })
+                .then(response => {
+                    this.accounts = response.data;
+                    this.fillArrayChange();
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                });
+
+                axios.get('/admin/instructors', {
+                withCredentials: true
+            })
+                .then(response => {
+                    this.instructors = response.data;
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                });
+            },500);
         },
         removeCourse(id) {
             axios.delete(`admin/delete/course/${id}`, {
@@ -391,6 +413,17 @@ export default {
             .then(res=>{
                 alert(res.data.msg);
             });
+            setTimeout(() =>{
+                axios.get('/admin/courses', {
+                withCredentials: true
+            })
+                .then(response => {
+                    this.courses = response.data;
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                })
+            },500);
         },
         fillArrayChange() {
             for (let i = 0; i < this.accounts.length; i++) {
@@ -430,11 +463,11 @@ export default {
                     this.closePayment(1);
                 });
                 setTimeout(() =>{
-                    axios.get('/courseof/' + this.student.id, {
-                    withCredentials: true
-                })
+                    axios.get('/admin/courses', {
+                withCredentials: true
+            })
                 .then(response => {
-                    this.courses = response.data.courses;
+                    this.courses = response.data;
                 })
                 .catch(e => {
                     this.errors.push(e)

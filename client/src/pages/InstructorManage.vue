@@ -145,6 +145,17 @@ export default {
                 .then(res => {
                     alert(res.data.msg);
                 });
+                setTimeout(() =>{
+                    axios.get('/courseof/' + this.student.id, {
+                    withCredentials: true
+                })
+                .then(response => {
+                    this.courses = response.data.courses;
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                })
+            },500);
         },
         fillArrayChange() {
             for (let i = 0; i < this.accounts.length; i++) {
