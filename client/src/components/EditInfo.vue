@@ -99,7 +99,11 @@ export default {
 
             let res = await axios.post('/edit/info', this.form, { withCredentials: true });
             let err = res.data.msg;
-            if (err === 'Update info successful') {
+            if(err === 'Duplicated phone number') {
+                alert(err);
+                this.handleUpdateInfo();
+            }
+            else if (err === 'Update info successful') {
 
                 alert(err);
                 this.updateInfos();

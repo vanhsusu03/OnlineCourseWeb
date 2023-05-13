@@ -184,7 +184,7 @@ class StudentController {
                 next(err);
             }
         }else {
-            return res.json(201).json({
+            return res.status(201).json({
                 msg:'Duplicated phone number',
             })
         }
