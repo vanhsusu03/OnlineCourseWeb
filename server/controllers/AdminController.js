@@ -124,7 +124,7 @@ class AdminController {
                     course_id: courseId,
                 }
             });
-            if(carts){
+            if (carts) {
                 await Promise.all(carts.map(cart => cart.destroy()));
             }
 
@@ -134,14 +134,14 @@ class AdminController {
                     course_id: courseId,
                 },
             });
-            if(chapters){
+            if (chapters) {
                 await Promise.all(chapters.map(async chapter => {
                     const contents = await Content.findAll({
                         where: {
                             chapter_id: chapter.chapter_id,
                         }
                     });
-                    if(contents){
+                    if (contents) {
                         await Promise.all(contents.map(content => content.destroy()));
                     }
                     await chapter.destroy();
@@ -154,7 +154,7 @@ class AdminController {
                     course_id: courseId,
                 }
             });
-            if(courseCategories){
+            if (courseCategories) {
                 await Promise.all(courseCategories.map(courseCategory => courseCategory.destroy()));
             }
 
@@ -164,27 +164,27 @@ class AdminController {
                     course_id: courseId,
                 },
             });
-           if(enrollments){
-               await Promise.all(enrollments.map(async enrollment => {
-                   const feedback = await Feedback.findOne({
-                       where: {
-                           enrollment_id: enrollment.enrollment_id
-                       }
-                   });
-                   if(feedback){
-                       await feedback.destroy();
-                   }
-                   const progress = await Progress.findOne({
-                       where: {
-                           enrollment_id: enrollment.enrollment_id
-                       }
-                   });
-                   if(progress){
-                       await progress.destroy();
-                   }
-                   await enrollment.destroy();
-               }));
-           }
+            if (enrollments) {
+                await Promise.all(enrollments.map(async enrollment => {
+                    const feedback = await Feedback.findOne({
+                        where: {
+                            enrollment_id: enrollment.enrollment_id
+                        }
+                    });
+                    if (feedback) {
+                        await feedback.destroy();
+                    }
+                    const progress = await Progress.findOne({
+                        where: {
+                            enrollment_id: enrollment.enrollment_id
+                        }
+                    });
+                    if (progress) {
+                        await progress.destroy();
+                    }
+                    await enrollment.destroy();
+                }));
+            }
 
             //Delete order_detail
             const orderDetails = await Order_detail.findAll({
@@ -192,14 +192,14 @@ class AdminController {
                     course_id: courseId,
                 },
             });
-            if(orderDetails){
+            if (orderDetails) {
                 await Promise.all(orderDetails.map(async orderDetail => {
                     const payment = await Payment.findOne({
                         where: {
                             order_detail_id: orderDetail.order_detail_id
                         }
                     });
-                    if(payment){
+                    if (payment) {
                         await payment.destroy();
                     }
                     await orderDetail.destroy();
@@ -211,7 +211,8 @@ class AdminController {
                 where: {
                     course_id: courseId,
                 }
-            });
+            })
+            console.log('Delete course successfully' + ' ' + courseId);
             return res.status(200).json({msg: 'Delete course successfully'});
         } else {
             return res.status(200).json({msg: 'Course not found'});
@@ -276,12 +277,14 @@ class AdminController {
                 ]
             }
         );
+        console.log('Admin show courses')
         return res.status(200).json(courses);
     }
 
 //GET /admin/accounts
     async showAccounts(req, res, next) {
         const accounts = await Student.findAll();
+        console.log('Admin show all accounts')
         return res.status(200).json(accounts);
     }
 
@@ -328,7 +331,19 @@ class AdminController {
     }
 
     //GET /admin/instructor
-    async showInstructor(req,res,next){
+    async showAllInstructors(req, res, next) {
+
+    }
+
+    async createChapter(req, res, next) {
+
+    }
+
+    async createContents(req, res, next) {
+
+    }
+
+    async addCourse(req, res, next) {
 
     }
 }
