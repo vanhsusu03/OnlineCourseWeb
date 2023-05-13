@@ -139,7 +139,8 @@
             </div>
             <br>
             <div>
-                <button id="add-to-cart" @click="addToCart(course)">Add to cart</button>
+                <button id="add-to-cart" @click="addToCart(course)" v-if="!checkBought(course.course_id)">Add to cart</button>
+                <button id="study-button" v-else @click="redirectStudy(course.course_id)">Study</button>
             </div>
             <br>
             <div>
@@ -227,6 +228,9 @@ export default {
     },
     methods: {
         ...mapMutations(['scrollToTop', 'setMiniCartChange']),
+        redirectStudy(id) {
+            this.$router.push('/study/'+id);
+        },
         openChapter(content_id) {
             document.querySelectorAll('video').forEach(vid => {
                 vid.currentTime = 0;
@@ -392,6 +396,9 @@ export default {
                 .then(response => {
                     this.isBought = response.data.msg;
                 });
+            // alert(this.isBought);
+            if(this.isBought === 'Unactivated') return false;
+            return true;
         },
     },
     computed: {
@@ -828,7 +835,7 @@ export default {
             }
         }
 
-        #add-to-cart {
+        #add-to-cart, #study-button {
             width: 70%;
             height: 50px;
             margin-left: 50%;

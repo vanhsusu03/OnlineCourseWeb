@@ -14,7 +14,8 @@
                 <div class="quote-line-2">LEARNING SKILLS</div>
                 <div class="button">
                     <button id="view-all-course" @click.prevent="redirectViewCourses">View all courses</button>
-                    <button id="sign-up" @click.prevent="redirectSignUp">Sign Up</button>
+                    <button id="sign-up" @click.prevent="redirectSignUp" v-if="!student.id">Sign Up</button>
+                    <button id="about-us" @click.prevent="redirectAboutUs" v-else>About Us</button>
                 </div>
                 <div class="intro-1">By @DNA team, UET 21-25</div>
             </div>
@@ -157,7 +158,8 @@
                 <span id="introo">
                     <div>Instructors from around the world teach millions of students on DNA. We provide the tools and
                         skills to teach what you love. Wanna join with us?</div>
-                    <button id="sign-up" @click.prevent="redirectSignUp">Sign Up</button>
+                    <button id="sign-up" @click.prevent="redirectSignUp" v-if="!student.id">Sign Up</button>
+                    <button id="become-instructor" @click.prevent="redirectBecomeInstructor" v-else>Become Instructor</button>
                 </span>
                 <span id="img"><img src="../assets/img/ins.png"></span>
             </div>
@@ -200,6 +202,12 @@ export default {
         },
         redirectViewCourses() {
             this.$router.push('/courses');
+        },
+        redirectAboutUs() {
+            this.$router.push('/aboutus');
+        },
+        redirectBecomeInstructor() {
+            this.$router.push('/become/instructor');
         },
         getRandomCourse() {
             let coursesCopy = [...this.courses]; // create a copy of the array to avoid modifying the original
@@ -395,7 +403,7 @@ export default {
                     }
                 }
 
-                #sign-up {
+                #sign-up, #about-us {
                     background-color: transparent;
                     color: #fff;
                     font-size: 1.1rem;
@@ -660,7 +668,7 @@ export default {
             color: rgb(52, 73, 94);
             display: block;
 
-            #sign-up {
+            #sign-up, #become-instructor {
                 margin-left: 50%;
                 transform: translateX(-60%);
                 margin-top: 10%;

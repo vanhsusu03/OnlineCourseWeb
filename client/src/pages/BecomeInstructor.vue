@@ -77,7 +77,8 @@ export default {
             } else {
                 // this.setStudent(data.data);
                 // this.scrollToTop();
-                this.$router.push('/');
+                alert("Congratulations! Now you are an instructor.");
+                this.$router.push('/instructor/manage');
                 this.scrollToTop();
             }
         },

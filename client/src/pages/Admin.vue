@@ -413,8 +413,11 @@ export default {
             var modal
             if (num === 1) {
                 modal = document.getElementById("myModal1");
+                this.resetCourse();
             } else if (num === 2) {
                 modal = document.getElementById("myModal2");
+                this.resetAddChapter();
+                this.resetAddContent();
             }
             modal.style.display = "none";
             this.openingPayment = false;
@@ -426,6 +429,17 @@ export default {
                     this.setAdminChange("change");
                     this.closePayment(1);
                 });
+                setTimeout(() =>{
+                    axios.get('/courseof/' + this.student.id, {
+                    withCredentials: true
+                })
+                .then(response => {
+                    this.courses = response.data.courses;
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                })
+            },500);
         },
         getChapter(id) {
             axios.get(`/courses/${id}/contents`, {}, {
@@ -448,6 +462,9 @@ export default {
                     this.resetAddChapter();
 
                 });
+                setTimeout(() =>{
+                    this.getChapter(id);
+            },500);
         },
         addContents() {
             // alert("ok");
@@ -458,6 +475,9 @@ export default {
                     this.resetAddContent();
                     // location.reload();
                 });
+                setTimeout(() =>{
+                    this.getChapter(this.dataAddChapter.addChapterId);
+            },500);
         },
         resetAddContent() {
             this.dataAddContent.chapterId = Number,
@@ -520,7 +540,13 @@ export default {
                 .catch(e => {
                     this.errors.push(e)
                 })
-        }
+        },
+        resetCourse() {
+            this.course.courseTitle = "",
+                this.course.courseDescription = "",
+                this.course.courseImage = "",
+                this.course.courseFee = Number
+        },
     },
 
     computed: {

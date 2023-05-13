@@ -1,118 +1,118 @@
 <template>
-    <h1 class="web-title">Instructor Manage</h1>
-    <!-- {{ openChapter($event, 1) }} -->
+<h1 class="web-title">Instructor Manage</h1>
+<!-- {{ openChapter($event, 1) }} -->
 
-    <div class="tab">
-        <button class="tablinks" v-on:click="openChapter($event, 'course')">Courses Control</button>
-        <button class="tablinks" v-on:click="openChapter($event, 'create')">Create New Course</button>
+<div class="tab">
+    <button class="tablinks" v-on:click="openChapter($event, 'course')">Courses Control</button>
+    <button class="tablinks" v-on:click="openChapter($event, 'create')">Create New Course</button>
+</div>
+
+<div class="tabcontent" id="course">
+    <div style="display: flex;">
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Fee</th>
+                <th>Delete</th>
+                <th>Change</th>
+            </tr>
+            <tr v-for="course in courses">
+                <td>{{ course.course_id }}</td>
+                <td>{{ course.title }}</td>
+                <td>{{ course.description }}</td>
+                <td>{{ course.course_fee }}</td>
+                <td><button class="remove" @click="removeCourse(course.course_id)">Delete</button></td>
+                <td><button class="remove" @click="openPayment(2); dataAddChapter.addChapterId = course.course_id; getChapter(course.course_id)">Change</button>
+                </td>
+            </tr>
+        </table>
+
     </div>
+</div>
 
-    <div class="tabcontent" id="course">
-        <div style="display: flex;">
-            <table>
-                <tr>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Fee</th>
-                    <th>Delete</th>
-                    <th>Change</th>
-                </tr>
-                <tr v-for="course in courses">
-                    <td>{{ course.course_id }}</td>
-                    <td>{{ course.title }}</td>
-                    <td>{{ course.description }}</td>
-                    <td>{{ course.course_fee }}</td>
-                    <td><button class="remove" @click="removeCourse(course.course_id)">Delete</button></td>
-                    <td><button class="remove"
-                            @click="openPayment(2); dataAddChapter.addChapterId = course.course_id; getChapter(course.course_id)">Change</button>
-                    </td>
-                </tr>
-            </table>
-
-        </div>
-    </div>
-
-    <div class="tabcontent" id="create">
-        <div class="add-content" style="margin:20px 0;">
-            <form>
-                <div class="course-title info">
-                    <h5 class="title-txt">Title: </h5>
-                    <input class="sub" type="text" v-model="course.courseTitle">
-                </div>
-                <div class="course-desc info">
-                    <h5 class="desc-txt">Description: </h5>
-                    <input class="sub" type="text" v-model="course.courseDescription">
-                </div>
-                <div class="course-image info">
-                    <h5 class="img-txt">Image Link: </h5>
-                    <input class="sub" type="text" v-model="course.courseImage">
-                </div>
-                <div class="course-fee info">
-                    <h5 class="fee-txt">Course Fee: </h5>
-                    <input class="sub" type="number" v-model="course.courseFee">
-                </div>
-            </form>
-            <button class="add-button btn" @click="addCourse()">Add Course</button>
-        </div>
-    </div>
-
-    <div class="modal" id="myModal1">
-        <div class="modal-content">
-
-        </div>
-    </div>
-    <div class="modal" id="myModal2">
-        <div class="modal-content">
-            <span class="close" v-on:click="closePayment(2)">&times;</span>
-            <button @click="dataAddChapter.isAddChapter = !dataAddChapter.isAddChapter" class="btn">Add Chapter</button>
-            <div v-if="dataAddChapter.isAddChapter" class="input-cont">
-                <div class="info">
-                    <h5>Chapter Title:</h5>
-                    <input class="sub" type="text" v-model="dataAddChapter.chapterTitle">
-                    <button @click="addChapter(dataAddChapter.addChapterId);" class="btn">Add</button>
-                </div>
+<div class="tabcontent" id="create">
+    <div class="add-content" style="margin:20px 0;">
+        <form>
+            <div class="course-title info">
+                <h5 class="title-txt">Title: </h5>
+                <input class="sub" type="text" v-model="course.courseTitle">
             </div>
-
-            <button class="btn" @click="dataAddContent.isAddContent = !dataAddContent.isAddContent">Add Content</button>
-            <div v-if="dataAddContent.isAddContent" class="input-cont">
-                <div class="info">
-                    <h5>Chapter Id:</h5>
-                    <input class="sub" type="number" v-model="dataAddContent.chapterId">
-                </div>
-                <div class="info">
-                    <h5>Content Title:</h5>
-                    <input class="sub" type="text" v-model="dataAddContent.contentTitle">
-                </div>
-                <div class="info">
-                    <h5>Time Required In Sec:</h5>
-                    <input class="sub" type="number" v-model="dataAddContent.timeRequiredInSec">
-                </div>
-                <div class="info">
-                    <h5>Content Link:</h5>
-                    <input class="sub" type="text" v-model="dataAddContent.contentLink">
-                </div>
-                <button @click="addContents()" class="btn">Add</button>
-
+            <div class="course-desc info">
+                <h5 class="desc-txt">Description: </h5>
+                <input class="sub" type="text" v-model="course.courseDescription">
             </div>
-            <div class="change-course">
-                <div v-for="(chapter, index) in content">
-                    {{ index + 1 }}. ID: {{ chapter.chapterId }} Title: {{ chapter.chapterTitle }}
-                    <div v-for="(cont, index) in chapter.contents" style="margin-left: 20px;">
-                        {{ index + 1 }}. {{ cont.contentTitle }} <br>
-                        Link: {{ cont.contentLink }}
-                    </div>
+            <div class="course-image info">
+                <h5 class="img-txt">Image Link: </h5>
+                <input class="sub" type="text" v-model="course.courseImage">
+            </div>
+            <div class="course-fee info">
+                <h5 class="fee-txt">Course Fee: </h5>
+                <input class="sub" type="number" v-model="course.courseFee">
+            </div>
+        </form>
+        <button class="add-button btn" @click="addCourse(); openChapter($event, 'course')">Add Course</button>
+    </div>
+</div>
+
+<div class="modal" id="myModal1">
+    <div class="modal-content">
+
+    </div>
+</div>
+<div class="modal" id="myModal2">
+    <div class="modal-content">
+        <span class="close" v-on:click="closePayment(2)">&times;</span>
+        <button @click="dataAddChapter.isAddChapter = !dataAddChapter.isAddChapter" class="btn">Add Chapter</button>
+        <div v-if="dataAddChapter.isAddChapter" class="input-cont">
+            <div class="info">
+                <h5>Chapter Title:</h5>
+                <input class="sub" type="text" v-model="dataAddChapter.chapterTitle">
+                <button @click="addChapter(dataAddChapter.addChapterId);" class="btn">Add</button>
+            </div>
+        </div>
+
+        <button class="btn" @click="dataAddContent.isAddContent = !dataAddContent.isAddContent">Add Content</button>
+        <div v-if="dataAddContent.isAddContent" class="input-cont">
+            <div class="info">
+                <h5>Chapter Id:</h5>
+                <input class="sub" type="number" v-model="dataAddContent.chapterId">
+            </div>
+            <div class="info">
+                <h5>Content Title:</h5>
+                <input class="sub" type="text" v-model="dataAddContent.contentTitle">
+            </div>
+            <div class="info">
+                <h5>Time Required In Sec:</h5>
+                <input class="sub" type="number" v-model="dataAddContent.timeRequiredInSec">
+            </div>
+            <div class="info">
+                <h5>Content Link:</h5>
+                <input class="sub" type="text" v-model="dataAddContent.contentLink">
+            </div>
+            <button @click="addContents(dataAddChapter.addChapterId)" class="btn">Add</button>
+
+        </div>
+        <div class="change-course">
+            <div v-for="(chapter, index) in content">
+                {{ index + 1 }}. ID: {{ chapter.chapterId }} Title: {{ chapter.chapterTitle }}
+                <div v-for="(cont, index) in chapter.contents" style="margin-left: 20px;">
+                    {{ index + 1 }}. {{ cont.contentTitle }} <br>
+                    Link: {{ cont.contentLink }}
                 </div>
             </div>
         </div>
     </div>
-    <div class="clearfix"></div>
+</div>
+<div class="clearfix"></div>
 </template>
-    
-        
+
 <script>
 import axios from 'axios';
-import { mapState } from 'vuex';
+import {
+    mapState
+} from 'vuex';
 export default {
     name: 'InstructorManage',
     methods: {
@@ -140,8 +140,8 @@ export default {
         },
         removeCourse(id) {
             axios.delete(`/courses/${id}`, {
-                withCredentials: true
-            })
+                    withCredentials: true
+                })
                 .then(res => {
                     alert(res.data.msg);
                 });
@@ -166,26 +166,42 @@ export default {
         closePayment(num) {
             var modal
             if (num === 1) {
+                this.resetCourse();
                 modal = document.getElementById("myModal1");
             } else if (num === 2) {
                 modal = document.getElementById("myModal2");
+                this.resetAddChapter();
+                this.resetAddContent();
             }
             modal.style.display = "none";
             this.openingPayment = false;
         },
         addCourse() {
             axios.post('/instructor/create', this.course, {
-                withCredentials: true
-            })
+                    withCredentials: true
+                })
                 .then(res => {
                     alert(res.data.msg);
                     // location.reload();
                 });
+                setTimeout(() =>{
+                    axios.get('/courseof/' + this.student.id, {
+                    withCredentials: true
+                })
+                .then(response => {
+                    this.courses = response.data.courses;
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                })
+            },500);
+            
+            
         },
         getChapter(id) {
             axios.get(`/courses/${id}/contents`, {
-                withCredentials: true
-            })
+                    withCredentials: true
+                })
                 .then(response => {
                     this.content = response.data.contents;
                 })
@@ -194,9 +210,10 @@ export default {
                 })
         },
         addChapter(id) {
+            
             axios.post(`/course/${id}/create`, this.dataAddChapter, {
-                withCredentials: true
-            })
+                    withCredentials: true
+                })
                 .then(res => {
                     alert(res.data.msg);
                     // this.dataAddChapter.chapterTitle = "";
@@ -204,18 +221,26 @@ export default {
                     this.resetAddChapter();
 
                 });
+                setTimeout(() =>{
+                    this.getChapter(id);
+            },500);
+            
         },
-        addContents() {
+        addContents(id) {
             // alert("ok");
             axios.post('/chapter/contents/create', this.dataAddContent, {
-                WithComponent: true
-            })
+                    WithComponent: true
+                })
                 .then(res => {
                     alert(res.data.msg);
                     // this.dataAddChapter.chapterTitle = "";
                     this.resetAddContent();
                     // location.reload();
                 });
+            // this.getChapter();
+            setTimeout(() =>{
+                    this.getChapter(id);
+            },500);
         },
         resetAddContent() {
             this.dataAddContent.chapterId = Number,
@@ -236,7 +261,7 @@ export default {
                 this.course.courseDescription = "",
                 this.course.courseImage = "",
                 this.course.courseFee = Number
-        }
+        },
 
     },
     data() {
@@ -273,8 +298,8 @@ export default {
     created() {
 
         axios.get('/courseof/' + this.student.id, {
-            withCredentials: true
-        })
+                withCredentials: true
+            })
             .then(response => {
                 this.courses = response.data.courses;
             })
@@ -288,12 +313,16 @@ export default {
     }
 }
 </script>
-    
-        
+
 <style lang="scss" scoped>
 .web-title {
+    // font-weight: ̃700;
     margin: 20px 0;
     text-align: center;
+    color: rgb(52, 73, 94);
+    font-size: 4rem;
+    font-weight: 700;
+    margin-bottom: 80px;
 }
 
 * {
@@ -530,5 +559,5 @@ form,
         background-color: rgb(0, 128, 128);
         // transform: scale(1.1);
     }
-}</style>
-    
+}
+</style>
