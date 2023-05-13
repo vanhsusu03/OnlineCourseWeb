@@ -119,7 +119,7 @@ export default {
     created() {
         let id = Number(window.location.href.split('/').slice(-1)[0]);
         // alert(id);
-        axios.post(`/courses/${id}/students/contents`, {}, {
+        axios.get(`/courses/${id}/students/contents`, {
                 withCredentials: true
             })
             .then(response => {

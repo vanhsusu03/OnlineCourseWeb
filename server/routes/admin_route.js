@@ -10,8 +10,8 @@ const router = express.Router();
 // router.get('/admin/courses', isAdmin, adminController.showCourses);
 // router.get('/admin/accounts', isAdmin, adminController.showAccounts);
 
-router.post('/admin/delete/:studentId', adminController.deleteAccount);
-router.post('/admin/delete/course/:courseId', adminController.deleteCourse);
+router.delete('/admin/delete/:studentId', adminController.deleteAccount);
+router.delete('/admin/delete/course/:courseId', adminController.deleteCourse);
 router.post('/admin/change/:studentId/:coin', adminController.editStudentInfo);
 router.post('/admin/change/:courseId', adminController.editCourse);
 router.get('/admin/courses', adminController.showCourses);
