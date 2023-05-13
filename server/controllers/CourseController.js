@@ -402,6 +402,7 @@ class CourseController {
             contents: contents
         });
     }
+    
 }
 
 module.exports = new CourseController();
