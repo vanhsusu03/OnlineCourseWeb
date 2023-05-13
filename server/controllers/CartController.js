@@ -81,6 +81,7 @@ class CartController {
             instructorFirstName, instructorLastName
         };
         var cart = req.session.cart;
+        console.log(course);
 
         if (cart) {
             if (this.isInCart(cart, courseId)) {

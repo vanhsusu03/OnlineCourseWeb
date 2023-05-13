@@ -1,32 +1,33 @@
 <template>
-<h4>You want to pay for {{ numOfCourses }} 
-    <span v-if="courses.length > 1">courses:</span>
-    <span v-else>course:</span>
-</h4>
-<div class="content">
-    <div class="cart-content">
-        <ul>
-            <li v-for="course in courses">
-                <img :src="course.courseImage" alt="">
-                <div class="course-content">
-                    <h5>{{ course.courseTitle }}</h5>
-                    <div>By {{ course.instructorFirstName + ' ' + course.instructorLastName }}</div>
-                </div>
-            </li>
-        </ul>
+    <h4>You want to pay for {{ numOfCourses }}
+        <span v-if="courses.length > 1">courses:</span>
+        <span v-else>course:</span>
+    </h4>
+    <div class="content">
+        <div class="cart-content">
+            <ul>
+                <li v-for="course in courses">
+                    <img :src="course.courseImage" alt="">
+                    <div class="course-content">
+                        <h5>{{ course.courseTitle }}</h5>
+                        <div>By {{ course.instructorFirstName + ' ' + course.instructorLastName }}</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="total">
+            <h3 class="title">Total: {{ getTotal() }} <img src="../assets/img/logo.png" alt=""></h3>
+            <h3 class="balance">Account balance: {{ student.coin }}</h3>
+            <button v-on:click="pay(student.coin)">Pay</button>
+            <!-- {{ savingCourseIds }} -->
+        </div>
     </div>
-    <div class="total">
-        <h3 class="title">Total: {{ getTotal() }} VND</h3>
-        <h3 class="balance">Account balance: {{ student.coin }}</h3>
-        <button v-on:click="pay(student.coin)">Pay</button>
-        <!-- {{ savingCourseIds }} -->
-    </div>
-</div>
 </template>
 
 <script>
 import axios from 'axios';
-import { mapState } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
+
 export default {
     name: 'Payment',
     data() {
@@ -41,11 +42,20 @@ export default {
         isInCart: true
     },
     methods: {
+        ...mapMutations(['setMiniCartChange']),
+        async getStudentCoin() {
+            await axios.get('/students/coin', { withCredentials: true })
+                .then(respone => {
+                    this.student.coin = respone.data.coinOfStudent;
+                })
+
+        },
         getSavingIds() {
             for (let i = 0; i < this.saved.length; i++) {
                 this.savingCourseIds.push(this.saved[i].courseId);
             }
         },
+
         getTotal() {
             let sum = 0;
             for (let i = 0; i < this.courses.length; i++) {
@@ -61,36 +71,48 @@ export default {
                 let total = this.getTotal();
                 if (student_coin < total) {
                     alert("Your balance is not enough to pay");
-                } else if(confirm("Are you sure to pay for these courses?")){
-                    
-                    axios.post('/students/payment/cart', this.savingCourseIds, {withCredentials: true});
+                } else if (confirm("Are you sure to pay for these courses?")) {
+
+                    axios.post('/students/payment/cart', this.savingCourseIds, { withCredentials: true });
+                    this.setMiniCartChange("change");
+                    this.getStudentCoin();
+                    alert("Payment successful");
                     this.$router.push('/');
                 }
             } else {
                 if (student_coin < this.courses[0].courseFee) {
                     alert("Your balance is not enough to pay");
-                } else if(confirm("Are you sure to pay for this courses?")){
-                    // alert("OK");
-                    axios.post('/students/payment/course',this.courses[0], {withCredentials: true});
+                } else if (confirm("Are you sure to pay for this courses?")) {
+
+                    axios.post('/students/payment/course', this.courses[0], { withCredentials: true });
+                    this.setMiniCartChange("change");
+                    this.getStudentCoin();
+                    alert("Payment successful");
                     this.$router.push('/');
                 }
             }
-            
-            
+
+
         }
     },
     computed: {
         ...mapState(['student'])
     },
+    mounted() {
+    },
     created() {
-        axios.get('/students/coin', {
-                    withCredentials: true
-                })
+        this.getStudentCoin();
     }
 }
 </script>
 
 <style lang="scss" scoped>
+h4 {
+    margin-bottom: 20px;
+    font-weight: 650;
+    color: rgb(52, 73, 94);
+}
+
 .content {
     display: flex;
     // margin-left: 50px;
@@ -100,7 +122,12 @@ export default {
         margin-top: 0px;
 
         .title {
-            color: gray;
+            width: 100%;
+            color: #880000;
+
+            img {
+                width: 40px;
+            }
         }
 
         button {
@@ -115,8 +142,20 @@ export default {
         }
     }
 }
+
 .cart-content {
+
     // padding-left: 30px;
+    img {
+        margin-right: 10px;
+    }
+
+    h5 {
+        margin-top: 20px;
+
+        font-size: 1rem;
+    }
+
     ul {
         padding: 5px 5px;
         padding-right: 30px;
@@ -133,6 +172,7 @@ export default {
 
             .course-content {
                 margin-left: 5px;
+                font-size: 0.9rem;
             }
         }
     }

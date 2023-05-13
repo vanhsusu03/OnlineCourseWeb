@@ -19,8 +19,11 @@ export default {
       return state.miniCart;
     },
 
-    getCourseIDShowing(state) {
-      return state.courseIDShowing;
-    }
-  
+    getMiniCartChange(state) {
+      return state.miniCartChange;
+    },
+
+    getAdminChange(state) {
+      return state.adminChange;
+    },
   }

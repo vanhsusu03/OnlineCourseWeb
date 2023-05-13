@@ -1,13 +1,18 @@
 <template>
-    <h1>Course List </h1>
+    <h1 style="width: 480px;">All our courses for you </h1>
     <ul v-if="courses && courses.length" class="listCourse">
         <li v-for="course in courses" class="item">
             <img v-bind:src="course.courseImage" alt="" class="course-img" @click="showCourse(course.courseId)">
             <div class="course-content">
                 <h4 v-bind:title="course.courseTitle">{{ course.courseTitle }}</h4>
-                <div v-bind:title="course.courseDescription">{{ course.courseDescription }}</div>
-                <div>By {{ course.instructorFirstName + ' ' + course.instructorLastName }}</div>
-                <h5>{{ course.courseFee + ' VND' }}</h5>
+                <div v-bind:title="course.courseDescription" id="description">{{ course.courseDescription }}</div>
+                <div @click="redirectInstructorInfo(course.instructorId)" id="ins">By <span> {{ course.instructorFirstName +
+                    ' ' + course.instructorLastName }}</span></div>
+                <div class="fee">
+                    <h5>{{ course.courseFee }}</h5>
+                    <div id="image"> <img src="../assets/img/logo.png" alt="" id="img-coin"> </div>
+                </div>
+
                 <button v-on:click="addToCart(course)">Add To Cart</button>
                 <!-- <div>{{ courseState[course.courseId] }}</div> -->
             </div>
@@ -36,6 +41,7 @@
 
 <script>
 import axios from 'axios';
+import { mapMutations, mapState } from 'vuex';
 
 export default {
     name: 'CourseList',
@@ -59,6 +65,7 @@ export default {
         }
     },
     methods: {
+        ...mapMutations(['setMiniCartChange']),
         scrollToTop() {
             window.scrollTo(0, 0);
         },
@@ -98,21 +105,9 @@ export default {
         },
         checkBought(id) {
             axios.post(`/course/state/${id}`, {}, { withCredentials: true })
-            .then(response => {
+                .then(response => {
                     this.isBought = response.data.msg;
                 });
-            // let state=data.data.msg;
-            // if(state === 'Activated') {
-            //     this.isBought = true;
-            //     alert(this.isBought);
-            // } else {
-            //     this.isBought = false;
-            // }
-            // alert(state);
-            // if(state === 'Unactivated') {
-            //     return true;
-            // }
-            // return false;
         },
         async showCourse(id) {
             let check = await axios.post(`/course/state/${id}`, {}, { withCredentials: true });
@@ -120,25 +115,43 @@ export default {
             if (states === 'Unactivated') {
                 this.$router.push(`/course/info/${id}`);
             } else if (states === 'Activated') {
-                this.$router.push(`/course/detail/${id}`);
+                this.$router.push(`/study/${id}`);
             }
         },
         addToCart(course) {
+
             this.checkBought(course.courseId);
             setTimeout(() => {
                 if (this.isBought === 'Unactivated') {
                     axios.post('/students/cart/' + course.courseId, course, { withCredentials: true })
-                    .then(response => {
-                        alert(response.data.msg);
+                    .then( respone => {
+                        alert(respone.data.msg);
+                        this.setMiniCartChange("change");
                     })
-                    .catch(e => {
-                        this.errors.push(e);
-                    })
-                } else {
+                        .catch(e => {
+                            this.errors.push(e);
+                        });
+                
+                
+                } else if (this.isBought === 'Activated') {
                     alert("You have actived this course before");
                 }
             }, 100);
+
+        },
+        getText(event) {
+            const clickedElement = event.target;
+            const subDiv = clickedElement.closest(".sub");
+            let pTag = subDiv.querySelector(".cate-content");
+            let text = pTag.textContent;
+            return text;
+        },
+        redirectInstructorInfo(id) {
+            this.$router.push(`/instructor/info/show/${id}`);
         }
+    },
+    computed: {
+        ...mapState(['student','miniCartChange'])
     },
 
     // lấy dữ liệu khi component được tạo thành công
@@ -156,9 +169,17 @@ export default {
 
 <style lang="scss" scoped>
 h1 {
-    margin-left: 50px;
-    margin-top: 30px;
-    margin-bottom: 20px;
+    margin-top: 40px;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: rgb(52, 73, 94);
+    margin-left: 12%;
+    margin-bottom: 40px;
+    transform: translateX(-3%);
+    width: 30%;
+    border-bottom: 2px solid black;
+    padding-bottom: 20px;
+
 }
 
 .listCourse {
@@ -172,10 +193,15 @@ h1 {
     justify-content: space-between;
 
     .item {
+        border: 1px inset rgb(230, 230, 230);
+
+        img:hover {
+            cursor: pointer;
+        }
+
         &:hover {
             box-shadow: -0.5rem -0.5rem 1rem rgba($color: #000000, $alpha: 0.1), 0.5rem 0.5rem 1rem rgba($color: #000000, $alpha: 0.1);
             border: 0.02rem solid rgba($color: #000000, $alpha: 0.05);
-            cursor: pointer;
             // padding: 0.05rem 0.05rem 0.05rem 0.05rem;
             // border-radius: 1rem;
         }
@@ -212,12 +238,21 @@ h1 {
 
             div,
             h4 {
+                margin-left: 20px;
                 display: -webkit-box;
                 -webkit-line-clamp: 2;
                 -webkit-box-orient: vertical;
                 overflow: hidden;
                 margin-bottom: 5px;
+                font-size: 1.1rem;
             }
+
+            h4 {
+                margin-top: 20px;
+
+            }
+
+           
 
             button {
                 position: absolute;
@@ -234,6 +269,41 @@ h1 {
                 &:hover {
                     background-color: #000000;
                     transform: scale(1.1);
+                }
+            }
+            .fee {
+                font-weight: 600;
+                font-size: 1.2rem;
+                display: flex;
+              
+                h5 {
+                margin-top: 18px;
+                margin-left: 43%;
+                
+                transform: translateX(-50%);
+                font-weight: 700;
+            }
+                #image {
+                    // margin-left: 10px;
+                    margin-top: 5%;
+                    margin-left: -8%;
+                    img {
+                        width: 30px;
+                        height: auto;
+                        border: none;
+                    }
+                }
+
+            }
+
+            #ins {
+                span {
+                    font-weight: 500;
+                    border-bottom: 1px solid black;
+
+                    &:hover {
+                        cursor: pointer;
+                    }
                 }
             }
         }
@@ -260,4 +330,9 @@ h1 {
             background-color: #ddd;
         }
     }
-}</style>
+}
+
+.alert {
+    background-color: white;
+}
+</style>

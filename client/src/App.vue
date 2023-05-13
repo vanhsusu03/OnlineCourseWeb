@@ -1,7 +1,10 @@
 <template>
-  <div id="app">
+  <div v-if="loading">
+    <Loading ></Loading>
+  </div>
+  <div v-else id="app">
     <Header />
-      <router-view></router-view>
+    <router-view></router-view>
     <Footer />
   </div>
 </template>
@@ -10,17 +13,28 @@
 
 import Header from './components/Header.vue';
 import Footer from './components/Footer.vue';
+import Loading from './pages/Loading.vue';
 import { mapActions } from 'vuex';
 export default {
   name: 'App',
   components: {
     Header,
-    Footer
+    Footer,
+    Loading,
+  },
+  data() {
+    return {
+      loading: true,
+    }
   },
   methods: {
     ...mapActions(['checkLogin']),
   },
-
+  mounted() {
+    setTimeout(() => {
+      this.loading = false;
+    }, 1000);
+  },
   created() {
     this.checkLogin();
   }
@@ -28,7 +42,7 @@ export default {
 </script>
 
 <style>
-*{
+* {
   margin: 0px;
   padding: 0px;
 }

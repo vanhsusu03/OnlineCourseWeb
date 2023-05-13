@@ -9,7 +9,7 @@
         <div class="search">
             <form ref="anyName">
                 <input type="text" id="searching" class="sub" placeholder="Search for everything ..."
-                       @keydown.enter.prevent="handleSearch()" v-model="form.keyw"/>
+                    @keydown.enter.prevent="handleSearch()" v-model="form.keyw" />
             </form>
             <RouterLink @click="handleSearch()" to="/searching/"><img src="../assets/img/lookup.png" id="lookup" />
             </RouterLink>
@@ -18,9 +18,11 @@
         <RouterLink v-if="!student.userName" @click="scrollToTop" to="/aboutus">
             <div class="aboutus"> About us</div>
         </RouterLink>
-        <RouterLink v-if="student.userName" @click="scrollToTop" to="/mycourses">
-            <div class="mycourse">My courses</div>
-        </RouterLink>
+        <div v-if="student.userName" @click="scrollToTop">
+            <div v-if="admin === 'admin'" class="admin" @click="showAdminDashboard">Admin Dashboard</div>
+            <div v-else class="mycourse" @click="showMyCourses">My courses</div>
+        </div>
+        <!-- <RouterLink v-if="admin" @click="scrollToTop" to="/admin">Admin Dashboard</RouterLink> -->
 
 
         <RouterLink @click="scrollToTop()" to="/login" v-if="!student.userName">
@@ -34,25 +36,27 @@
                 <div class="become">Instructor Manage</div>
             </RouterLink>
         </div>
-        
 
 
-        <div v-if="student.userName" class="logged">
+
+        <div v-if="student.userName" class="logged" ref="log">
             <img src="../assets/img/user.png" id="user" @click.prevent="showDropDown">
             <div v-if="dropdownselect" class="drop-down-select" @mouseleave="unshowDropDown">
                 <div style="display: flex;" class="top-info">
-                    <img src="../assets/img/user.png" alt="" style="width: 100px; height: auto; z-index: 3; padding: 0; margin: 0;">
+                    <img src="../assets/img/user.png" alt=""
+                        style="width: 100px; height: auto; z-index: 3; padding: 0; margin: 0;">
                     <div>
                         <h5>{{ student.firstName + ' ' + student.lastName }}</h5>
                         <div style="font-size: 23px; font-weight: 500;">
-                            <img src="../assets/img/logo.png" alt="" style="width: 25px; z-index: 3; padding: 0; margin: 0;"> 
+                            <img src="../assets/img/logo.png" alt=""
+                                style="width: 25px; z-index: 3; padding: 0; margin: 0;">
                             <span class="coin">{{ student.coin }}</span>
                         </div>
                     </div>
                 </div>
-                
-                        
-                
+
+
+
                 <div>
                     <RouterLink @click.prevent="unshowDropDown" to="/account/info">Account Settings</RouterLink>
                 </div>
@@ -60,7 +64,7 @@
                     <RouterLink @click.prevent="unshowDropDown" to="/cart">My Cart</RouterLink>
                 </div>
                 <div>
-                    <RouterLink to="/mycourses" @click.prevent="unshowDropDown">My Courses</RouterLink>
+                    <RouterLink v-if="!admin" to="/mycourses" @click.prevent="unshowDropDown">My Courses</RouterLink>
                 </div>
                 <div>
                     <RouterLink @click.prevent="unshowDropDown" to="/deposit">Deposit</RouterLink>
@@ -81,8 +85,11 @@
             <div class="new">
                 <img src="../assets/img/new.png" id="new">
             </div>
-            <RouterLink @click="scrollToTop()" to="/login" v-if="!student.userName"><img id="cart" style="width: 40px; cursor: pointer;" src="../assets/img/cart.png" alt=""></RouterLink>
-            <RouterLink @click="scrollToTop()" to="/cart" v-if="student.userName"><MiniCart id="cart"></MiniCart></RouterLink>
+            <RouterLink @click="scrollToTop()" to="/login" v-if="!student.userName"><img id="cart"
+                    style="width: 40px; cursor: pointer;" src="../assets/img/cart.png" alt=""></RouterLink>
+            <RouterLink @click="scrollToTop()" to="/cart" v-if="student.userName">
+                <MiniCart id="cart"></MiniCart>
+            </RouterLink>
 
         </div>
         <div v-if="!student.userName" class="login">
@@ -112,6 +119,7 @@ import axios from 'axios';
 import { mapMutations, mapState } from 'vuex';
 import Categories from './Categories.vue';
 import MiniCart from './MiniCart.vue';
+
 export default {
     // eslint-disable-next-line vue/multi-word-component-names
     name: 'Header',
@@ -119,9 +127,10 @@ export default {
         return {
             dropdownselect: false,
             form: {
-                keyw:"",
+                keyw: "",
             },
-            searchResult: []
+            searchResult: [],
+            coin: 0,
         }
     },
     components: {
@@ -129,11 +138,13 @@ export default {
         MiniCart
     },
     methods: {
-        ...mapMutations(['setStudent', 'setLogged','setMiniCart']),
+        ...mapMutations(['setStudent', 'setLogged', 'setAdmin']),
+        async getStudentCoin() {
+            await axios.get('/students/coin', { withCredentials: true })
+                .then(respone => {
+                    this.student.coin = respone.data.coinOfStudent;
+                })
 
-        showMenu() {
-            let nav_bar = document.querySelector('.header .navbar');
-            nav_bar.classList.toggle('active');
         },
         showDropDown() {
             this.dropdownselect = true
@@ -142,15 +153,19 @@ export default {
             this.dropdownselect = false;
             this.scrollToTop();
         },
+        showAdminDashboard() {
+            this.$router.push('/admin');
+        },
+        showMyCourses() {
+            this.$router.push('/mycourses');
+        },
         scrollToTop() {
-            let nav_bar = document.querySelector('.header .navbar');
-            nav_bar.classList.remove('active');
             window.scrollTo(0, 0);
         },
         async handleLogout() {
             await axios.post('/logout', {}, { withCredentials: true });
             this.setStudent([]);
-            this.setAdmin(null);
+            this.setAdmin("");
             this.setLogged(false);
             this.unshowDropDown();
         },
@@ -160,8 +175,17 @@ export default {
         },
     },
     computed: {
-        ...mapState(['student', 'admin','miniCart'])
-    }
+        ...mapState(['student', 'admin'])
+    },
+    created() {
+        this.getStudentCoin();
+    },
+    watch: {
+        '$route'() {
+            this.$refs.anyName.reset();
+        },
+
+    },
 }
 </script>
 
@@ -212,6 +236,17 @@ export default {
         font-weight: 500;
         margin-top: 15px;
         margin-left: 3.7%;
+        font-size: 1.16rem;
+        cursor: pointer;
+    }
+
+    .admin {
+        position: absolute;
+        font-weight: 500;
+        margin-top: 15.5px;
+        margin-left: 1.5%;
+        font-size: 1.16rem;
+        cursor: pointer;
     }
 
     .become {
@@ -256,7 +291,7 @@ export default {
                 margin-left: 5px;
             }
         }
-        
+
         img {
             width: 220%;
             margin-left: 3030%;
@@ -266,7 +301,7 @@ export default {
         .drop-down-select {
             position: absolute;
             margin-left: 3030%;
-            left:-300%;
+            left: -300%;
             top: 115%;
             width: 1800%;
             background-color: white;
@@ -382,4 +417,5 @@ export default {
     }
 
 
-}</style>
+}
+</style>

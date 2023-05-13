@@ -16,11 +16,11 @@
             <div class="filter">
                 <div class="filter-box">
                     <div id="tag">Price</div>
-                    <div>
+                    <div class="paid">
                         <input type="radio" id="paid" value="paid" name="fil" v-model="paid" @click="setPaid">
                         <label for="paid">Paid</label>
                     </div>
-                    <div>
+                    <div class="free">
                         <input type="radio" id="free" value="free" name="fil" v-model="free" @click="setFree">
                         <label for="free">Free</label>
                     </div>
@@ -36,26 +36,28 @@
                         <div id="descr">{{ res.courseDescription }}</div>
                         <div id="ins">Created by: <span id="name"> {{ res.instructorFirstName + ' ' + res.instructorLastName
                         }}</span></div>
-                        <div id="fee">{{ res.courseFee + ' VND' }}</div>
+                        <div class="fee">
+                            <div> {{ res.courseFee }} </div>
+                            <div id="image"> <img src="../assets/img/logo.png" alt="" id="img-coin"> </div>
+                        </div>
                     </div>
                 </li>
             </div>
         </div>
         <div v-if="begin">
-                {{ openPage(1) }}
-            </div>
+            {{ openPage(1) }}
+        </div>
 
-            <div v-if="!isCalc">
-                {{ calcNumPages() }}
-            </div>
-            <ul class="listPage">
-                <li v-for="page in pages" class="pagelinks" :class="{ active: page.status }"
-                    v-on:click="scrollToTop(); this.begin = false; openPage(page.value)">
-                    {{ page.value }}
-                </li>
-            </ul>
+        <div v-if="!isCalc">
+            {{ calcNumPages() }}
+        </div>
+        <ul class="listPage">
+            <li v-for="page in pages" class="pagelinks" :class="{ active: page.status }"
+                v-on:click="scrollToTop(); this.begin = false; openPage(page.value)">
+                {{ page.value }}
+            </li>
+        </ul>
     </div>
-
 </template>
     
 <script>
@@ -108,7 +110,7 @@ export default {
         calcNumPages() {
             let num, tabcontent;
             let len = this.pages.length;
-            if(len > 1) {this.pages.splice(1, len-1);};
+            if (len > 1) { this.pages.splice(1, len - 1); };
             // alert("calc" + len);
             tabcontent = document.getElementsByClassName("item");
             // if (tabcontent.length <= this.limit) {
@@ -131,6 +133,12 @@ export default {
             // console.warn(numPages);
             return numPages;
         },
+        resetPage() {
+            this.isCalc = false;
+            this.thisPage = 1;
+            this.calcNumPages();
+            this.openPage(1);
+        },
         sortCoursesByFee(courses, ascending = true) {
             courses.sort(function (courseA, courseB) {
                 if (ascending) {
@@ -150,7 +158,7 @@ export default {
         },
         clearFilters() {
             this.sortBy = "";
-            if(!this.isPaid && !this.isFree) {
+            if (!this.isPaid && !this.isFree) {
                 this.getResultSearch();
             }
             else if (this.isPaid) {
@@ -165,17 +173,16 @@ export default {
             let id = String(window.location.href.split('/').slice(-1)[0]);
             await axios.get(`/searching/paid/${id}`, {}, { withCredentials: true })
                 .then(response => {
-                    
+
                     this.numSearch = response.data.number;
                     this.searchResult = response.data.result;
+                    this.searchResult.filter((item, index) => this.searchResult.indexOf(item) === index);
                 })
                 .catch(e => {
                     this.errors.push(e)
                 });
-                this.setSort();
-                this.isCalc = false;
-                this.thisPage = 1;
-                    this.calcNumPages();
+            this.setSort();
+            this.resetPage();
         },
         async setFree() {
             this.isFree = true;
@@ -185,15 +192,13 @@ export default {
                 .then(response => {
                     this.numSearch = response.data.number;
                     this.searchResult = response.data.result;
-                    
+                    this.searchResult.filter((item, index) => this.searchResult.indexOf(item) === index);
                 })
                 .catch(e => {
                     this.errors.push(e)
                 });
-                this.setSort();
-                this.isCalc = false;
-                this.thisPage = 1;
-                    this.calcNumPages();
+            this.setSort();
+            this.resetPage();
         },
         async showCourse(id) {
             let check = await axios.post(`/course/state/${id}`, {}, { withCredentials: true });
@@ -201,28 +206,28 @@ export default {
             if (states === 'Unactivated') {
                 this.$router.push(`/course/info/${id}`);
             } else if (states === 'Activated') {
-                this.$router.push(`/course/detail/${id}`);
+                this.$router.push(`/study/${id}`);
             }
         },
         async getResultSearch() {
             let id = String(window.location.href.split('/').slice(-1)[0]);
-            this.keySearch = id;
+            this.keySearch = id.replace(/%20/g, ' ');
             await axios.get(`/searching/${id}`, { withCredentials: true })
                 .then(response => {
                     this.numSearch = response.data.number;
                     this.searchResult = response.data.result;
+                    this.searchResult.filter((item, index) => this.searchResult.indexOf(item) === index);
                 })
                 .catch(e => {
                     this.errors.push(e)
                 });
-                this.isCalc = false;
-                this.thisPage = 1;
-                this.calcNumPages();
+            this.resetPage();
         },
     },
     watch: {
         '$route'() {
             this.getResultSearch();
+            this.resetPage();
         },
         sortBy() {
             this.setSort();
@@ -239,11 +244,12 @@ export default {
 <style lang="scss" scoped>
 .res-search {
     h1 {
-        font-weight: 700;
-        font-size: 3rem;
+        font-weight: 800;
+        font-size: 3.5rem;
         margin-top: 130px;
         margin-left: 130px;
         margin-bottom: 50px;
+        color: rgb(52, 73, 94);
     }
 
     .filter-intro {
@@ -252,10 +258,40 @@ export default {
         padding-bottom: 0.7rem;
         margin-bottom: 40px;
 
+        select {
+
+            width: 100%;
+            padding: 5px;
+            font-size: 16px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            appearance: none;
+            /* Removes default arrow */
+            background-image: linear-gradient(45deg, transparent 50%, #ccc 50%), linear-gradient(135deg, #ccc 50%, transparent 50%), linear-gradient(to right, #ccc, #ccc);
+            /* Adds custom arrow */
+            background-position: calc(100% - 20px) calc(1em + 2px), calc(100% - 15px) calc(1em + 2px), 100% 0;
+            background-size: 0 0, 0 0, 0 0;
+            /* Adjusts arrow size */
+            background-repeat: no-repeat;
+
+            &:hover {
+                cursor: pointer;
+            }
+
+            &:focus {
+                outline: none;
+                box-shadow: 0 0 2px 1px #ccc;
+            }
+
+            option {
+                font-size: 16px;
+                padding: 10px;
+            }
+        }
+
         #filter-head {
-            // font-weight: 600;
-            font-size: 2.25rem;
-            // border: 1px solid black;
+            font-weight: 700;
+            font-size: 2rem;
             margin-right: 100px;
         }
 
@@ -264,7 +300,7 @@ export default {
             width: 12%;
             margin-right: 20px;
             font-size: 1.2rem;
-            border: 2px solid black;
+            border: 1px solid black;
 
             // border-radius: 10px;
             // height: 50%;
@@ -295,14 +331,44 @@ export default {
 
             .filter-box {
 
+                input[type="radio"] {
+                    display: none;
+                }
+
+                input[type="radio"]+label:before {
+                    content: "";
+                    display: inline-block;
+                    vertical-align: middle;
+                    width: 20px;
+                    height: 20px;
+                    border: 2px solid #ccc;
+                    margin-right: 10px;
+                    cursor: pointer;
+                }
+
+                input[type="radio"]:checked+label:before {
+                    background-color: rgb(52, 73, 94);
+
+                }
+
+                input[type="radio"]:focus+label:before {
+                    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
+                }
+
+
+                .free {}
+
                 #tag {
-                    font-size: 2rem;
+                    font-size: 1.5rem;
                     font-weight: 600;
+                    margin-bottom: 10px;
                 }
 
                 label {
                     margin-left: 10px;
-                    font-size: 1.5rem;
+                    font-size: 1.15rem;
+                    color: rgb(52, 73, 94);
+                    margin-bottom: 10px;
                 }
 
                 #paid {
@@ -330,6 +396,7 @@ export default {
             .item {
                 display: flex;
             }
+
             li {
                 list-style: none;
                 display: flex;
@@ -363,9 +430,22 @@ export default {
                     margin-bottom: 10px;
                 }
 
-                #fee {
+                .fee {
                     font-weight: 600;
                     font-size: 1.2rem;
+                    display: flex;
+
+                    #image {
+                        margin-left: 10px;
+                        margin-top: -2px;
+
+                        img {
+                            width: 25px;
+                            height: auto;
+                            border: none;
+                        }
+                    }
+
                 }
             }
 

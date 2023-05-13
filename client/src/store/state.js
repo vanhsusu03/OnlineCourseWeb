@@ -3,7 +3,6 @@ export default {
     admin: "",
     instructor: [],
     isLogin: false,
-    miniCart: true,
-    isSearching: false,
-    courseIDshowing: 0  ,
+    miniCartChange: "",
+    adminChange: "",
 };
