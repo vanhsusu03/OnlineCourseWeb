@@ -7,6 +7,7 @@
         <button class="tablinks" v-on:click="openChapter($event, 'course')">Courses Control</button>
         <button class="tablinks" v-on:click="openChapter($event, 'instructor')">Instructors Control</button>
         <button class="tablinks" v-on:click="openChapter($event, 'deposit')">Deposit History</button>
+        <button class="tablinks" v-on:click="openChapter($event, 'order')">Orders Detail</button>
     </div>
 
     <div class="tabcontent" id="account">
@@ -78,7 +79,7 @@
                     <th>Email</th>
                     <th>Coin</th>
                     <th class="change-coin">Change Coin</th>
-                    <th>Number of courses</th>
+
                     <th>Delete</th>
                 </tr>
                 <tr v-for="account in instructors">
@@ -96,7 +97,7 @@
                             <div v-else v-on:click="changeAccount(account.student_id)">Save</div>
                         </button>
                     </td>
-                    <td class="num-course">{{ account.numOfStudents }}</td>
+
                     <td><button class="remove" @click="removeAccount(account.student_id)">Delete</button></td>
                 </tr>
             </table>
@@ -104,8 +105,54 @@
         </div>
     </div>
     <div class="tabcontent" id="deposit">
-        Hello 3
+        <div style="display: flex;">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>userId</th>
+                    <th>Amount</th>
+                    <th>Deposit Time</th>
+                </tr>
+                <tr v-for="deposit in deposits">
+                    <td>{{ deposit.deposit_id }}</td>
+                    <td>{{ deposit.customer_id }}</td>
+                    <td>{{ deposit.amount }}</td>
+                    <td>{{ deposit.deposit_time.slice(0, 10) }}</td>
+                </tr>
+            </table>
+
+        </div>
     </div>
+    <div class="tabcontent" id="order">
+        <div style="display: flex;">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>userId</th>
+                    <th>Name</th>
+                    <th>username</th>
+                    <th>orderDetails (id)</th>
+                    <th>Amount</th>
+                    <th>Order Time</th>
+                </tr>
+                <tr v-for="order in orders">
+                    <td>{{ order.orderId }}</td>
+                    <td>{{ order.studentId }}</td>
+                    <td>{{ order.studentFirstName + order.studentLastName }}</td>
+                    <td>{{ order.studentUsername }}</td>
+                    <td id="detail">
+                        <div v-for="detail in order.order_details">{{ detail.course.courseId }}</div>
+                    </td>
+                    <td>
+                        <div v-for="det in order.order_details">{{ det.payment.amount }}</div>
+                    </td>
+                    <td>{{ order.orderTime.slice(0, 10) }}</td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+
     <div class="modal" id="myModal1">
         <div class="modal-content">
             <span class="close" v-on:click="closePayment(1)">&times;</span>
@@ -138,7 +185,7 @@
     </div>
     <div class="modal" id="myModal2">
         <div class="modal-content">
-            <span class="close" v-on:click="closePayment(2)" >&times;</span>
+            <span class="close" v-on:click="closePayment(2)">&times;</span>
             <button @click="dataAddChapter.isAddChapter = !dataAddChapter.isAddChapter">Add Chapter</button>
             <div v-if="dataAddChapter.isAddChapter" style="display: flex;">
                 <h5>Chapter Title:</h5>
@@ -191,6 +238,7 @@ export default {
             courses: [],
             instructors: [],
             orders: [],
+            deposits: [],
             changeCoin: [],
             course: {
                 courseTitle: "",
@@ -222,6 +270,13 @@ export default {
         ...mapGetters(['getAdminChange']),
         adminChange() {
             return this.getAdminChange;
+        },
+        getToTalAmount(order) {
+            let result = 0;
+            for (detail in order) {
+                result += detail.payment.amount;
+            }
+            return result;
         },
         openChapter(evt, nameTab) {
             // Declare all variables
@@ -307,7 +362,7 @@ export default {
                     alert(res.data.msg);
                     // this.dataAddChapter.chapterTitle = "";
                     // location.reload();
-                    
+
                     this.resetAddChapter();
 
                 });
@@ -368,16 +423,24 @@ export default {
                     this.errors.push(e)
                 })
 
-            axios.get('/orders',{withCredentials: true})
-            .then(respone => {
-                this.orders = respone.data.orders;
-            })
-            .catch(e => {
+            axios.get('/orders', { withCredentials: true })
+                .then(respone => {
+                    this.orders = respone.data.orders;
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                })
+
+            axios.get('/deposits', { withCredentials: true })
+                .then(respone => {
+                    this.deposits = respone.data;
+                })
+                .catch(e => {
                     this.errors.push(e)
                 })
         }
     },
-    
+
     computed: {
         ...mapState(['adminChange'])
     },
@@ -421,7 +484,8 @@ body {
 .tab {
     float: left;
     border: 1px solid #ccc;
-    background-color: #f1f1f1;
+    background-color: rgb(52, 73, 94);
+
     width: 15%;
     height: 100%;
     position: relative;
@@ -450,7 +514,8 @@ body {
 .tab button {
     display: block;
     background-color: inherit;
-    color: black;
+    color: rgb(230, 230, 230);
+    -webkit-text-stroke: 2px inset;
     padding: 22px 16px;
     width: 100%;
     border: none;
@@ -459,16 +524,19 @@ body {
     cursor: pointer;
     font-size: 1.3rem;
     border-bottom: 1px inset black;
+    font-weight: 600;
 }
 
 /* Change background color of buttons on hover */
 .tab button:hover {
     background-color: #ddd;
+    color: black;
 }
 
 /* Create an active/current "tab button" class */
 .tab button.active {
-    background-color: #ccc;
+    background-color: rgb(240, 240, 240);
+    color: #000;
 }
 
 /* Style the tab content */
@@ -487,6 +555,15 @@ body {
         right: 80px;
         top: 60px;
     }
+
+    // td {
+
+    //     .change,
+    //     .remove {
+    //         background-color: #fff;
+    //     }
+    // }
+
 }
 
 /* Clear floats after the tab */
@@ -517,7 +594,9 @@ th {
 }
 
 tr:nth-child(even) {
-    background-color: #dddddd;
+    background-color:rgb(230, 230, 230);
+    -webkit-text-stroke: 2px inset;
+
 }
 
 .remove,
@@ -529,6 +608,7 @@ tr:nth-child(even) {
     text-decoration: underline;
 
 }
+
 
 .change-coin {
     width: 200px;
@@ -583,5 +663,4 @@ tr:nth-child(even) {
     color: #000;
     text-decoration: none;
     cursor: pointer;
-}
-</style>
+}</style>
