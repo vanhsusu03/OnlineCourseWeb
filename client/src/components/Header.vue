@@ -18,9 +18,11 @@
         <RouterLink v-if="!student.userName" @click="scrollToTop" to="/aboutus">
             <div class="aboutus"> About us</div>
         </RouterLink>
-        <RouterLink v-if="student.userName" @click="scrollToTop" to="/mycourses">
-            <div class="mycourse">My courses</div>
-        </RouterLink>
+        <div v-if="student.userName" @click="scrollToTop" >
+            <div v-if="admin === 'admin'" class="admin" @click="showAdminDashboard">Admin Dashboard</div>
+            <div v-else class="mycourse" @click="showMyCourses">My courses</div>
+        </div>
+        <!-- <RouterLink v-if="admin" @click="scrollToTop" to="/admin">Admin Dashboard</RouterLink> -->
 
 
         <RouterLink @click="scrollToTop()" to="/login" v-if="!student.userName">
@@ -48,7 +50,7 @@
                         <div style="font-size: 23px; font-weight: 500;">
                             <img src="../assets/img/logo.png" alt=""
                                 style="width: 25px; z-index: 3; padding: 0; margin: 0;">
-                            <span class="coin">{{ student.coin }}</span>
+                            <span class="coin">{{ this.coin }}</span>
                         </div>
                     </div>
                 </div>
@@ -62,7 +64,7 @@
                     <RouterLink @click.prevent="unshowDropDown" to="/cart">My Cart</RouterLink>
                 </div>
                 <div>
-                    <RouterLink to="/mycourses" @click.prevent="unshowDropDown">My Courses</RouterLink>
+                    <RouterLink v-if="!admin" to="/mycourses" @click.prevent="unshowDropDown">My Courses</RouterLink>
                 </div>
                 <div>
                     <RouterLink @click.prevent="unshowDropDown" to="/deposit">Deposit</RouterLink>
@@ -114,7 +116,7 @@
 
 <script>
 import axios from 'axios';
-import { mapMutations, mapState } from 'vuex';
+import { mapMutations, mapState, mapGetters } from 'vuex';
 import Categories from './Categories.vue';
 import MiniCart from './MiniCart.vue';
 export default {
@@ -126,7 +128,8 @@ export default {
             form: {
                 keyw: "",
             },
-            searchResult: []
+            searchResult: [],
+            coin: 0,
         }
     },
     components: {
@@ -134,8 +137,18 @@ export default {
         MiniCart
     },
     methods: {
-        ...mapMutations(['setStudent', 'setLogged', 'setMiniCart']),
-
+        ...mapMutations(['setStudent', 'setLogged','setStudentCoinChange','setAdmin']),
+        ...mapGetters(['getStudentCoinChange']),
+        studentCoinChange() {
+            return this.getStudentCoinChange;
+        },
+        async getStudentCoin() {
+            await axios.get('/account/info', {withCredentials: true})
+            .then(respone => {
+                this.coin = respone.data.coin;
+            })
+            
+        },
         showMenu() {
             let nav_bar = document.querySelector('.header .navbar');
             nav_bar.classList.toggle('active');
@@ -147,6 +160,12 @@ export default {
             this.dropdownselect = false;
             this.scrollToTop();
         },
+        showAdminDashboard() {
+            this.$router.push('/admin');
+        },
+        showMyCourses() {
+            this.$router.push('/mycourses');
+        },
         scrollToTop() {
             let nav_bar = document.querySelector('.header .navbar');
             nav_bar.classList.remove('active');
@@ -155,7 +174,7 @@ export default {
         async handleLogout() {
             await axios.post('/logout', {}, { withCredentials: true });
             this.setStudent([]);
-            this.setAdmin(null);
+            this.setAdmin("");
             this.setLogged(false);
             this.unshowDropDown();
         },
@@ -165,7 +184,20 @@ export default {
         },
     },
     computed: {
-        ...mapState(['student', 'admin', 'miniCart'])
+        ...mapState(['student', 'admin', 'studentCoinChange'])
+    },
+    mounted() {
+        this.getStudentCoin();
+    },
+    watch: {
+        '$route'() {
+            this.$refs.anyName.reset();
+        },
+        studentCoinChange(newValue) {
+            console.log(`miniCartChange changed to ${newValue}`);
+            this.getStudentCoin();
+            this.$store.commit('setStudentCoinChange', '');
+        }
     },
 }
 </script>
@@ -217,7 +249,17 @@ export default {
         font-weight: 500;
         margin-top: 15px;
         margin-left: 3.7%;
+        font-size: 1.16rem;
+        cursor: pointer;
     }
+    .admin {
+        position: absolute;
+        font-weight: 500;
+        margin-top: 15.5px;
+        margin-left: 1.5%;
+        font-size: 1.16rem;
+        cursor: pointer;
+        }
 
     .become {
         position: absolute;

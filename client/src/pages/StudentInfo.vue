@@ -126,7 +126,7 @@ export default {
 
 <style scoped lang="scss">
 .page {
-    background-color: rgb(0, 128, 128);
+    background-color: rgb(52,73,94);
     padding: 30px 0;
 }
 

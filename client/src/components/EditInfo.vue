@@ -4,13 +4,13 @@
         <div class="profilecontent">
             Username:
             <span>
-               {{student.userName}}
+                {{ student.userName }}
             </span>
         </div>
         <div class="profilecontent">
             Email:
             <span>
-                {{student.email}}
+                {{ student.email }}
             </span>
         </div>
         <div class="profilecontent">
@@ -52,7 +52,7 @@
         <div class="profilecontent">
             Birthday:
             <span>
-                {{student.birth}}
+                {{ student.birth }}
             </span>
 
         </div>
@@ -86,7 +86,7 @@ export default {
         ...mapMutations(['setStudent', 'scrollToTop']),
         async edit() {
             let data = await axios.get('/account/info', { withCredentials: true });
-            
+
             if (!this.form.firstname) {
                 this.form.firstname = data.data.firstname;
             }
@@ -96,20 +96,16 @@ export default {
             if (!this.form.phone) {
                 this.form.phone = data.data.phone;
             }
-            
+
             let res = await axios.post('/edit/info', this.form, { withCredentials: true });
-            // let err = res.data.msg;
+            let err = res.data.msg;
+            if (err === 'Update info successful') {
 
-            // if (err === 'Username is already exists' || err === 'Email is already exists'
-            //     || err === 'Phone number is already exists') {
-            //     this.clearForms();
-            //     alert(err);
-
-            // } else {
-                alert('Update info successfully');
+                alert(err);
                 this.updateInfos();
                 this.$router.push('/');
-            // }
+
+            }
         },
 
         clearForms() {

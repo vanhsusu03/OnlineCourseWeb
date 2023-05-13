@@ -1,7 +1,7 @@
 <template>
     <div id="loading">
         <img class="img" src="../assets/img/logo.png" alt="loading..." width="200" />
-        <div id="head">Welcome to DNA platform!</div>
+        <div id="head">Welcome to DNA!</div>
         <div class="loader-line"></div>
     </div>
 </template>

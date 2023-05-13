@@ -11,10 +11,16 @@ export default {
     setLogged(state, isLogin) {
       state.isLogin = isLogin;
     },
-    setMiniCart(state,miniCart){
-      state.miniCart = miniCart;
+    setMiniCartChange(state,miniCartChange){
+      state.miniCartChange = miniCartChange;
     },
     setCourseIDShowing(state, courseIDshowing) {
       state.courseIDshowing = courseIDshowing;
+    },
+    setStudentCoinChange(state,studentCoinChange) {
+      state.studentCoinChange = studentCoinChange;
+    },
+    setAdminChange(state, adminChange) {
+      state.adminChange = adminChange;
     }
-  };
+  }
