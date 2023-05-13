@@ -6,6 +6,7 @@
         <button class="tablinks" v-on:click="openChapter($event, 'account')">Accounts Control</button>
         <button class="tablinks" v-on:click="openChapter($event, 'course')">Courses Control</button>
         <button class="tablinks" v-on:click="openChapter($event, 'instructor')">Instructors Control</button>
+        <button class="tablinks" v-on:click="openChapter($event, 'deposit')">Deposit History</button>
     </div>
 
     <div class="tabcontent" id="account">
@@ -102,7 +103,7 @@
 
         </div>
     </div>
-    <div class="tabcontent" id="order">
+    <div class="tabcontent" id="deposit">
         Hello 3
     </div>
     <div class="modal" id="myModal1">
@@ -184,6 +185,38 @@ import { mapMutations, mapGetters, mapState } from 'vuex';
 
 export default {
     name: 'Admin',
+    data() {
+        return {
+            accounts: [],
+            courses: [],
+            instructors: [],
+            orders: [],
+            changeCoin: [],
+            course: {
+                courseTitle: "",
+                courseDescription: "",
+                courseImage: "",
+                courseFee: Number,
+                instructorId: Number
+            },
+            content: [],
+            dataAddChapter: {
+                addChapterId: Number,
+                chapterTitle: "",
+                isAddChapter: false,
+            },
+            dataAddContent: {
+                chapterId: Number,
+                contentTypeId: 1,
+                contentTitle: "",
+                timeRequiredInSec: Number,
+                isOpenForFree: 0,
+                contentLink: "",
+                isAddContent: false,
+            }
+
+        }
+    },
     methods: {
         ...mapMutations(['setAdminChange']),
         ...mapGetters(['getAdminChange']),
@@ -334,40 +367,17 @@ export default {
                 .catch(e => {
                     this.errors.push(e)
                 })
-        }
-    },
-    data() {
-        return {
-            accounts: [],
-            courses: [],
-            instructors: [],
-            orders: [],
-            changeCoin: [],
-            course: {
-                courseTitle: "",
-                courseDescription: "",
-                courseImage: "",
-                courseFee: Number,
-                instructorId: Number
-            },
-            content: [],
-            dataAddChapter: {
-                addChapterId: Number,
-                chapterTitle: "",
-                isAddChapter: false,
-            },
-            dataAddContent: {
-                chapterId: Number,
-                contentTypeId: 1,
-                contentTitle: "",
-                timeRequiredInSec: Number,
-                isOpenForFree: 0,
-                contentLink: "",
-                isAddContent: false,
-            }
 
+            axios.get('/orders',{withCredentials: true})
+            .then(respone => {
+                this.orders = respone.data.orders;
+            })
+            .catch(e => {
+                    this.errors.push(e)
+                })
         }
     },
+    
     computed: {
         ...mapState(['adminChange'])
     },

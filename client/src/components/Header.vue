@@ -18,7 +18,7 @@
         <RouterLink v-if="!student.userName" @click="scrollToTop" to="/aboutus">
             <div class="aboutus"> About us</div>
         </RouterLink>
-        <div v-if="student.userName" @click="scrollToTop" >
+        <div v-if="student.userName" @click="scrollToTop">
             <div v-if="admin === 'admin'" class="admin" @click="showAdminDashboard">Admin Dashboard</div>
             <div v-else class="mycourse" @click="showMyCourses">My courses</div>
         </div>
@@ -50,7 +50,7 @@
                         <div style="font-size: 23px; font-weight: 500;">
                             <img src="../assets/img/logo.png" alt=""
                                 style="width: 25px; z-index: 3; padding: 0; margin: 0;">
-                            <span class="coin">{{ this.coin }}</span>
+                            <span class="coin">{{ student.coin }}</span>
                         </div>
                     </div>
                 </div>
@@ -116,9 +116,10 @@
 
 <script>
 import axios from 'axios';
-import { mapMutations, mapState, mapGetters } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
 import Categories from './Categories.vue';
 import MiniCart from './MiniCart.vue';
+
 export default {
     // eslint-disable-next-line vue/multi-word-component-names
     name: 'Header',
@@ -137,21 +138,13 @@ export default {
         MiniCart
     },
     methods: {
-        ...mapMutations(['setStudent', 'setLogged','setStudentCoinChange','setAdmin']),
-        ...mapGetters(['getStudentCoinChange']),
-        studentCoinChange() {
-            return this.getStudentCoinChange;
-        },
+        ...mapMutations(['setStudent', 'setLogged', 'setAdmin']),
         async getStudentCoin() {
-            await axios.get('/account/info', {withCredentials: true})
-            .then(respone => {
-                this.coin = respone.data.coin;
-            })
-            
-        },
-        showMenu() {
-            let nav_bar = document.querySelector('.header .navbar');
-            nav_bar.classList.toggle('active');
+            await axios.get('/students/coin', { withCredentials: true })
+                .then(respone => {
+                    this.student.coin = respone.data.coinOfStudent;
+                })
+
         },
         showDropDown() {
             this.dropdownselect = true
@@ -167,8 +160,6 @@ export default {
             this.$router.push('/mycourses');
         },
         scrollToTop() {
-            let nav_bar = document.querySelector('.header .navbar');
-            nav_bar.classList.remove('active');
             window.scrollTo(0, 0);
         },
         async handleLogout() {
@@ -184,20 +175,16 @@ export default {
         },
     },
     computed: {
-        ...mapState(['student', 'admin', 'studentCoinChange'])
+        ...mapState(['student', 'admin'])
     },
-    mounted() {
+    created() {
         this.getStudentCoin();
     },
     watch: {
         '$route'() {
             this.$refs.anyName.reset();
         },
-        studentCoinChange(newValue) {
-            console.log(`miniCartChange changed to ${newValue}`);
-            this.getStudentCoin();
-            this.$store.commit('setStudentCoinChange', '');
-        }
+
     },
 }
 </script>
@@ -252,6 +239,7 @@ export default {
         font-size: 1.16rem;
         cursor: pointer;
     }
+
     .admin {
         position: absolute;
         font-weight: 500;
@@ -259,7 +247,7 @@ export default {
         margin-left: 1.5%;
         font-size: 1.16rem;
         cursor: pointer;
-        }
+    }
 
     .become {
         position: absolute;

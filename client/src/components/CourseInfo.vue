@@ -332,12 +332,13 @@ export default {
     },
     mounted() {
         this.getCourseInfo();
-        this.getCourseDetails();
-        this.getFeedbackOfCourse();
+        // this.getCourseDetails();
+        // this.getFeedbackOfCourse();
         this.scrollToTop();
     },
     created() {
-       
+        this.getCourseDetails();
+        this.getFeedbackOfCourse();
     }
 
 }

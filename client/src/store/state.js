@@ -4,8 +4,5 @@ export default {
     instructor: [],
     isLogin: false,
     miniCartChange: "",
-    studentCoinChange: "",
     adminChange: "",
-    isSearching: false,
-    courseIDshowing: 0,
 };
