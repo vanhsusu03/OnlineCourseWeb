@@ -1,10 +1,10 @@
 const sequelize = require('sequelize');
 const { format } = require('date-fns');
 const {
-    models: {Course, Course_category,Cart,Order_detail, Category, Instructor, Enrollment, Student, Feedback,
-        Chapter, Content, Content_type}
+    models: { Course, Course_category, Cart, Order_detail, Category, Instructor, Enrollment, Student, Feedback,
+        Chapter, Content, Content_type }
 } = require('../models');
-const {where, Op} = require("sequelize");
+const { where, Op } = require("sequelize");
 
 class CourseController {
 
@@ -83,7 +83,7 @@ class CourseController {
     async addCourse(req, res, next) {
         // console.log(req.body);
         const instructorId = req.session.studentId;
-        const {courseTitle, courseDescription, courseImage, courseFee} = req.body;
+        const { courseTitle, courseDescription, courseImage, courseFee } = req.body;
         const now = new Date();
         const vietnamDate = format(now, 'yyyy-MM-dd', { timeZone: 'Asia/Ho_Chi_Minh' });
         if (instructorId) {
@@ -103,7 +103,7 @@ class CourseController {
                 description: courseDescription,
                 image: courseImage,
                 release_date: vietnamDate,
-                course_fee: courseFee, 
+                course_fee: courseFee,
 
             })
             return res.status(200).json({ msg: 'Add course successfully!' })
@@ -161,12 +161,6 @@ class CourseController {
                     }
                 });
                 await feedback.destroy();
-                const progress = await Progress.findOne({
-                    where: {
-                        enrollment_id: enrollment.enrollment_id
-                    }
-                });
-                await progress.destroy();
                 await enrollment.destroy();
             }));
 
@@ -193,9 +187,9 @@ class CourseController {
                     instructor_id: req.session.studentId,
                 }
             });
-            return res.status(200).json({msg: 'Delete course successfully'});
+            return res.status(200).json({ msg: 'Delete course successfully' });
         } else {
-            return res.status(200).json({msg: 'Course not found'});
+            return res.status(200).json({ msg: 'Course not found' });
         }
     }
 
@@ -268,6 +262,7 @@ class CourseController {
                     }
                 ]
             })
+            console.log(courses);
             return res.status(200).json(courses);
         }
     }
@@ -275,16 +270,16 @@ class CourseController {
     //GET /courses/:courseId
     async showCourseDetail(req, res, next) {
         let courseId = Number(req.params.courseId);
-        
+
         let details = await Course.findByPk(courseId, {
             include: [
-              {
-                model: Category,
-                attributes: ['name'],
-                through: {attributes: []}
-              }
+                {
+                    model: Category,
+                    attributes: ['name'],
+                    through: { attributes: [] }
+                }
             ]
-          });
+        });
 
         const numOfChapters = await Chapter.count({
             where: { course_id: courseId },
@@ -317,7 +312,7 @@ class CourseController {
                     feedbackCount++;
                 }
             });
-            averageRating = feedbackCount > 0 ? totalRating/feedbackCount : 0;
+            averageRating = feedbackCount > 0 ? totalRating / feedbackCount : 0;
         });
         return res.status(200).json({
             info: details,
@@ -434,7 +429,7 @@ class CourseController {
         const courseId = Number(req.params.courseId);
 
         const contents = await Chapter.findAll({
-            attributes: [ 
+            attributes: [
                 [sequelize.col('Chapter.chapter_id'), 'chapterId'],
                 [sequelize.col('Chapter.title'), 'chapterTitle']
             ],
@@ -462,8 +457,8 @@ class CourseController {
                 }
             },
             required: true,
-            where: { 
-                course_id: courseId 
+            where: {
+                course_id: courseId
             }
         });
 
@@ -471,7 +466,7 @@ class CourseController {
             contents: contents
         });
     }
-    
+
 }
 
 module.exports = new CourseController();

@@ -1,119 +1,122 @@
 <!-- When not activated -->
 <template>
-<div class="all">
-    <div class="inf">
-        <div class="box">
-            <div class="info-box">
-                <div class="top">
-                    <div class="category">
-                        <span id="text"> Category:</span>
-                        <span v-for="namee in this.category" id="category">
-                            <a>{{ ' ' + namee.name + ' - ' }}</a>
-                        </span>
+    <div class="all">
+        <div class="inf">
+            <div class="box">
+                <div class="info-box">
+                    <div class="top">
+                        <div class="category">
+                            <span id="text"> Category:</span>
+                            <span v-for="namee in this.category" id="category">
+                                <a>{{ ' ' + namee.name + ' - ' }}</a>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="bottom">
+                        <div id="name">
+                            <div>
+                                {{ course.title }}
+                            </div>
+                        </div>
+                        <div class="description">
+                            <div id="text"></div> Description:
+                            <span id="cont"> {{ course.description }}</span>
+                        </div>
+                        <div class="insight">
+                            <div id="rating">
+                                Rating:
+                                <span id="rate"> {{ averageRating }}</span>
+                                <span id="star"><img src="../assets/img/star.png" alt=""></span>
+                            </div>
+                            <span id="num-of-student">
+                                Number of students:
+                                {{ numOfStudents }}
+                            </span>
+                        </div>
+                        <div id="created">
+                            Created by: <span id="name-author"> {{ this.instructor_fullname }}</span>
+                        </div>
+                        <div id="last-update">
+                            Release date: {{ course.release_date }}
+                        </div>
                     </div>
                 </div>
-                <div class="bottom">
-                    <div id="name">
-                        <div>
-                            {{ course.title }}
+            </div>
+
+            <div class="body-intro">
+                <div id="course-content">
+                    <div class="tab">
+                        <h2 style="padding: 10px 10px; background-color: white;">Course Contents:</h2>
+                        <div v-for="(chapter, index) in courseDetail">
+
+                            <div class="sub-title" v-on:click="openTabs(chapter.chapterId);">
+                                <div class="limit chapter-title">{{ index + 1 }}. {{ chapter.chapterTitle }}</div>
+                                <div class="container" :class="{ change: openTab[chapter.contents[0].contentId] }">
+                                    <div class="bar1"></div>
+                                    <div class="bar2"></div>
+                                    <div class="bar3"></div>
+                                </div>
+                            </div>
+                            <button class="tablinks"
+                                :class="{ active: openContent[cont.contentId], open: openTab[cont.contentId] }"
+                                v-for="(cont, index) in chapter.contents" v-on:click=" openChapter(cont.contentId)">
+                                <div class="limit">
+                                    {{ index + 1 }}. {{ cont.contentTitle }}
+                                </div>
+                                <div class="time-course">
+                                    {{ parseInt(cont.timeRequiredInSec / 60) }} min {{ cont.timeRequiredInSec - parseInt(
+                                        cont.timeRequiredInSec / 60) * 60 }} s
+                                </div>
+                            </button>
                         </div>
-                    </div>
-                    <div class="description">
-                        <div id="text"></div> Description:
-                        <span id="cont"> {{ course.description }}</span>
-                    </div>
-                    <div class="insight">
-                        <div id="rating">
-                            Rating:
-                            <span id="rate"> {{ averageRating }}</span>
-                            <span id="star"><img src="../assets/img/star.png" alt=""></span>
-                        </div>
-                        <span id="num-of-student">
-                            Number of students:
-                            {{ numOfStudents }}
-                        </span>
-                    </div>
-                    <div id="created">
-                        Created by: <span id="name-author"> {{ this.instructor_fullname }}</span>
-                    </div>
-                    <div id="last-update">
-                        Release date: {{ course.release_date }}
+
+                        <!-- {{ openChapter($even, 1) }} -->
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="body-intro">
-            <div id="course-content">
-                <div class="tab">
-                    <h2 style="padding: 10px 10px; background-color: white;">Course Contents:</h2>
-                    <div v-for="(chapter,index) in courseDetail">
-                        
-                        <div class="sub-title" v-on:click="openTabs(chapter.chapterId);">
-                            <div class="limit chapter-title">{{ index + 1 }}. {{chapter.chapterTitle}}</div>
-                            <div class="container" :class="{ change: openTab[chapter.contents[0].contentId] }" >
-                                <div class="bar1"></div>
-                                <div class="bar2"></div>
-                                <div class="bar3"></div>
-                            </div>
-                        </div>
-                        <button class="tablinks" :class="{ active: openContent[cont.contentId], open: openTab[cont.contentId]}" v-for="(cont,index) in chapter.contents" v-on:click=" openChapter(cont.contentId)">
-                            <div class="limit">
-                                {{index + 1}}. {{ cont.contentTitle }}
-                            </div>
-                            <div class="time-course">
-                                {{ parseInt( cont.timeRequiredInSec / 60 ) }} min {{ cont.timeRequiredInSec - parseInt( cont.timeRequiredInSec / 60 )*60 }} s
-                            </div>
-                        </button>
-                    </div>
-
-                    <!-- {{ openChapter($even, 1) }} -->
+            <br>
+            <div class="instructor-info">
+                <div id="title">Instructor info</div>
+                <div class="inf">
+                    <span id="part1" @click="redirectInstructor(this.course.instructor_id)">
+                        <img :src="instructor_img" alt="">
+                        <div id="name">{{ instructor_fullname }}</div>
+                    </span>
+                    <span id="part2">
+                        <div class="bio"> {{ instructor.instructorBio }}</div>
+                        <input class="expand-text" type="checkbox">
+                        <!-- <div id="qualifi">Qualification of instructor</div> -->
+                    </span>
                 </div>
             </div>
-        </div>
-        <br>
-        <div class="instructor-info">
-            <div id="title">Instructor info</div>
-            <div class="inf">
-                <span id="part1" @click="redirectInstructor(this.course.instructor_id)">
-                    <img :src="instructor_img" alt="">
-                    <div id="name">{{ instructor_fullname }}</div>
-                </span>
-                <span id="part2">
-                    <div class="bio"> {{ instructor.instructorBio }}</div>
-                    <input class="expand-text" type="checkbox">
-                    <!-- <div id="qualifi">Qualification of instructor</div> -->
-                </span>
-            </div>
-        </div>
 
-        <div class="student-review">
-            <div id="head">Student thinks about this course</div>
-            <div class="show-feedbacks">
-                <li v-for="feedback in this.feedbackDetails">
-                    <div id="image">
-                        <img :src="feedback.studentImage" alt="">
-                    </div>
-                    <div id="content">
-                        <div id="name"> {{ feedback.studentFirstName + ' ' + feedback.studentLastName }}
-                            <div id="rating">{{ feedback.feedbackRating + ' ' }} <img src="../assets/img/star.png" alt="">
-                            </div>
+            <div class="student-review">
+                <div id="head">Student thinks about this course</div>
+                <div class="show-feedbacks">
+                    <li v-for="feedback in this.feedbackDetails">
+                        <div id="image">
+                            <img :src="feedback.studentImage" alt="">
                         </div>
-                        <!-- <div id="rating">{{ feedback.feedbackRating + ' ' }} <img src="../assets/img/star.png" alt="">
-                            </div> -->
-                        <div id="detail">{{ feedback.feedbackDetail }}</div>
-                        <div id="time">Created at:{{ ' ' + feedback.feedbackLastUpdateTime.slice(0, 10) }}</div>
-                    </div>
-                </li>
+                        <div id="content">
+                            <div id="name"> {{ feedback.studentFirstName + ' ' + feedback.studentLastName }}
+                                <div id="rating">{{ feedback.feedbackRating + ' ' }} <img src="../assets/img/star.png"
+                                        alt="">
+                                </div>
+                            </div>
+                            <!-- <div id="rating">{{ feedback.feedbackRating + ' ' }} <img src="../assets/img/star.png" alt="">
+                                </div> -->
+                            <div id="detail">{{ feedback.feedbackDetail }}</div>
+                            <div id="time">Created at:{{ ' ' + feedback.feedbackLastUpdateTime.slice(0, 10) }}</div>
+                        </div>
+                    </li>
+                </div>
             </div>
-        </div>
-
 
             <div class="related-course">
                 <div class="head">
                     Courses of <span id="inss">{{ instructor_fullname }}</span></div>
                 <div class="show-course">
-                    <li v-for="course in this.courseofAuth.slice(0,5)" @click.prevent="showCourse(course.course_id)" class="item">
+                    <li v-for="course in this.courseofAuth" @click.prevent="showCourse(course.course_id)" class="item">
                         <div id="img">
                             <span><img :src="course.image" alt=""></span>
                         </div>
@@ -126,55 +129,59 @@
                         </div>
                     </li>
                 </div>
-
             </div>
         </div>
-    </div>
-    <div class="short-info">
-        <img :src="course.image" alt="" id="img">
-        <div class="fee">
-            <div> {{ course.course_fee }}</div>
-            <div id="image"><img src="../assets/img/logo.png" alt=""></div>
-        </div>
-        <br>
-        <div>
-            <button id="add-to-cart" @click="addToCart(course)">Add to cart</button>
-        </div>
-        <br>
-        <div>
-            <button id="buy-now" v-on:click="openPayment()">Buy now</button>
-        </div>
-        <br>
-        <div id="intro">
-            This course include:
-            <div class="time">
-                <span id="img"><img src="../assets/img/vid.png" alt=""></span>
-                <span id="duration">{{ time_hour + ' hours ' + time_minute + ' mins ' + time_second + ' secs' }}</span>
+        <div class="short-info">
+            <img :src="course.image" alt="" id="img">
+            <div class="fee">
+                <div> {{ course.course_fee }}</div>
+                <div id="image"><img src="../assets/img/logo.png" alt=""></div>
             </div>
-            <div class="content">
-                <span id="img"><img src="../assets/img/chapter.png" alt=""></span>
-                <span id="total-content">{{ this.numOfChapters + ' chapters, ' + this.numOfContents + ' articles'
+            <br>
+            <div>
+                <button id="add-to-cart" @click="addToCart(course)" v-if="!checkBought(course.course_id)">Add to cart</button>
+                <button id="study-button" v-else @click="redirectStudy(course.course_id)">Study</button>
+            </div>
+            <br>
+            <div>
+                <button id="buy-now" v-on:click="openPayment()">Buy now</button>
+            </div>
+            <br>
+            <div id="intro">
+                This course include:
+                <div class="time">
+                    <span id="img"><img src="../assets/img/vid.png" alt=""></span>
+                    <span id="duration">{{ time_hour + ' hours ' + time_minute + ' mins ' + time_second + ' secs' }}</span>
+                </div>
+                <div class="content">
+                    <span id="img"><img src="../assets/img/chapter.png" alt=""></span>
+                    <span id="total-content">{{ this.numOfChapters + ' chapters, ' + this.numOfContents + ' articles'
                     }}</span>
+                </div>
             </div>
         </div>
     </div>
 
-
-<div class="modal" id="myModal">
-    <div class="modal-content">
-        <span class="close" v-on:click="closePayment()">&times;</span>
-        <p>
-            <Payment :numOfCourses="courses.length" :courses="courses" :isInCart="false"></Payment>
-        </p>
+    <div class="modal" id="myModal">
+        <div class="modal-content">
+            <span class="close" v-on:click="closePayment()">&times;</span>
+            <p>
+                <Payment :numOfCourses="courses.length" :courses="courses" :isInCart="false"></Payment>
+            </p>
+        </div>
     </div>
-</div>
 </template>
-
+    
 <script>
 import axios from 'axios';
-
-import { mapMutations, mapState } from 'vuex';
+import {
+    mapMutations,
+    mapState
+} from 'vuex';
 import Payment from '@/pages/Payment.vue';
+import {
+    shallowReactive
+} from 'vue';
 
 export default {
     name: 'CourseInfo',
@@ -210,7 +217,7 @@ export default {
             time_minute: 0,
             time_second: 0,
             feedbackDetails: [],
-            begin:true,
+            begin: true,
             openTab: [],
             openContent: [],
             content: [],
@@ -220,11 +227,15 @@ export default {
         Payment
     },
     methods: {
-        ...mapMutations(['scrollToTop']),
+        ...mapMutations(['scrollToTop', 'setMiniCartChange']),
+        redirectStudy(id) {
+            this.$router.push('/study/'+id);
+        },
         openChapter(content_id) {
             document.querySelectorAll('video').forEach(vid => {
-                vid.currentTime=0;
-                vid.pause();});
+                vid.currentTime = 0;
+                vid.pause();
+            });
             for (let i = 0; i < this.openContent.length; i++) {
                 this.openContent[i] = false;
                 if (i === content_id) {
@@ -240,24 +251,23 @@ export default {
             // alert("hi");
             // alert(id);
             var i;
-                for (let j=0; j<this.courseDetail.length; j++) {
+            for (let j = 0; j < this.courseDetail.length; j++) {
+                // alert(j);
+                if (this.courseDetail[j].chapterId === id) {
                     // alert(j);
-                    if (this.courseDetail[j].chapterId === id) {
-                        // alert(j);
-                        for (i = 0; i < this.courseDetail[j].contents.length; i++) {
-                            // alert(i);
-                            this.openTab[this.courseDetail[j].contents[i].contentId] = !this.openTab[this.courseDetail[j].contents[i].contentId];
-                        }
+                    for (i = 0; i < this.courseDetail[j].contents.length; i++) {
+                        // alert(i);
+                        this.openTab[this.courseDetail[j].contents[i].contentId] = !this.openTab[this.courseDetail[j].contents[i].contentId];
                     }
                 }
+            }
         },
         fillOpenArray() {
-                for (let j = 0; j < 200; j++) {
-                    this.openContent.push(false);
-                    this.openTab.push(false);
-                }
+            for (let j = 0; j < 200; j++) {
+                this.openContent.push(false);
+                this.openTab.push(false);
+            }
         },
-        ...mapMutations(['scrollToTop','setMiniCartChange']),
         onScroll(event) {
             const scrollPosition = window.pageYOffset;
             if (scrollPosition > 200) {
@@ -277,7 +287,7 @@ export default {
             if (states === 'Unactivated') {
                 this.$router.push(`/course/info/${id}`);
             } else if (states === 'Activated') {
-                this.$router.push(`/study/${id}`);
+                this.$router.push(`/course/detail/${id}`);
             }
         },
         async getCourseInfo() {
@@ -306,23 +316,12 @@ export default {
             this.instructor_bio = this.instructor.instructorBio;
 
             await axios.get(`/courseof/${id}`, {
-                    withCredentials: true
-                })
+                withCredentials: true
+            })
                 .then(respone => {
                     this.courseofAuth = respone.data.courses;
-                    this.getRandomCourse();
                 })
 
-        },
-        getRandomCourse() {
-            let coursesCopy = [...this.courseofAuth]; // create a copy of the array to avoid modifying the original
-            // loop 8 times or until there are no more elements to choose from
-            for (let i = 0; i < 3 && coursesCopy.length > 0; i++) {
-                let randomIndex = Math.floor(Math.random() * coursesCopy.length); // choose a random index
-                this.randomCourses.push(coursesCopy[randomIndex]); // add the chosen element to the randomCourses array
-                coursesCopy.splice(randomIndex, 1); // remove the chosen element from the coursesCopy array
-            }
-            this.courseofAuth = this.randomCourses;
         },
         getTimeTotal() {
             for (let i = 0; i < this.courseDetail.length; i++) {
@@ -360,11 +359,10 @@ export default {
             this.courses[0].courseDescription = this.course.description;
         },
         openPayment() {
-                let modal = document.getElementById("myModal");
-                this.convertData();
-                modal.style.display = "block";
-                this.openingPayment = true;
-            
+            let modal = document.getElementById("myModal");
+            this.convertData();
+            modal.style.display = "block";
+            this.openingPayment = true;
         },
         closePayment() {
             let modal = document.getElementById("myModal");
@@ -377,8 +375,8 @@ export default {
             setTimeout(() => {
                 if (this.isBought === 'Unactivated') {
                     axios.post('/students/cart/' + course.course_id, this.courses[0], {
-                            withCredentials: true
-                        })
+                        withCredentials: true
+                    })
                         .then(response => {
                             alert(response.data.msg);
                             this.setMiniCartChange("change");
@@ -386,22 +384,25 @@ export default {
                         .catch(e => {
                             this.errors.push(e);
                         })
-                } else {
+                } else if (this.isBought === 'Activated') {
                     alert("You have actived this course before");
                 }
             }, 100);
         },
         checkBought(id) {
             axios.post(`/course/state/${id}`, {}, {
-                    withCredentials: true
-                })
+                withCredentials: true
+            })
                 .then(response => {
                     this.isBought = response.data.msg;
                 });
+            // alert(this.isBought);
+            if(this.isBought === 'Unactivated') return false;
+            return true;
         },
     },
     computed: {
-        ...mapState(['isLogin','miniCartChange'])
+        ...mapState(['miniCartChange']),
     },
     watch: {
         '$route'() {
@@ -411,6 +412,7 @@ export default {
     },
     mounted() {
         this.getCourseInfo();
+        this.getFeedbackOfCourse();
         this.scrollToTop();
     },
     created() {
@@ -421,7 +423,7 @@ export default {
 
 }
 </script>
-
+    
 <style lang="scss" scoped>
 .all {
     display: inline-flex;
@@ -741,7 +743,7 @@ export default {
                 margin-left: 4%;
 
                 img {
-                    width: 100%;
+                    width: 15vw;
                     height: 100%;
                 }
 
@@ -833,7 +835,7 @@ export default {
             }
         }
 
-        #add-to-cart {
+        #add-to-cart, #study-button {
             width: 70%;
             height: 50px;
             margin-left: 50%;
@@ -951,7 +953,6 @@ export default {
     cursor: pointer;
 }
 
-
 .limit {
     display: -webkit-box;
     -webkit-line-clamp: 1;
@@ -1040,6 +1041,7 @@ body {
 
 .tabcontent.active {
     display: block;
+
     button {
         font-weight: 500;
     }
@@ -1058,12 +1060,14 @@ body {
     border-left: none;
     height: auto;
     display: none;
+
     .video {
         width: 100%;
         background-color: black;
     }
+
     h2 {
-        margin:20px 80px;
+        margin: 20px 80px;
     }
 }
 
@@ -1108,6 +1112,5 @@ body {
     // margin: 10px 0;
     margin-left: 50%;
     transform: translateX(-50%);
-}
-</style>
-
+}</style>
+    

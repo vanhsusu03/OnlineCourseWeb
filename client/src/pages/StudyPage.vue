@@ -802,7 +802,7 @@ button.active {
         width: 150%;
 
         img {
-            width: 100%;
+            width: 15vw;
             height: 100%;
         }
 

@@ -24,7 +24,8 @@
                 <td>{{ course.description }}</td>
                 <td>{{ course.course_fee }}</td>
                 <td><button class="remove" @click="removeCourse(course.course_id)">Delete</button></td>
-                <td><button class="remove" @click="openPayment(2); dataAddChapter.addChapterId = course.course_id; getChapter(course.course_id)">Change</button></td>
+                <td><button class="remove" @click="openPayment(2); dataAddChapter.addChapterId = course.course_id; getChapter(course.course_id)">Change</button>
+                </td>
             </tr>
         </table>
 
@@ -51,7 +52,7 @@
                 <input class="sub" type="number" v-model="course.courseFee">
             </div>
         </form>
-        <button class="add-button btn" @click="addCourse()">Add Course</button>
+        <button class="add-button btn" @click="addCourse(); openChapter($event, 'course')">Add Course</button>
     </div>
 </div>
 
@@ -63,16 +64,16 @@
 <div class="modal" id="myModal2">
     <div class="modal-content">
         <span class="close" v-on:click="closePayment(2)">&times;</span>
-        <button @click="dataAddChapter.isAddChapter=!dataAddChapter.isAddChapter" class="btn">Add Chapter</button>
+        <button @click="dataAddChapter.isAddChapter = !dataAddChapter.isAddChapter" class="btn">Add Chapter</button>
         <div v-if="dataAddChapter.isAddChapter" class="input-cont">
             <div class="info">
-            <h5>Chapter Title:</h5>
-            <input class="sub" type="text" v-model="dataAddChapter.chapterTitle">
-            <button  @click="addChapter(dataAddChapter.addChapterId);" class="btn">Add</button>
+                <h5>Chapter Title:</h5>
+                <input class="sub" type="text" v-model="dataAddChapter.chapterTitle">
+                <button @click="addChapter(dataAddChapter.addChapterId);" class="btn">Add</button>
+            </div>
         </div>
-        </div>
-        
-        <button class="btn" @click="dataAddContent.isAddContent=!dataAddContent.isAddContent">Add Content</button>
+
+        <button class="btn" @click="dataAddContent.isAddContent = !dataAddContent.isAddContent">Add Content</button>
         <div v-if="dataAddContent.isAddContent" class="input-cont">
             <div class="info">
                 <h5>Chapter Id:</h5>
@@ -81,7 +82,7 @@
             <div class="info">
                 <h5>Content Title:</h5>
                 <input class="sub" type="text" v-model="dataAddContent.contentTitle">
-            </div >
+            </div>
             <div class="info">
                 <h5>Time Required In Sec:</h5>
                 <input class="sub" type="number" v-model="dataAddContent.timeRequiredInSec">
@@ -90,13 +91,13 @@
                 <h5>Content Link:</h5>
                 <input class="sub" type="text" v-model="dataAddContent.contentLink">
             </div>
-            <button @click="addContents()" class="btn">Add</button>
+            <button @click="addContents(dataAddChapter.addChapterId)" class="btn">Add</button>
 
         </div>
         <div class="change-course">
-            <div v-for="(chapter,index) in content">
+            <div v-for="(chapter, index) in content">
                 {{ index + 1 }}. ID: {{ chapter.chapterId }} Title: {{ chapter.chapterTitle }}
-                <div v-for="(cont,index) in chapter.contents" style="margin-left: 20px;">
+                <div v-for="(cont, index) in chapter.contents" style="margin-left: 20px;">
                     {{ index + 1 }}. {{ cont.contentTitle }} <br>
                     Link: {{ cont.contentLink }}
                 </div>
@@ -107,10 +108,11 @@
 <div class="clearfix"></div>
 </template>
 
-    
 <script>
 import axios from 'axios';
-import { mapState } from 'vuex';
+import {
+    mapState
+} from 'vuex';
 export default {
     name: 'InstructorManage',
     methods: {
@@ -132,17 +134,28 @@ export default {
             evt.target.classList.add('active');
         },
         changeAccount(id) {
-            axios.post(`admin/change/${id}/${this.accounts[id-1].coin}`, {}, {
+            axios.post(`admin/change/${id}/${this.accounts[id - 1].coin}`, {}, {
                 withCredentials: true
             })
         },
         removeCourse(id) {
             axios.delete(`/courses/${id}`, {
-                withCredentials: true
-            })
-            .then(res=>{
-                alert(res.data.msg);
-            });
+                    withCredentials: true
+                })
+                .then(res => {
+                    alert(res.data.msg);
+                });
+                setTimeout(() =>{
+                    axios.get('/courseof/' + this.student.id, {
+                    withCredentials: true
+                })
+                .then(response => {
+                    this.courses = response.data.courses;
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                })
+            },500);
         },
         fillArrayChange() {
             for (let i = 0; i < this.accounts.length; i++) {
@@ -164,9 +177,12 @@ export default {
         closePayment(num) {
             var modal
             if (num === 1) {
+                this.resetCourse();
                 modal = document.getElementById("myModal1");
             } else if (num === 2) {
                 modal = document.getElementById("myModal2");
+                this.resetAddChapter();
+                this.resetAddContent();
             }
             modal.style.display = "none";
             this.openingPayment = false;
@@ -179,6 +195,19 @@ export default {
                     alert(res.data.msg);
                     // location.reload();
                 });
+                setTimeout(() =>{
+                    axios.get('/courseof/' + this.student.id, {
+                    withCredentials: true
+                })
+                .then(response => {
+                    this.courses = response.data.courses;
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                })
+            },500);
+            
+            
         },
         getChapter(id) {
             axios.get(`/courses/${id}/contents`, {
@@ -192,6 +221,7 @@ export default {
                 })
         },
         addChapter(id) {
+            
             axios.post(`/course/${id}/create`, this.dataAddChapter, {
                     withCredentials: true
                 })
@@ -202,8 +232,12 @@ export default {
                     this.resetAddChapter();
 
                 });
+                setTimeout(() =>{
+                    this.getChapter(id);
+            },500);
+            
         },
-        addContents() {
+        addContents(id) {
             // alert("ok");
             axios.post('/chapter/contents/create', this.dataAddContent, {
                     WithComponent: true
@@ -214,6 +248,10 @@ export default {
                     this.resetAddContent();
                     // location.reload();
                 });
+            // this.getChapter();
+            setTimeout(() =>{
+                    this.getChapter(id);
+            },500);
         },
         resetAddContent() {
             this.dataAddContent.chapterId = Number,
@@ -231,11 +269,11 @@ export default {
         },
         resetCourse() {
             this.course.courseTitle = "",
-            this.course.courseDescription= "",
-            this.course.courseImage= "",
-            this.course.courseFee= Number
-        }
-        
+                this.course.courseDescription = "",
+                this.course.courseImage = "",
+                this.course.courseFee = Number
+        },
+
     },
     data() {
         return {
@@ -270,7 +308,7 @@ export default {
     },
     created() {
 
-        axios.get('/courseof/' +this.student.id , {
+        axios.get('/courseof/' + this.student.id, {
                 withCredentials: true
             })
             .then(response => {
@@ -287,11 +325,15 @@ export default {
 }
 </script>
 
-    
 <style lang="scss" scoped>
 .web-title {
+    // font-weight: ̃700;
     margin: 20px 0;
     text-align: center;
+    color: rgb(52, 73, 94);
+    font-size: 4rem;
+    font-weight: 700;
+    margin-bottom: 80px;
 }
 
 * {
@@ -467,18 +509,19 @@ tr:nth-child(even) {
     cursor: pointer;
 }
 
-form, .input-cont {
+form,
+.input-cont {
     background-color: white;
-        top: 30%;
-        margin: 20px 0;
-        margin-left: 50%;
-        transform: translateX(-50%);
-        width: 30%;
-        box-shadow: -0.5rem -0.5rem 1rem rgba($color: #000000, $alpha: 0.1), 0.5rem 0.5rem 1rem rgba($color: #000000, $alpha: 0.1);
-        border: 0.1rem solid rgba($color: #000000, $alpha: 0.05);
-        padding: 2rem;
-        border-radius: 1rem;
-        animation: fadeUp 0.4s linear;
+    top: 30%;
+    margin: 20px 0;
+    margin-left: 50%;
+    transform: translateX(-50%);
+    width: 30%;
+    box-shadow: -0.5rem -0.5rem 1rem rgba($color: #000000, $alpha: 0.1), 0.5rem 0.5rem 1rem rgba($color: #000000, $alpha: 0.1);
+    border: 0.1rem solid rgba($color: #000000, $alpha: 0.05);
+    padding: 2rem;
+    border-radius: 1rem;
+    animation: fadeUp 0.4s linear;
 
     .error {
         position: absolute;
@@ -513,18 +556,19 @@ form, .input-cont {
     transform: translateX(-50%);
     background-color: rgb(0, 128, 128);
     color: white;
+
     &:hover {
-        
+
         margin-top: 20px;
-    padding: 10px 25px;
-    margin-left: 50%;
-    font-size: 20px;
-    font-weight: 500;
-    border-style: none;
-    border-radius: 10px;
-    transform: translateX(-50%);
-    background-color: rgb(0, 128, 128);
-    // transform: scale(1.1);
+        padding: 10px 25px;
+        margin-left: 50%;
+        font-size: 20px;
+        font-weight: 500;
+        border-style: none;
+        border-radius: 10px;
+        transform: translateX(-50%);
+        background-color: rgb(0, 128, 128);
+        // transform: scale(1.1);
     }
 }
 </style>

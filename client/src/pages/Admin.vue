@@ -370,7 +370,6 @@ export default {
             for (let i = 0; i < this.accounts.length; i++) {
                 if (this.accounts[i].student_id === id) {
                     accCoin = this.accounts[i].coin;
-                    alert(accCoin);
                 }
             }
             axios.post(`admin/change/${id}/${accCoin}`, {}, {
@@ -384,6 +383,28 @@ export default {
             .then(res=>{
                 alert(res.data.msg);
             });
+            setTimeout(() =>{
+                axios.get('/admin/accounts', {
+                withCredentials: true
+            })
+                .then(response => {
+                    this.accounts = response.data;
+                    this.fillArrayChange();
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                });
+
+                axios.get('/admin/instructors', {
+                withCredentials: true
+            })
+                .then(response => {
+                    this.instructors = response.data;
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                });
+            },500);
         },
         removeCourse(id) {
             axios.delete(`admin/delete/course/${id}`, {
@@ -392,6 +413,17 @@ export default {
             .then(res=>{
                 alert(res.data.msg);
             });
+            setTimeout(() =>{
+                axios.get('/admin/courses', {
+                withCredentials: true
+            })
+                .then(response => {
+                    this.courses = response.data;
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                })
+            },500);
         },
         fillArrayChange() {
             for (let i = 0; i < this.accounts.length; i++) {
@@ -414,8 +446,11 @@ export default {
             var modal
             if (num === 1) {
                 modal = document.getElementById("myModal1");
+                this.resetCourse();
             } else if (num === 2) {
                 modal = document.getElementById("myModal2");
+                this.resetAddChapter();
+                this.resetAddContent();
             }
             modal.style.display = "none";
             this.openingPayment = false;
@@ -427,6 +462,17 @@ export default {
                     this.setAdminChange("change");
                     this.closePayment(1);
                 });
+                setTimeout(() =>{
+                    axios.get('/admin/courses', {
+                withCredentials: true
+            })
+                .then(response => {
+                    this.courses = response.data;
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                })
+            },500);
         },
         getChapter(id) {
             axios.get(`/courses/${id}/contents`, {}, {
@@ -449,6 +495,9 @@ export default {
                     this.resetAddChapter();
 
                 });
+                setTimeout(() =>{
+                    this.getChapter(id);
+            },500);
         },
         addContents() {
             // alert("ok");
@@ -459,6 +508,9 @@ export default {
                     this.resetAddContent();
                     // location.reload();
                 });
+                setTimeout(() =>{
+                    this.getChapter(this.dataAddChapter.addChapterId);
+            },500);
         },
         resetAddContent() {
             this.dataAddContent.chapterId = Number,
@@ -521,7 +573,13 @@ export default {
                 .catch(e => {
                     this.errors.push(e)
                 })
-        }
+        },
+        resetCourse() {
+            this.course.courseTitle = "",
+                this.course.courseDescription = "",
+                this.course.courseImage = "",
+                this.course.courseFee = Number
+        },
     },
 
     computed: {
