@@ -152,6 +152,9 @@ class StudentController {
         const checkPhone = await Student.findOne({
             where: {
                 phone: phone,
+                student_id:{
+                    [Op.ne]:req.session.studentId,
+                }
             }
         })
         if (!checkPhone) {
