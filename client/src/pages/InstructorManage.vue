@@ -136,15 +136,13 @@ export default {
                 withCredentials: true
             })
         },
-        removeAccount(id) {
-            axios.post(`admin/delete/${id}`, {}, {
-                withCredentials: true
-            })
-        },
         removeCourse(id) {
-            axios.post(`admin/delete/course/${id}`, {}, {
+            axios.delete(`/courses/${id}`, {
                 withCredentials: true
             })
+            .then(res=>{
+                alert(res.data.msg);
+            });
         },
         fillArrayChange() {
             for (let i = 0; i < this.accounts.length; i++) {
@@ -179,7 +177,7 @@ export default {
                 })
                 .then(res => {
                     alert(res.data.msg);
-                    location.reload();
+                    // location.reload();
                 });
         },
         getChapter(id) {
@@ -231,6 +229,12 @@ export default {
             this.dataAddChapter.chapterTitle = "",
                 this.dataAddChapter.isAddChapter = false
         },
+        resetCourse() {
+            this.course.courseTitle = "",
+            this.course.courseDescription= "",
+            this.course.courseImage= "",
+            this.course.courseFee= Number
+        }
         
     },
     data() {
@@ -275,6 +279,7 @@ export default {
             .catch(e => {
                 this.errors.push(e)
             })
+        this.resetCourse();
     },
     computed: {
         ...mapState(['student'])

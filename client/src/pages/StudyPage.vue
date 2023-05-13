@@ -288,8 +288,8 @@ export default {
         let id = Number(window.location.href.split('/').slice(-1)[0]);
         // alert(id);
         axios.get(`/courses/${id}/students/contents`, {
-            withCredentials: true
-        })
+                withCredentials: true
+            })
             .then(response => {
                 this.content = response.data.contents;
                 this.fillOpenArray();

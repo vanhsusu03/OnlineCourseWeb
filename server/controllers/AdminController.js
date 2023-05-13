@@ -27,8 +27,82 @@ const db = require("../models");
 class AdminController {
     //POST /admin/:studentId
     async deleteAccount(req, res, next) {
-        const studentId = Number(req.params.studentId);
+        const studentId = req.params.studentId;
         if (studentId) {
+
+            //Delete cart
+            const carts = await Cart.findAll({
+                where: {
+                    student_id: studentId,
+                }
+            });
+            if (carts) {
+                await Promise.all(carts.map(async cart => {
+                    await cart.destroy();
+                }))
+            }
+
+            //Delete deposit
+            const deposits = await Deposit.findAll({
+                where: {
+                    customer_id: studentId,
+                }
+            });
+            if (deposits) {
+                await Promise.all(deposits.map(async deposit => {
+                    await deposit.destroy();
+                }));
+            }
+
+            //Delete enrollment
+            const enrollments = await Cart.findAll({
+                where: {
+                    student_id: studentId,
+                }
+            });
+            if (enrollments) {
+                await Promise.all(enrollments.map(async enrollment => {
+                    await enrollment.destroy();
+                }));
+            }
+
+            //Delete instructor
+            const instructor = await Instructor.findOne({
+                where: {
+                    instructor_id: studentId,
+                },
+            });
+            if (instructor) {
+                const courses = await Course.findAll({
+                    where: {
+                        instructor_id: instructor.instructor_id,
+                    }
+                });
+                if (courses) {
+                    await Promise.all(courses.map(async course => {
+                        await course.destroy();
+                    }));
+                }
+            }
+
+            //Delete order
+            const orders = await Order.findAll({
+                where: {
+                    customer_id: studentId,
+                },
+            });
+            if (orders) {
+                await Promise.all(orders.map(async order => {
+                    const orderDetails = await Order_detail.findAll({
+                        where: {
+                            order_id: order.order_id,
+                        }
+                    });
+                    await Promise.all(orderDetails.map(orderDetail => orderDetail.destroy()));
+                    await order.destroy();
+                }));
+            }
+
             await Student.destroy({
                 where: {
                     student_id: studentId,
@@ -50,7 +124,9 @@ class AdminController {
                     course_id: courseId,
                 }
             });
-            await Promise.all(carts.map(cart => cart.destroy()));
+            if(carts){
+                await Promise.all(carts.map(cart => cart.destroy()));
+            }
 
             //Delete chapter
             const chapters = await Chapter.findAll({
@@ -58,15 +134,19 @@ class AdminController {
                     course_id: courseId,
                 },
             });
-            await Promise.all(chapters.map(async chapter => {
-                const contents = await Content.findAll({
-                    where: {
-                        chapter_id: chapter.chapter_id,
+            if(chapters){
+                await Promise.all(chapters.map(async chapter => {
+                    const contents = await Content.findAll({
+                        where: {
+                            chapter_id: chapter.chapter_id,
+                        }
+                    });
+                    if(contents){
+                        await Promise.all(contents.map(content => content.destroy()));
                     }
-                });
-                await Promise.all(contents.map(content => content.destroy()));
-                await chapter.destroy();
-            }));
+                    await chapter.destroy();
+                }));
+            }
 
             //Delete course_category
             const courseCategories = await Course_category.findAll({
@@ -74,7 +154,9 @@ class AdminController {
                     course_id: courseId,
                 }
             });
-            await Promise.all(courseCategories.map(courseCategory => courseCategory.destroy()));
+            if(courseCategories){
+                await Promise.all(courseCategories.map(courseCategory => courseCategory.destroy()));
+            }
 
             //Delete enrollment
             const enrollments = await Enrollment.findAll({
@@ -82,21 +164,27 @@ class AdminController {
                     course_id: courseId,
                 },
             });
-            await Promise.all(enrollments.map(async enrollment => {
-                const feedback = await Feedback.findOne({
-                    where: {
-                        enrollment_id: enrollment.enrollment_id
-                    }
-                });
-                await feedback.destroy();
-                const progress = await Progress.findOne({
-                    where: {
-                        enrollment_id: enrollment.enrollment_id
-                    }
-                });
-                await progress.destroy();
-                await enrollment.destroy();
-            }));
+           if(enrollments){
+               await Promise.all(enrollments.map(async enrollment => {
+                   const feedback = await Feedback.findOne({
+                       where: {
+                           enrollment_id: enrollment.enrollment_id
+                       }
+                   });
+                   if(feedback){
+                       await feedback.destroy();
+                   }
+                   const progress = await Progress.findOne({
+                       where: {
+                           enrollment_id: enrollment.enrollment_id
+                       }
+                   });
+                   if(progress){
+                       await progress.destroy();
+                   }
+                   await enrollment.destroy();
+               }));
+           }
 
             //Delete order_detail
             const orderDetails = await Order_detail.findAll({
@@ -104,15 +192,19 @@ class AdminController {
                     course_id: courseId,
                 },
             });
-            await Promise.all(orderDetails.map(async orderDetail => {
-                const payment = await Payment.findOne({
-                    where: {
-                        order_detail_id: orderDetail.order_detail_id
+            if(orderDetails){
+                await Promise.all(orderDetails.map(async orderDetail => {
+                    const payment = await Payment.findOne({
+                        where: {
+                            order_detail_id: orderDetail.order_detail_id
+                        }
+                    });
+                    if(payment){
+                        await payment.destroy();
                     }
-                });
-                await payment.destroy();
-                await orderDetail.destroy();
-            }));
+                    await orderDetail.destroy();
+                }));
+            }
 
             //Delete course
             await Course.destroy({
@@ -125,6 +217,7 @@ class AdminController {
             return res.status(200).json({ msg: 'Course not found' });
         }
     }
+
 
     //POST /admin/:studentId
     async editStudentInfo(req, res, next) {

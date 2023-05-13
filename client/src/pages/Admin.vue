@@ -366,19 +366,32 @@ export default {
             evt.target.classList.add('active');
         },
         changeAccount(id) {
-            axios.post(`admin/change/${id}/${this.accounts[id - 1].coin}`, {}, {
+            let accCoin;
+            for (let i = 0; i < this.accounts.length; i++) {
+                if (this.accounts[i].student_id === id) {
+                    accCoin = this.accounts[i].coin;
+                    alert(accCoin);
+                }
+            }
+            axios.post(`admin/change/${id}/${accCoin}`, {}, {
                 withCredentials: true
             })
         },
         removeAccount(id) {
-            axios.post(`admin/delete/${id}`, {}, {
+            axios.delete(`admin/delete/${id}`, {
                 withCredentials: true
             })
+            .then(res=>{
+                alert(res.data.msg);
+            });
         },
         removeCourse(id) {
-            axios.post(`admin/delete/course/${id}`, {}, {
+            axios.delete(`admin/delete/course/${id}`, {
                 withCredentials: true
             })
+            .then(res=>{
+                alert(res.data.msg);
+            });
         },
         fillArrayChange() {
             for (let i = 0; i < this.accounts.length; i++) {
