@@ -6,179 +6,301 @@
         <button class="tablinks" v-on:click="openChapter($event, 'account')">Accounts Control</button>
         <button class="tablinks" v-on:click="openChapter($event, 'course')">Courses Control</button>
         <button class="tablinks" v-on:click="openChapter($event, 'instructor')">Instructors Control</button>
+        <button class="tablinks" v-on:click="openChapter($event, 'deposit')">Deposit History</button>
+        <button class="tablinks" v-on:click="openChapter($event, 'order')">Orders Detail</button>
     </div>
 
-<div class="tabcontent" id="course">
-    <button class="add-course btn" @click="openPayment(1)">Add Course</button>
-    <div style="display: flex;">
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Instrutor</th>
-                <th>Fee</th>
-                <th>Delete</th>
-                <th>Change</th>
-            </tr>
-            <tr v-for="course in courses">
-                <td>{{ course.courseId }}</td>
-                <td>{{ course.courseTitle }}</td>
-                <td>{{ course.instructorFirstName }} {{ course.instructorLastName }}</td>
-                <td>{{ course.courseFee }}</td>
-                <td><button class="remove" @click="removeCourse(course.courseId)">Delete</button></td>
-                <td><button class="remove" @click="openPayment(2); dataAddChapter.addChapterId = course.courseId; getChapter(course.courseId)">Change</button></td>
-            </tr>
-        </table>
-        
-    </div>
-</div>
-<div class="modal" id="myModal1">
-    <div class="modal-content">
-        <span class="close" v-on:click="closePayment(1)">&times;</span>
-        <h2 style="text-align: center;">Add your course</h2>
-        <div class="add-content">
-            <form>
-                <div class="course-title info">
-                    <h5 class="title-txt">Title: </h5>
-                    <input class="sub" type="text" v-model="course.courseTitle">
-                </div>
-                <div class="course-desc info">
-                    <h5 class="desc-txt">Description: </h5>
-                    <input class="sub" type="text" v-model="course.courseDescription">
-                </div>
-                <div class="course-image info">
-                    <h5 class="img-txt">Image Link: </h5>
-                    <input class="sub" type="text" v-model="course.courseImage">
-                </div>
-                <div class="course-fee info">
-                    <h5 class="fee-txt">Course Fee: </h5>
-                    <input class="sub" type="number" v-model="course.courseFee">
-                </div>
-                <div class="course-ins info">
-                    <h5 class="ins-txt">Instructor ID: </h5>
-                    <input class="sub" type="number" v-model="course.instructorId">
-                </div>
-            </form>
-            <button class="add-button btn" @click="addCourse()">Add Course</button>
+    <div class="tabcontent" id="course">
+        <button class="add-course btn" @click="openPayment(1)">Add Course</button>
+        <div style="display: flex;">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Instrutor</th>
+                    <th>Fee</th>
+                    <th>Delete</th>
+                    <th>Change</th>
+                </tr>
+                <tr v-for="course in courses">
+                    <td>{{ course.courseId }}</td>
+                    <td>{{ course.courseTitle }}</td>
+                    <td>{{ course.instructorFirstName }} {{ course.instructorLastName }}</td>
+                    <td>{{ course.courseFee }}</td>
+                    <td><button class="remove" @click="removeCourse(course.courseId)">Delete</button></td>
+                    <td><button class="remove"
+                            @click="openPayment(2); dataAddChapter.addChapterId = course.courseId; getChapter(course.courseId)">Change</button>
+                    </td>
+                </tr>
+            </table>
+
         </div>
     </div>
-</div>
-<div class="modal" id="myModal2">
-    <div class="modal-content">
-        <span class="close" v-on:click="closePayment(2)">&times;</span>
-        <button class="btn" @click="dataAddChapter.isAddChapter=!dataAddChapter.isAddChapter">Add Chapter</button>
-        <div class="input-cont" v-if="dataAddChapter.isAddChapter">
-            <div  class="info">
-            <h5>Chapter Title:</h5>
-            <input class="sub" type="text" v-model="dataAddChapter.chapterTitle">
-            <button class="btn" @click="addChapter(dataAddChapter.addChapterId);">Add</button>
-        </div>
-        </div>
-        
-        <button class="btn" @click="dataAddContent.isAddContent=!dataAddContent.isAddContent">Add Content</button>
-        <div v-if="dataAddContent.isAddContent"  class="input-cont">
-            <div class="info">
-                <h5>Chapter Id:</h5>
-                <input class="sub" type="number" v-model="dataAddContent.chapterId">
-            </div>
-            <div class="info">
-                <h5>Content Title:</h5>
-                <input class="sub" type="text" v-model="dataAddContent.contentTitle">
-            </div>
-            <div class="info">
-                <h5>Time Required In Sec:</h5>
-                <input class="sub" type="number" v-model="dataAddContent.timeRequiredInSec">
-            </div>
-            <div class="info">
-                <h5>Content Link:</h5>
-                <input class="sub" type="text" v-model="dataAddContent.contentLink">
-            </div>
-            <button class="btn" @click="addContents()">Add</button>
-            
-        </div>
-        <div class="change-course">
-            <div v-for="(chapter,index) in content">
-                {{ index + 1 }}. ID: {{ chapter.chapterId }} Title: {{ chapter.chapterTitle }}
-                <div v-for="(cont,index) in chapter.contents" style="margin-left: 20px;">
-                    {{ index + 1 }}. {{ cont.contentTitle }} <br>
-                    Link: {{ cont.contentLink }}
+    <div class="modal" id="myModal1">
+        <div class="modal-content">
+            <span class="close" v-on:click="closePayment(1)">&times;</span>
+            <h2 style="text-align: center;">Add your course</h2>
+            <div class="add-content">
+                <form>
+                    <div class="course-title info">
+                        <h5 class="title-txt">Title: </h5>
+                        <input class="sub" type="text" v-model="course.courseTitle">
                     </div>
+                    <div class="course-desc info">
+                        <h5 class="desc-txt">Description: </h5>
+                        <input class="sub" type="text" v-model="course.courseDescription">
+                    </div>
+                    <div class="course-image info">
+                        <h5 class="img-txt">Image Link: </h5>
+                        <input class="sub" type="text" v-model="course.courseImage">
+                    </div>
+                    <div class="course-fee info">
+                        <h5 class="fee-txt">Course Fee: </h5>
+                        <input class="sub" type="number" v-model="course.courseFee">
+                    </div>
+                    <div class="course-ins info">
+                        <h5 class="ins-txt">Instructor ID: </h5>
+                        <input class="sub" type="number" v-model="course.instructorId">
+                    </div>
+                </form>
+                <button class="add-button btn" @click="addCourse()">Add Course</button>
             </div>
         </div>
-    </div
-    
-    <div class="tabcontent" id="account">
-        <div style="display: flex;">
-            <table>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Coin</th>
-                    <th class="change-coin">Change Coin</th>
-                    <th>Delete</th>
-                </tr>
-                <tr v-for="account in accounts">
-                    <td>{{ account.student_id }}</td>
-                    <td>{{ account.first_name }} {{ account.last_name }}</td>
-                    <td>{{ account.username }}</td>
-                    <td>{{ account.email }}</td>
-                    <td class="change-coin" v-if="!changeCoin[account.student_id]">{{ account.coin }}</td>
-                    <td v-else><input type="number" v-model="account.coin"></td>
-                    <td>
-                        <button class="change"
-                            v-on:click="changeCoin[account.student_id] = !changeCoin[account.student_id]">
-                            <div v-if="!changeCoin[account.student_id]">Change Coin</div>
-                            <div v-else v-on:click="changeAccount(account.student_id)">Save</div>
-                        </button>
-                    </td>
-                    <td><button class="remove" @click="removeAccount(account.student_id)">Delete</button></td>
-                </tr>
-            </table>
+    </div>
+    <div class="modal" id="myModal2">
+        <div class="modal-content">
+            <span class="close" v-on:click="closePayment(2)">&times;</span>
+            <button class="btn" @click="dataAddChapter.isAddChapter = !dataAddChapter.isAddChapter">Add Chapter</button>
+            <div class="input-cont" v-if="dataAddChapter.isAddChapter">
+                <div class="info">
+                    <h5>Chapter Title:</h5>
+                    <input class="sub" type="text" v-model="dataAddChapter.chapterTitle">
+                    <button class="btn" @click="addChapter(dataAddChapter.addChapterId);">Add</button>
+                </div>
+            </div>
+
+            <button class="btn" @click="dataAddContent.isAddContent = !dataAddContent.isAddContent">Add Content</button>
+            <div v-if="dataAddContent.isAddContent" class="input-cont">
+                <div class="info">
+                    <h5>Chapter Id:</h5>
+                    <input class="sub" type="number" v-model="dataAddContent.chapterId">
+                </div>
+                <div class="info">
+                    <h5>Content Title:</h5>
+                    <input class="sub" type="text" v-model="dataAddContent.contentTitle">
+                </div>
+                <div class="info">
+                    <h5>Time Required In Sec:</h5>
+                    <input class="sub" type="number" v-model="dataAddContent.timeRequiredInSec">
+                </div>
+                <div class="info">
+                    <h5>Content Link:</h5>
+                    <input class="sub" type="text" v-model="dataAddContent.contentLink">
+                </div>
+                <button class="btn" @click="addContents()">Add</button>
+
+            </div>
+            <div class="change-course">
+                <div v-for="(chapter, index) in content">
+                    {{ index + 1 }}. ID: {{ chapter.chapterId }} Title: {{ chapter.chapterTitle }}
+                    <div v-for="(cont, index) in chapter.contents" style="margin-left: 20px;">
+                        {{ index + 1 }}. {{ cont.contentTitle }} <br>
+                        Link: {{ cont.contentLink }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="tabcontent" id="account">
+            <div style="display: flex;">
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Coin</th>
+                        <th class="change-coin">Change Coin</th>
+                        <th>Delete</th>
+                    </tr>
+                    <tr v-for="account in accounts">
+                        <td>{{ account.student_id }}</td>
+                        <td>{{ account.first_name }} {{ account.last_name }}</td>
+                        <td>{{ account.username }}</td>
+                        <td>{{ account.email }}</td>
+                        <td class="change-coin" v-if="!changeCoin[account.student_id]">{{ account.coin }}</td>
+                        <td v-else><input type="number" v-model="account.coin"></td>
+                        <td>
+                            <button class="change"
+                                v-on:click="changeCoin[account.student_id] = !changeCoin[account.student_id]">
+                                <div v-if="!changeCoin[account.student_id]">Change Coin</div>
+                                <div v-else v-on:click="changeAccount(account.student_id)">Save</div>
+                            </button>
+                        </td>
+                        <td><button class="remove" @click="removeAccount(account.student_id)">Delete</button></td>
+                    </tr>
+                </table>
+
+            </div>
 
         </div>
 
-    </div>
+        <div class="tabcontent" id="instructor">
+            <div style="display: flex;">
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Coin</th>
+                        <th class="change-coin">Change Coin</th>
 
-    <div class="tabcontent" id="instructor">
-        <div style="display: flex;">
-            <table>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Coin</th>
-                    <th class="change-coin">Change Coin</th>
-                    <th>Number of courses</th>
-                    <th>Delete</th>
-                </tr>
-                <tr v-for="account in instructors">
-                    <td>{{ account.student_id }}</td>
-                    <td>{{ account.first_name }} {{ account.last_name }}</td>
-                    <td>{{ account.username }}</td>
-                    <td>{{ account.email }}</td>
-                    <td class="change-coin" v-if="!changeCoin[account.student_id]">{{ account.coin }}</td>
-                    <td v-else><input type="number" v-model="account.coin"></td>
+                        <th>Delete</th>
+                    </tr>
+                    <tr v-for="account in instructors">
+                        <td>{{ account.student_id }}</td>
+                        <td>{{ account.first_name }} {{ account.last_name }}</td>
+                        <td>{{ account.username }}</td>
+                        <td>{{ account.email }}</td>
+                        <td class="change-coin" v-if="!changeCoin[account.student_id]">{{ account.coin }}</td>
+                        <td v-else><input type="number" v-model="account.coin"></td>
 
-                    <td>
-                        <button class="change"
-                            v-on:click="changeCoin[account.student_id] = !changeCoin[account.student_id]">
-                            <div v-if="!changeCoin[account.student_id]">Change Coin</div>
-                            <div v-else v-on:click="changeAccount(account.student_id)">Save</div>
-                        </button>
-                    </td>
-                    <td class="num-course">{{ account.numOfStudents }}</td>
-                    <td><button class="remove" @click="removeAccount(account.student_id)">Delete</button></td>
-                </tr>
-            </table>
+                        <td>
+                            <button class="change"
+                                v-on:click="changeCoin[account.student_id] = !changeCoin[account.student_id]">
+                                <div v-if="!changeCoin[account.student_id]">Change Coin</div>
+                                <div v-else v-on:click="changeAccount(account.student_id)">Save</div>
+                            </button>
+                        </td>
 
+                        <td><button class="remove" @click="removeAccount(account.student_id)">Delete</button></td>
+                    </tr>
+                </table>
+
+            </div>
         </div>
-    </div>
-    
-                
-    <div class="clearfix"></div>
+        <div class="tabcontent" id="deposit">
+            <div style="display: flex;">
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>userId</th>
+                        <th>Amount</th>
+                        <th>Deposit Time</th>
+                    </tr>
+                    <tr v-for="deposit in deposits">
+                        <td>{{ deposit.deposit_id }}</td>
+                        <td>{{ deposit.customer_id }}</td>
+                        <td>{{ deposit.amount }}</td>
+                        <td>{{ deposit.deposit_time.slice(0, 10) }}</td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+        <div class="tabcontent" id="order">
+            <div style="display: flex;">
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>userId</th>
+                        <th>Name</th>
+                        <th>username</th>
+                        <th>orderDetails (id)</th>
+                        <th>Amount</th>
+                        <th>Order Time</th>
+                    </tr>
+                    <tr v-for="order in orders">
+                        <td>{{ order.orderId }}</td>
+                        <td>{{ order.studentId }}</td>
+                        <td>{{ order.studentFirstName + order.studentLastName }}</td>
+                        <td>{{ order.studentUsername }}</td>
+                        <td id="detail">
+                            <div v-for="detail in order.order_details">{{ detail.course.courseId }}</div>
+                        </td>
+                        <td>
+                            <div v-for="det in order.order_details">{{ det.payment.amount }}</div>
+                        </td>
+                        <td>{{ order.orderTime.slice(0, 10) }}</td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+
+        <div class="modal" id="myModal1">
+            <div class="modal-content">
+                <span class="close" v-on:click="closePayment(1)">&times;</span>
+                <div class="add-content">
+                    <form>
+                        <div class="course-title" style="display: flex;">
+                            <h5 class="title-txt">Title: </h5>
+                            <input type="text" v-model="course.courseTitle">
+                        </div>
+                        <div class="course-desc" style="display: flex;">
+                            <h5 class="desc-txt">Description: </h5>
+                            <input type="text" v-model="course.courseDescription">
+                        </div>
+                        <div class="course-image" style="display: flex;">
+                            <h5 class="img-txt">Image Link: </h5>
+                            <input type="text" v-model="course.courseImage">
+                        </div>
+                        <div class="course-fee" style="display: flex;">
+                            <h5 class="fee-txt">Course Fee: </h5>
+                            <input type="number" v-model="course.courseFee">
+                        </div>
+                        <div class="course-ins" style="display: flex;">
+                            <h5 class="ins-txt">Instructor ID: </h5>
+                            <input type="number" v-model="course.instructorId">
+                        </div>
+                    </form>
+                    <button class="add-button" @click="addCourse()">Add Course</button>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="myModal2">
+            <div class="modal-content">
+                <span class="close" v-on:click="closePayment(2)">&times;</span>
+                <button @click="dataAddChapter.isAddChapter = !dataAddChapter.isAddChapter">Add Chapter</button>
+                <div v-if="dataAddChapter.isAddChapter" style="display: flex;">
+                    <h5>Chapter Title:</h5>
+                    <input type="text" v-model="dataAddChapter.chapterTitle">
+                    <button @click="addChapter(dataAddChapter.addChapterId);">Add</button>
+                </div>
+                <button @click="dataAddContent.isAddContent = !dataAddContent.isAddContent">Add Content</button>
+                <div v-if="dataAddContent.isAddContent">
+                    <div style="display: flex;">
+                        <h5>Chapter Id:</h5>
+                        <input type="number" v-model="dataAddContent.chapterId">
+                    </div>
+                    <div style="display: flex;">
+                        <h5>Content Title:</h5>
+                        <input type="text" v-model="dataAddContent.contentTitle">
+                    </div>
+                    <div style="display: flex;">
+                        <h5>Time Required In Sec:</h5>
+                        <input type="number" v-model="dataAddContent.timeRequiredInSec">
+                    </div>
+                    <div style="display: flex;">
+                        <h5>Content Link:</h5>
+                        <input type="text" v-model="dataAddContent.contentLink">
+                    </div>
+                    <button @click="addContents()">Add</button>
+
+                </div>
+                <div class="change-course">
+                    <div v-for="(chapter, index) in content">
+                        {{ index + 1 }}. ID: {{ chapter.chapterId }} Title: {{ chapter.chapterTitle }}
+                        <div v-for="(cont, index) in chapter.contents" style="margin-left: 20px;">
+                            {{ index + 1 }}. {{ cont.contentTitle }} <br>
+                            Link: {{ cont.contentLink }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
 </template>
 
 <script>
@@ -186,12 +308,46 @@ import { mapMutations, mapGetters, mapState } from 'vuex';
 
 export default {
     name: 'Admin',
+    data() {
+        return {
+            accounts: [],
+            courses: [],
+            instructors: [],
+            orders: [],
+            deposits: [],
+            changeCoin: [],
+            course: {
+                courseTitle: "",
+                courseDescription: "",
+                courseImage: "",
+                courseFee: Number,
+                instructorId: Number
+            },
+            content: [],
+            dataAddChapter: {
+                addChapterId: Number,
+                chapterTitle: "",
+                isAddChapter: false,
+            },
+            dataAddContent: {
+                chapterId: Number,
+                contentTypeId: 1,
+                contentTitle: "",
+                timeRequiredInSec: Number,
+                isOpenForFree: 0,
+                contentLink: "",
+                isAddContent: false,
+            }
+
+        }
+    },
     methods: {
         ...mapMutations(['setAdminChange']),
         ...mapGetters(['getAdminChange']),
         adminChange() {
             return this.getAdminChange;
         },
+
         openChapter(evt, nameTab) {
             // Declare all variables
             var i, tabcontent, tablinks;
@@ -276,7 +432,7 @@ export default {
                     alert(res.data.msg);
                     // this.dataAddChapter.chapterTitle = "";
                     // location.reload();
-                    
+
                     this.resetAddChapter();
 
                 });
@@ -336,40 +492,25 @@ export default {
                 .catch(e => {
                     this.errors.push(e)
                 })
-        }
-    },
-    data() {
-        return {
-            accounts: [],
-            courses: [],
-            instructors: [],
-            orders: [],
-            changeCoin: [],
-            course: {
-                courseTitle: "",
-                courseDescription: "",
-                courseImage: "",
-                courseFee: Number,
-                instructorId: Number
-            },
-            content: [],
-            dataAddChapter: {
-                addChapterId: Number,
-                chapterTitle: "",
-                isAddChapter: false,
-            },
-            dataAddContent: {
-                chapterId: Number,
-                contentTypeId: 1,
-                contentTitle: "",
-                timeRequiredInSec: Number,
-                isOpenForFree: 0,
-                contentLink: "",
-                isAddContent: false,
-            }
 
+            axios.get('/orders', { withCredentials: true })
+                .then(respone => {
+                    this.orders = respone.data.orders;
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                })
+
+            axios.get('/deposits', { withCredentials: true })
+                .then(respone => {
+                    this.deposits = respone.data;
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                })
         }
     },
+
     computed: {
         ...mapState(['adminChange'])
     },
@@ -413,7 +554,8 @@ body {
 .tab {
     float: left;
     border: 1px solid #ccc;
-    background-color: #f1f1f1;
+    background-color: rgb(52, 73, 94);
+
     width: 15%;
     height: 100%;
     position: relative;
@@ -442,7 +584,8 @@ body {
 .tab button {
     display: block;
     background-color: inherit;
-    color: black;
+    color: rgb(230, 230, 230);
+    -webkit-text-stroke: 2px inset;
     padding: 22px 16px;
     width: 100%;
     border: none;
@@ -451,16 +594,19 @@ body {
     cursor: pointer;
     font-size: 1.3rem;
     border-bottom: 1px inset black;
+    font-weight: 600;
 }
 
 /* Change background color of buttons on hover */
 .tab button:hover {
     background-color: #ddd;
+    color: black;
 }
 
 /* Create an active/current "tab button" class */
 .tab button.active {
-    background-color: #ccc;
+    background-color: rgb(240, 240, 240);
+    color: #000;
 }
 
 /* Style the tab content */
@@ -479,6 +625,15 @@ body {
         right: 80px;
         top: 60px;
     }
+
+    // td {
+
+    //     .change,
+    //     .remove {
+    //         background-color: #fff;
+    //     }
+    // }
+
 }
 
 /* Clear floats after the tab */
@@ -509,7 +664,9 @@ th {
 }
 
 tr:nth-child(even) {
-    background-color: #dddddd;
+    background-color: rgb(230, 230, 230);
+    -webkit-text-stroke: 2px inset;
+
 }
 
 .remove,
@@ -521,6 +678,7 @@ tr:nth-child(even) {
     text-decoration: underline;
 
 }
+
 
 .change-coin {
     width: 200px;
@@ -577,18 +735,19 @@ tr:nth-child(even) {
     cursor: pointer;
 }
 
-form, .input-cont {
+form,
+.input-cont {
     background-color: white;
-        top: 30%;
-        margin: 20px 0;
-        margin-left: 50%;
-        transform: translateX(-50%);
-        width: 30%;
-        box-shadow: -0.5rem -0.5rem 1rem rgba($color: #000000, $alpha: 0.1), 0.5rem 0.5rem 1rem rgba($color: #000000, $alpha: 0.1);
-        border: 0.1rem solid rgba($color: #000000, $alpha: 0.05);
-        padding: 2rem;
-        border-radius: 1rem;
-        animation: fadeUp 0.4s linear;
+    top: 30%;
+    margin: 20px 0;
+    margin-left: 50%;
+    transform: translateX(-50%);
+    width: 30%;
+    box-shadow: -0.5rem -0.5rem 1rem rgba($color: #000000, $alpha: 0.1), 0.5rem 0.5rem 1rem rgba($color: #000000, $alpha: 0.1);
+    border: 0.1rem solid rgba($color: #000000, $alpha: 0.05);
+    padding: 2rem;
+    border-radius: 1rem;
+    animation: fadeUp 0.4s linear;
 
     .error {
         position: absolute;
@@ -623,18 +782,18 @@ form, .input-cont {
     transform: translateX(-50%);
     background-color: rgb(0, 128, 128);
     color: white;
+
     &:hover {
-        
+
         margin-top: 20px;
-    padding: 10px 25px;
-    margin-left: 50%;
-    font-size: 20px;
-    font-weight: 500;
-    border-style: none;
-    border-radius: 10px;
-    transform: translateX(-50%);
-    background-color: rgb(0, 128, 128);
-    // transform: scale(1.1);
+        padding: 10px 25px;
+        margin-left: 50%;
+        font-size: 20px;
+        font-weight: 500;
+        border-style: none;
+        border-radius: 10px;
+        transform: translateX(-50%);
+        background-color: rgb(0, 128, 128);
+        // transform: scale(1.1);
     }
-}
-</style>
+}</style>

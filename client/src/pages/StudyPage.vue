@@ -215,7 +215,7 @@ export default {
             let id = Number(window.location.href.split('/').slice(-1)[0]);
             let data = await axios.post(`/courses/${id}/students/review`, this.form, { withCredentials: true });
             let err = data.data.msg;
-            if (err === 'You have already submitted feedbacks!') {
+            if (err === 'You can only submitt feedback one time!') {
                 this.errorObj.feedbackScoreError.push(err);
             } else if (err === 'Add success!') {
                 alert('Add feedbacks successful');

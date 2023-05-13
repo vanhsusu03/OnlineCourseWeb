@@ -158,7 +158,7 @@
             </div>
         </div>
     </div>
-</div>
+
 
 <div class="modal" id="myModal">
     <div class="modal-content">
