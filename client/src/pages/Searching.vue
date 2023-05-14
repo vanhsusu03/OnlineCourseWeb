@@ -389,7 +389,7 @@ export default {
             cursor: pointer;
 
             img {
-                width: 100%;
+                width: 15vw;
                 height: 100%;
             }
 

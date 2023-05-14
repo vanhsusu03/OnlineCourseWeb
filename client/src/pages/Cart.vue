@@ -96,7 +96,6 @@ import {
     mapState
 } from 'vuex';
 import Payment from './Payment.vue';
-import MiniCart from '@/components/MiniCart.vue';
 import axios from 'axios';
 export default {
     name: 'Cart',
@@ -115,6 +114,13 @@ export default {
     },
     methods: {
         ...mapMutations(['scrollToTop', 'setMiniCartChange']),
+        async getStudentCoin() {
+            await axios.get('/students/coin', { withCredentials: true })
+                .then(respone => {
+                    this.student.coin = respone.data.coinOfStudent;
+                })
+
+        },
         openPayment() {
             let modal = document.getElementById("myModal");
             // alert("hio");
@@ -166,7 +172,6 @@ export default {
             });
             this.setMiniCartChange("change");
             this.getInfo();
-            // this.setUpdateMiniCart(true);
             this.$router.push('/cart');
 
         },
@@ -190,7 +195,7 @@ export default {
                 })
         },
         checkNoCart() {
-            if (this.courses.length === 0) return true;
+            if (this.courses.length === 0 && this.saved.length === 0) return true;
             return false;
         }
     },
@@ -204,6 +209,7 @@ export default {
             .catch(e => {
                 this.errors.push(e)
             });
+        this.getStudentCoin();
     },
     computed: {
         ...mapState(['student', 'admin', 'miniCartChange'])
@@ -418,4 +424,5 @@ li {
     color: #000;
     text-decoration: none;
     cursor: pointer;
-}</style>
+}
+</style>

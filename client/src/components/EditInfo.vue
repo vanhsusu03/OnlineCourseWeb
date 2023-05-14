@@ -18,7 +18,7 @@
             <span>
                 <form>
                     <input type="text" id="firstname" class="sub" v-bind:placeholder="student.firstName"
-                        v-model="form.firstname">
+                           v-model="form.firstname">
 
                 </form>
             </span>
@@ -31,7 +31,7 @@
             <span>
                 <form>
                     <input type="text" id="lastname" class="sub" v-bind:placeholder="student.lastName"
-                        v-model="form.lastname">
+                           v-model="form.lastname">
 
                 </form>
             </span>
@@ -99,7 +99,11 @@ export default {
 
             let res = await axios.post('/edit/info', this.form, { withCredentials: true });
             let err = res.data.msg;
-            if (err === 'Update info successful') {
+            if(err === 'Duplicated phone number') {
+                alert(err);
+                this.handleUpdateInfo();
+            }
+            else if (err === 'Update info successful') {
 
                 alert(err);
                 this.updateInfos();
@@ -138,20 +142,25 @@ export default {
 
             //name validate
             if (this.form.firstname && !/^[A-Za-z]+$/.test(this.form.firstname.replace(/\s/g, ""))) {
+                this.errorObj.firstnameError.push("Your first name is only contains alphabetic characters!");
                 alert("Your first name is only contains alphabetic characters!");
             }
 
             if (this.form.lastname && !/^[A-Za-z]+$/.test(this.form.lastname.replace(/\s/g, ""))) {
+                this.errorObj.lastnameError.push("Your last name is only contains alphabetic characters!");
                 alert('Your last name is only contains alphabetic characters!');
             }
 
             if (this.form.phone) {
-                //phone 
+                //phone
                 if (!this.form.phone.startsWith('0')) {
+                    this.errorObj.phoneError.push('Phone number must start with 0');
                     alert('Phone number must start with 0');
                 } else if (this.form.phone.length != 10) {
+                    this.errorObj.phoneError.push('Phone number only contains 10 numbers');
                     alert('Phone number only contains 10 numbers');
                 } else if (!/[0-9]{10}/.test(this.form.phone)) {
+                    this.errorObj.phoneError.push('Phone number will only contains numbers');
                     alert('Phone number will only contains numbers');
                 }
             }

@@ -56,7 +56,7 @@ class StudyController {
         
         if (feedback) {
             return res.status(200).json({
-                msg: 'You have already submitted feedbacks!'
+                msg: 'You can only submitt feedback one time!'
             });
         }
 

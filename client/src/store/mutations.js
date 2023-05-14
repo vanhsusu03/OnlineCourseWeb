@@ -14,13 +14,8 @@ export default {
     setMiniCartChange(state,miniCartChange){
       state.miniCartChange = miniCartChange;
     },
-    setCourseIDShowing(state, courseIDshowing) {
-      state.courseIDshowing = courseIDshowing;
-    },
-    setStudentCoinChange(state,studentCoinChange) {
-      state.studentCoinChange = studentCoinChange;
-    },
     setAdminChange(state, adminChange) {
       state.adminChange = adminChange;
-    }
+    },
+   
   }
