@@ -40,7 +40,7 @@
         {{ openCity(1) }}
     </div>
 
-    <div v-if="!isCalc">
+    <div v-if="!isCalc" style="display: none;">
         {{ calcNumPages() }}
     </div>
     <ul v-if="errors && errors.length">
