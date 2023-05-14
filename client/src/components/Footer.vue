@@ -207,7 +207,8 @@ footer {
 
 .right form .btn button {
     height: 40px;
-    width: 100%;
+    width: 100px;
+    margin-left: -10%;
     border:none;
     outline: none;
     background: #f12020;
@@ -218,7 +219,7 @@ footer {
 
 }
 .right form .btn button:hover {
-    background: #000;
+    transform: scale(1.1);
 }
 
 .bottom center {
