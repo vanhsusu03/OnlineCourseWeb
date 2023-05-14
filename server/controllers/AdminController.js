@@ -322,11 +322,12 @@ class AdminController {
         )
     }
 
-    //GET /admin/instructor
+    //GET /admin/instructors
     async showAllInstructors(req, res, next) {
-        const instructors = Instructor.findAll({
+        const instructors = await Instructor.findAll({
             attributes: [[sequelize.col('introduction_brief'), 'instructorBio'],
                 // 'birthday',
+
             ],
             include: [{
                 model: Student,
@@ -340,11 +341,13 @@ class AdminController {
                 ],
             }, {
                 model: Course,
-                attributes: [[sequelize.fn('COUNT', sequelize.col('Course.course_id')), 'totalCourses']],
+                attributes: [[sequelize.fn('COUNT', sequelize.col('course_id')), 'totalCourses']],
                 duplicating: false
             }],
             group: ['Instructor.instructor_id'],
         })
+        console.log(instructors[0]);
+        return res.status(200).json(instructors);
     }
 
     async createChapter(req, res, next) {
