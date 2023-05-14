@@ -91,7 +91,8 @@ class CourseController {
 //POST /courses/create
     async addCourse(req, res, next) {
         let instructorId = req.session.studentId;
-        const today = await db.sequelize.query("SELECT DATE(NOW()) as today", {type: db.sequelize.QueryTypes.SELECT});
+        const now = new Date();
+        const vietnamDate = format(now, 'yyyy-MM-dd', { timeZone: 'Asia/Ho_Chi_Minh' });
         let instructor = await Instructor.findOne({
             where: {
                 instructor_id: instructorId,
@@ -115,7 +116,7 @@ class CourseController {
                 description: req.body.courseDescription,
                 image: req.body.courseImage,
                 course_fee: req.body.courseFee,
-                release_date: today,
+                release_date: vietnamDate,
             })
             return res.status(200).json({msg: 'Add course successfully!'})
         } else {
