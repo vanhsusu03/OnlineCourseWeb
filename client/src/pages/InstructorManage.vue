@@ -52,7 +52,7 @@
                 <input class="sub" type="number" v-model="course.courseFee">
             </div>
         </form>
-        <button class="add-button btn" @click="addCourse(); openChapter($event, 'course')">Add Course</button>
+        <button class="add-button btn" @click="addCourse()">Add Course</button>
     </div>
 </div>
 
@@ -117,6 +117,7 @@ export default {
     name: 'InstructorManage',
     methods: {
         openChapter(evt, nameTab) {
+            this.resetCourse();
             // Declare all variables
             var i, tabcontent, tablinks;
             // Get all elements with class="tabcontent" and hide them
@@ -188,6 +189,7 @@ export default {
             this.openingPayment = false;
         },
         addCourse() {
+            if (this.course.courseDescription && this.course.courseTitle && this.course.courseImage) {
             axios.post('/instructor/create', this.course, {
                     withCredentials: true
                 })
@@ -206,7 +208,9 @@ export default {
                     this.errors.push(e)
                 })
             },500);
-            
+        } else {
+                alert("Content of course can't be null");
+            }
             
         },
         getChapter(id) {
@@ -215,13 +219,14 @@ export default {
                 })
                 .then(response => {
                     this.content = response.data.contents;
+                    this.getIdsOfChapter(this.content);
                 })
                 .catch(e => {
                     this.errors.push(e)
                 })
         },
         addChapter(id) {
-            
+            if (this.dataAddChapter.chapterTitle) {
             axios.post(`/course/${id}/create`, this.dataAddChapter, {
                     withCredentials: true
                 })
@@ -235,10 +240,16 @@ export default {
                 setTimeout(() =>{
                     this.getChapter(id);
             },500);
+        }else {
+                alert("Chapter Title can't be null");
+            }
             
         },
         addContents(id) {
             // alert("ok");
+            if (this.dataAddContent.chapterId && this.dataAddContent.contentLink && this.dataAddContent.contentTitle && this.dataAddContent.timeRequiredInSec)
+            {
+                if (this.checkAddContentId()) {
             axios.post('/chapter/contents/create', this.dataAddContent, {
                     WithComponent: true
                 })
@@ -252,6 +263,12 @@ export default {
             setTimeout(() =>{
                     this.getChapter(id);
             },500);
+        } else {
+                    alert("This Chapter Id isn't in this course");
+                }
+        }else {
+                alert("Chapter Content can't be null");
+            }
         },
         resetAddContent() {
             this.dataAddContent.chapterId = Number,
@@ -271,7 +288,21 @@ export default {
             this.course.courseTitle = "",
                 this.course.courseDescription = "",
                 this.course.courseImage = "",
-                this.course.courseFee = Number
+                this.course.courseFee = 0
+        },
+        getIdsOfChapter(course) {
+            this.IdsOfChapter = [];
+            for (let i=0; i < course.length; i++) {
+                this.IdsOfChapter.push(course[i].chapterId);
+            }
+        },
+        checkAddContentId() {
+            for (let i = 0; i < this.IdsOfChapter.length; i++) {
+                if (this.dataAddContent.chapterId === this.IdsOfChapter[i]) {
+                    return true;
+                }
+            }
+            return false;
         },
 
     },
@@ -282,11 +313,12 @@ export default {
             instructors: [],
             orders: [],
             changeCoin: [],
+            IdsOfChapter: [],
             course: {
                 courseTitle: "",
                 courseDescription: "",
                 courseImage: "",
-                courseFee: Number,
+                courseFee: 0
             },
             content: [],
             dataAddChapter: {

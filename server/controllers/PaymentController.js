@@ -46,11 +46,11 @@ class PaymentController {
     }
 
     async getCoinOfStudent(req, res, next) {
-        if (typeof req.session.coin === 'undefined') {
+        // if (typeof req.session.coin === 'undefined') {
             req.session.coin = (await Student.findByPk(req.session.studentId,
                 { attributes: [ 'coin' ] }
             )).dataValues.coin;
-        }
+        // }
 
         return res.status(200).json({
             coinOfStudent: req.session.coin

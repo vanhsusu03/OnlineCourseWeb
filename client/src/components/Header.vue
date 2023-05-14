@@ -149,6 +149,7 @@ export default {
 
         },
         showDropDown() {
+            this.getStudentCoin();
             this.dropdownselect = true
         },
         unshowDropDown() {

@@ -28,8 +28,7 @@
                     <td>{{ course.instructorFirstName }} {{ course.instructorLastName }}</td>
                     <td>{{ course.courseFee }}</td>
                     <td><button class="remove" @click="removeCourse(course.courseId)">Delete</button></td>
-                    <td><button class="remove"
-                            @click="openPayment(2); dataAddChapter.addChapterId = course.courseId; getChapter(course.courseId)">Change</button>
+                    <td><button class="remove" @click=" openPayment(2); dataAddChapter.addChapterId = course.courseId; getChapter(course.courseId)">Change</button>
                     </td>
                 </tr>
             </table>
@@ -44,23 +43,23 @@
                 <form>
                     <div class="course-title info">
                         <h5 class="title-txt">Title: </h5>
-                        <input class="sub" type="text" v-model="course.courseTitle">
+                        <input required class="sub" type="text" v-model="course.courseTitle">
                     </div>
                     <div class="course-desc info">
                         <h5 class="desc-txt">Description: </h5>
-                        <input class="sub" type="text" v-model="course.courseDescription">
+                        <input required class="sub" type="text" v-model="course.courseDescription">
                     </div>
                     <div class="course-image info">
                         <h5 class="img-txt">Image Link: </h5>
-                        <input class="sub" type="text" v-model="course.courseImage">
+                        <input required class="sub" type="text" v-model="course.courseImage">
                     </div>
                     <div class="course-fee info">
                         <h5 class="fee-txt">Course Fee: </h5>
-                        <input class="sub" type="number" v-model="course.courseFee">
+                        <input required class="sub" type="number" v-model="course.courseFee">
                     </div>
                     <div class="course-ins info">
                         <h5 class="ins-txt">Instructor ID: </h5>
-                        <input class="sub" type="number" v-model="course.instructorId">
+                        <input required class="sub" type="number" v-model="course.instructorId">
                     </div>
                 </form>
                 <button class="add-button btn" @click="addCourse()">Add Course</button>
@@ -74,8 +73,8 @@
             <div class="input-cont" v-if="dataAddChapter.isAddChapter">
                 <div class="info">
                     <h5>Chapter Title:</h5>
-                    <input class="sub" type="text" v-model="dataAddChapter.chapterTitle">
-                    <button class="btn" @click="addChapter(dataAddChapter.addChapterId);">Add</button>
+                    <input required class="sub" type="text" v-model="dataAddChapter.chapterTitle">
+                    <button type="submit" class="btn" @click="addChapter(dataAddChapter.addChapterId);">Add</button>
                 </div>
             </div>
 
@@ -83,19 +82,19 @@
             <div v-if="dataAddContent.isAddContent" class="input-cont">
                 <div class="info">
                     <h5>Chapter Id:</h5>
-                    <input class="sub" type="number" v-model="dataAddContent.chapterId">
+                    <input required class="sub" type="number" v-model="dataAddContent.chapterId">
                 </div>
                 <div class="info">
                     <h5>Content Title:</h5>
-                    <input class="sub" type="text" v-model="dataAddContent.contentTitle">
+                    <input required class="sub" type="text" v-model="dataAddContent.contentTitle">
                 </div>
                 <div class="info">
                     <h5>Time Required In Sec:</h5>
-                    <input class="sub" type="number" v-model="dataAddContent.timeRequiredInSec">
+                    <input required class="sub" type="number" v-model="dataAddContent.timeRequiredInSec">
                 </div>
                 <div class="info">
                     <h5>Content Link:</h5>
-                    <input class="sub" type="text" v-model="dataAddContent.contentLink">
+                    <input required class="sub" type="text" v-model="dataAddContent.contentLink">
                 </div>
                 <button class="btn" @click="addContents()">Add</button>
 
@@ -129,7 +128,7 @@
                         <td>{{ account.username }}</td>
                         <td>{{ account.email }}</td>
                         <td class="change-coin" v-if="!changeCoin[account.student_id]">{{ account.coin }}</td>
-                        <td v-else><input type="number" v-model="account.coin"></td>
+                        <td v-else><input required type="number" v-model="account.coin"></td>
                         <td>
                             <button class="change"
                                 v-on:click="changeCoin[account.student_id] = !changeCoin[account.student_id]">
@@ -164,7 +163,7 @@
                         <td>{{ account.username }}</td>
                         <td>{{ account.email }}</td>
                         <td class="change-coin" v-if="!changeCoin[account.student_id]">{{ account.coin }}</td>
-                        <td v-else><input type="number" v-model="account.coin"></td>
+                        <td v-else><input required type="number" v-model="account.coin"></td>
 
                         <td>
                             <button class="change"
@@ -236,23 +235,23 @@
                     <form>
                         <div class="course-title" style="display: flex;">
                             <h5 class="title-txt">Title: </h5>
-                            <input type="text" v-model="course.courseTitle">
+                            <input required type="text" v-model="course.courseTitle">
                         </div>
                         <div class="course-desc" style="display: flex;">
                             <h5 class="desc-txt">Description: </h5>
-                            <input type="text" v-model="course.courseDescription">
+                            <input required type="text" v-model="course.courseDescription">
                         </div>
                         <div class="course-image" style="display: flex;">
                             <h5 class="img-txt">Image Link: </h5>
-                            <input type="text" v-model="course.courseImage">
+                            <input required type="text" v-model="course.courseImage">
                         </div>
                         <div class="course-fee" style="display: flex;">
                             <h5 class="fee-txt">Course Fee: </h5>
-                            <input type="number" v-model="course.courseFee">
+                            <input required type="number" v-model="course.courseFee">
                         </div>
                         <div class="course-ins" style="display: flex;">
                             <h5 class="ins-txt">Instructor ID: </h5>
-                            <input type="number" v-model="course.instructorId">
+                            <input required type="number" v-model="course.instructorId">
                         </div>
                     </form>
                     <button class="add-button" @click="addCourse()">Add Course</button>
@@ -265,26 +264,26 @@
                 <button @click="dataAddChapter.isAddChapter = !dataAddChapter.isAddChapter">Add Chapter</button>
                 <div v-if="dataAddChapter.isAddChapter" style="display: flex;">
                     <h5>Chapter Title:</h5>
-                    <input type="text" v-model="dataAddChapter.chapterTitle">
+                    <input required type="text" v-model="dataAddChapter.chapterTitle">
                     <button @click="addChapter(dataAddChapter.addChapterId);">Add</button>
                 </div>
                 <button @click="dataAddContent.isAddContent = !dataAddContent.isAddContent">Add Content</button>
                 <div v-if="dataAddContent.isAddContent">
                     <div style="display: flex;">
                         <h5>Chapter Id:</h5>
-                        <input type="number" v-model="dataAddContent.chapterId">
+                        <input required type="number" v-model="dataAddContent.chapterId">
                     </div>
                     <div style="display: flex;">
                         <h5>Content Title:</h5>
-                        <input type="text" v-model="dataAddContent.contentTitle">
+                        <input required type="text" v-model="dataAddContent.contentTitle">
                     </div>
                     <div style="display: flex;">
                         <h5>Time Required In Sec:</h5>
-                        <input type="number" v-model="dataAddContent.timeRequiredInSec">
+                        <input required type="number" v-model="dataAddContent.timeRequiredInSec">
                     </div>
                     <div style="display: flex;">
                         <h5>Content Link:</h5>
-                        <input type="text" v-model="dataAddContent.contentLink">
+                        <input required type="text" v-model="dataAddContent.contentLink">
                     </div>
                     <button @click="addContents()">Add</button>
 
@@ -316,11 +315,12 @@ export default {
             orders: [],
             deposits: [],
             changeCoin: [],
+            IdsOfChapter: [],
             course: {
                 courseTitle: "",
                 courseDescription: "",
                 courseImage: "",
-                courseFee: Number,
+                courseFee: 0,
                 instructorId: Number
             },
             content: [],
@@ -347,7 +347,20 @@ export default {
         adminChange() {
             return this.getAdminChange;
         },
-
+        getIdsOfChapter(course) {
+            this.IdsOfChapter = [];
+            for (let i=0; i < course.length; i++) {
+                this.IdsOfChapter.push(course[i].chapterId);
+            }
+        },
+        checkAddContentId() {
+            for (let i = 0; i < this.IdsOfChapter.length; i++) {
+                if (this.dataAddContent.chapterId === this.IdsOfChapter[i]) {
+                    return true;
+                }
+            }
+            return false;
+        },
         openChapter(evt, nameTab) {
             // Declare all variables
             var i, tabcontent, tablinks;
@@ -456,7 +469,8 @@ export default {
             this.openingPayment = false;
         },
         addCourse() {
-            axios.post('courses/create', this.course, { withCredentials: true })
+            if (this.course.courseDescription && this.course.courseTitle && this.course.courseImage && this.course.courseTitle) {
+                axios.post('courses/create', this.course, { withCredentials: true })
                 .then(res => {
                     alert(res.data.msg);
                     this.setAdminChange("change");
@@ -473,6 +487,10 @@ export default {
                     this.errors.push(e)
                 })
             },500);
+            } else {
+                alert("Content of course can't be null");
+            }
+            
         },
         getChapter(id) {
             axios.get(`/courses/${id}/contents`, {}, {
@@ -480,13 +498,15 @@ export default {
             })
                 .then(response => {
                     this.content = response.data.contents;
+                    this.getIdsOfChapter(this.content);
                 })
                 .catch(e => {
                     this.errors.push(e)
                 })
         },
         addChapter(id) {
-            axios.post(`/course/${id}/create`, this.dataAddChapter, { withCredentials: true })
+            if (this.dataAddChapter.chapterTitle) {
+                axios.post(`/course/${id}/create`, this.dataAddChapter, { withCredentials: true })
                 .then(res => {
                     alert(res.data.msg);
                     // this.dataAddChapter.chapterTitle = "";
@@ -498,10 +518,17 @@ export default {
                 setTimeout(() =>{
                     this.getChapter(id);
             },500);
+            } else {
+                alert("Chapter Title can't be null");
+            }
+            
         },
         addContents() {
             // alert("ok");
-            axios.post('/chapter/contents/create', this.dataAddContent, { WithComponent: true })
+            if (this.dataAddContent.chapterId && this.dataAddContent.contentLink && this.dataAddContent.contentTitle && this.dataAddContent.timeRequiredInSec)
+            {
+                if (this.checkAddContentId()) {
+                    axios.post('/chapter/contents/create', this.dataAddContent, { WithComponent: true })
                 .then(res => {
                     alert(res.data.msg);
                     // this.dataAddChapter.chapterTitle = "";
@@ -511,6 +538,14 @@ export default {
                 setTimeout(() =>{
                     this.getChapter(this.dataAddChapter.addChapterId);
             },500);
+                } else {
+                    alert("This Chapter Id isn't in this course");
+                }
+                
+            } else {
+                alert("Chapter Content can't be null");
+            }
+            
         },
         resetAddContent() {
             this.dataAddContent.chapterId = Number,
@@ -578,7 +613,8 @@ export default {
             this.course.courseTitle = "",
                 this.course.courseDescription = "",
                 this.course.courseImage = "",
-                this.course.courseFee = Number
+                this.course.courseFee = 0,
+                this.course.instructorId = Number
         },
     },
 
