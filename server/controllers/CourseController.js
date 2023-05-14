@@ -114,7 +114,7 @@ class CourseController {
 
     //DELETE /courses/:courseId
     async deleteCourse(req, res, next) {
-        const courseId = Number(req.params.courseId);
+        const courseId = req.params.courseId;
         if (courseId) {
             //Delete order
             const carts = await Cart.findAll({
@@ -122,7 +122,9 @@ class CourseController {
                     course_id: courseId,
                 }
             });
-            await Promise.all(carts.map(cart => cart.destroy()));
+            if (carts) {
+                await Promise.all(carts.map(cart => cart.destroy()));
+            }
 
             //Delete chapter
             const chapters = await Chapter.findAll({
@@ -130,15 +132,19 @@ class CourseController {
                     course_id: courseId,
                 },
             });
-            await Promise.all(chapters.map(async chapter => {
-                const contents = await Content.findAll({
-                    where: {
-                        chapter_id: chapter.chapter_id,
+            if (chapters) {
+                await Promise.all(chapters.map(async chapter => {
+                    const contents = await Content.findAll({
+                        where: {
+                            chapter_id: chapter.chapter_id,
+                        }
+                    });
+                    if (contents) {
+                        await Promise.all(contents.map(content => content.destroy()));
                     }
-                });
-                await Promise.all(contents.map(content => content.destroy()));
-                await chapter.destroy();
-            }));
+                    await chapter.destroy();
+                }));
+            }
 
             //Delete course_category
             const courseCategories = await Course_category.findAll({
@@ -146,7 +152,9 @@ class CourseController {
                     course_id: courseId,
                 }
             });
-            await Promise.all(courseCategories.map(courseCategory => courseCategory.destroy()));
+            if (courseCategories) {
+                await Promise.all(courseCategories.map(courseCategory => courseCategory.destroy()));
+            }
 
             //Delete enrollment
             const enrollments = await Enrollment.findAll({
@@ -154,15 +162,27 @@ class CourseController {
                     course_id: courseId,
                 },
             });
-            await Promise.all(enrollments.map(async enrollment => {
-                const feedback = await Feedback.findOne({
-                    where: {
-                        enrollment_id: enrollment.enrollment_id
+            if (enrollments) {
+                await Promise.all(enrollments.map(async enrollment => {
+                    const feedback = await Feedback.findOne({
+                        where: {
+                            enrollment_id: enrollment.enrollment_id
+                        }
+                    });
+                    if (feedback) {
+                        await feedback.destroy();
                     }
-                });
-                await feedback.destroy();
-                await enrollment.destroy();
-            }));
+                    const progress = await Progress.findOne({
+                        where: {
+                            enrollment_id: enrollment.enrollment_id
+                        }
+                    })
+                    if (progress) {
+                        await progress.destroy();
+                    }
+                    await enrollment.destroy();
+                }));
+            }
 
             //Delete order_detail
             const orderDetails = await Order_detail.findAll({
@@ -170,15 +190,19 @@ class CourseController {
                     course_id: courseId,
                 },
             });
-            await Promise.all(orderDetails.map(async orderDetail => {
-                const payment = await Payment.findOne({
-                    where: {
-                        order_detail_id: orderDetail.order_detail_id
+            if (orderDetails) {
+                await Promise.all(orderDetails.map(async orderDetail => {
+                    const payment = await Payment.findOne({
+                        where: {
+                            order_detail_id: orderDetail.order_detail_id
+                        }
+                    });
+                    if (payment) {
+                        await payment.destroy();
                     }
-                });
-                await payment.destroy();
-                await orderDetail.destroy();
-            }));
+                    await orderDetail.destroy();
+                }));
+            }
 
             //Delete course
             await Course.destroy({
@@ -187,9 +211,9 @@ class CourseController {
                     instructor_id: req.session.studentId,
                 }
             });
-            return res.status(200).json({ msg: 'Delete course successfully' });
+            return res.status(200).json({msg: 'Delete course successfully'});
         } else {
-            return res.status(200).json({ msg: 'Course not found' });
+            return res.status(404).json({msg: 'Course not found'});
         }
     }
 
