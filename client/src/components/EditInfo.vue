@@ -18,7 +18,7 @@
             <span>
                 <form>
                     <input type="text" id="firstname" class="sub" v-bind:placeholder="student.firstName"
-                           v-model="form.firstname">
+                        v-model="form.firstname">
 
                 </form>
             </span>
@@ -31,7 +31,7 @@
             <span>
                 <form>
                     <input type="text" id="lastname" class="sub" v-bind:placeholder="student.lastName"
-                           v-model="form.lastname">
+                        v-model="form.lastname">
 
                 </form>
             </span>
@@ -100,10 +100,8 @@ export default {
             let res = await axios.post('/edit/info', this.form, { withCredentials: true });
             let err = res.data.msg;
             if(err === 'Duplicated phone number') {
-                alert(err);
-                this.handleUpdateInfo();
-            }
-            else if (err === 'Update info successful') {
+                alert('Phone number is already exists');
+            } else if (err === 'Update info successful') {
 
                 alert(err);
                 this.updateInfos();
@@ -147,12 +145,12 @@ export default {
             }
 
             if (this.form.lastname && !/^[A-Za-z]+$/.test(this.form.lastname.replace(/\s/g, ""))) {
-                this.errorObj.lastnameError.push("Your last name is only contains alphabetic characters!");
+                this.errorObj.lastnameError.push('Your last name is only contains alphabetic characters!');
                 alert('Your last name is only contains alphabetic characters!');
             }
 
             if (this.form.phone) {
-                //phone
+                //phone 
                 if (!this.form.phone.startsWith('0')) {
                     this.errorObj.phoneError.push('Phone number must start with 0');
                     alert('Phone number must start with 0');
