@@ -83,10 +83,11 @@ export default {
             });
             let err = data.data.msg;
             console.log(data.data);
+            let newStu = await axios.get('/account/info', {withCredentials: true});
             if (err === "You need to log in first") {
                 this.errorObj.nameError.push(err);
             } else {
-                // this.setStudent(data.data);
+                this.setStudent(newStu.data);
                 // this.scrollToTop();
                 alert("Congratulations! Now you are an instructor.");
                 this.$router.push('/instructor/manage');

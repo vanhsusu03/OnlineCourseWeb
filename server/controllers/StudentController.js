@@ -137,14 +137,17 @@ class StudentController {
         console.log(id);
         const student = await Student.findOne({ where: { student_id: id } });
         return res.status(200).json({
-            student_id: student.student_id,
-            username: student.username,
+            id: student.student_id,
+            userName: student.username,
+            firstName: student.first_name,
+            lastName: student.last_name,
+            image: student.image,
             email: student.email,
             phone: student.phone,
-            firstname: student.first_name,
-            lastname: student.last_name,
-            birthday: student.birthday,
+            birth: student.birthday,
+            checkIns: student.is_instructor,
             coin: student.coin,
+            cookie: req.headers.cookie,
         });
     }
 
