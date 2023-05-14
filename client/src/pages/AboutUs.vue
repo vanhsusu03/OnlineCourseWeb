@@ -83,13 +83,19 @@ export default {
 .web-title {
     text-align: center;
     margin-top: 20px;
+    color: rgb(52, 73, 94);
+    font-size: 4rem;
+    font-weight: 700;
+    
 }
 
 .sub-title {
     text-align: center;
     margin: 30px 0;
     position: relative;
-
+    color: rgb(52, 73, 94);
+    font-size: 1.7rem;
+    font-weight: 600;
     &::after {
         position: absolute;
         // border-bottom: 2px solid white;
@@ -175,9 +181,12 @@ ul {
     margin-top: 50px;
 
     .content {
-        width: 65%;
+        margin-top: 30px;
+        width: 75%;
+        font-size: 19px;
+        line-height: 30px;
         margin-left: 50%;
-        transform: translateX(-50%);
+        transform: translateX(-48%);
         margin-bottom: 50px;
     }
 }</style>

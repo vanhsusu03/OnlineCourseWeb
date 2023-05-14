@@ -19,8 +19,7 @@
             <div class="aboutus"> About us</div>
         </RouterLink>
         <div v-if="student.userName" @click="scrollToTop">
-            <div v-if="admin === 'admin'" class="admin" @click="showAdminDashboard">Admin Dashboard</div>
-            <div v-else class="mycourse" @click="showMyCourses">My courses</div>
+            <div class="mycourse" @click="showMyCourses">My courses</div>
         </div>
         <!-- <RouterLink v-if="admin" @click="scrollToTop" to="/admin">Admin Dashboard</RouterLink> -->
 
@@ -29,12 +28,15 @@
             <div class="become">Become instructor</div>
         </RouterLink>
         <div v-else>
-            <RouterLink @click="scrollToTop" to="/become/instructor" v-if="!student.checkIns">
-                <div class="become">Become instructor</div>
-            </RouterLink>
-            <RouterLink @click="scrollToTop" to="/instructor/manage" v-else>
-                <div class="become">Instructor Manage</div>
-            </RouterLink>
+            <div v-if="admin === 'admin'" class="admin" @click="showAdminDashboard">Admin Dashboard</div>
+            <div v-else>
+                <RouterLink @click="scrollToTop" to="/become/instructor" v-if="!student.checkIns">
+                    <div class="become">Become instructor</div>
+                </RouterLink>
+                <RouterLink @click="scrollToTop" to="/instructor/manage" v-else>
+                    <div class="become">Instructor Manage</div>
+                </RouterLink>
+            </div>
         </div>
 
 
@@ -82,7 +84,7 @@
         </div>
 
         <div class="icons">
-            <div class="new">
+            <div class="new" v-if="admin !== 'admin'">
                 <img src="../assets/img/new.png" id="new">
             </div>
             <RouterLink @click="scrollToTop()" to="/login" v-if="!student.userName"><img id="cart"
@@ -244,7 +246,7 @@ export default {
         position: absolute;
         font-weight: 500;
         margin-top: 15.5px;
-        margin-left: 1.5%;
+        margin-left: 13.5%;
         font-size: 1.16rem;
         cursor: pointer;
     }

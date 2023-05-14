@@ -46,8 +46,8 @@
             <div class="body-intro">
                 <div id="course-content">
                     <div class="tab">
-                        <h2 style="padding: 10px 10px; background-color: white;">Course Contents:</h2>
-                        <div v-for="(chapter, index) in courseDetail">
+                        <h1 style="padding: 10px 0; background-color: white; font-weight: 700; ">Course Contents:</h1>
+                        <div v-for="(chapter, index) in courseDetail" class="tab-content">
 
                             <div class="sub-title" v-on:click="openTabs(chapter.chapterId);">
                                 <div class="limit chapter-title">{{ index + 1 }}. {{ chapter.chapterTitle }}</div>
@@ -221,6 +221,7 @@ export default {
             openTab: [],
             openContent: [],
             content: [],
+            myCart: []
         }
     },
     components: {
@@ -359,10 +360,18 @@ export default {
             this.courses[0].courseDescription = this.course.description;
         },
         openPayment() {
-            let modal = document.getElementById("myModal");
-            this.convertData();
-            modal.style.display = "block";
-            this.openingPayment = true;
+            this.checkBought(this.course.course_id);
+            if (this.isBought === 'Activated') {
+                alert("You have actived this course before.");
+                return;
+            };
+            if (this.checkInCart(this.course.course_id)) {
+                return;
+            }
+                let modal = document.getElementById("myModal");
+                this.convertData();
+                modal.style.display = "block";
+                this.openingPayment = true;
         },
         closePayment() {
             let modal = document.getElementById("myModal");
@@ -370,7 +379,7 @@ export default {
             this.openingPayment = false;
         },
         addToCart(course) {
-            this.checkBought(course.course_id);
+            this.checkBought(this.course.course_id);
             this.convertData();
             setTimeout(() => {
                 if (this.isBought === 'Unactivated') {
@@ -400,6 +409,27 @@ export default {
             if(this.isBought === 'Unactivated') return false;
             return true;
         },
+        checkInCart(id) {
+            axios.get('/students/cart/', {
+                withCredentials: true
+            })
+                .then(response => {
+                    this.myCart = response.data.coursesInCart
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                })
+            setTimeout(() => {
+                for (let i = 0; i < this.myCart.length; i++) {
+                    if (this.myCart[i].courseId === id) {
+                        alert("This course has been in your cart");
+                        this.$router.push('/cart');
+                        return true;
+                    }
+                }
+                return false;
+            }, 100);
+        }
     },
     computed: {
         ...mapState(['miniCartChange']),
@@ -976,11 +1006,20 @@ body {
 /* Style the tab */
 .tab {
     // float: left;
-    border: 1px solid #ccc;
+
     background-color: #f1f1f1;
     width: 60%;
     height: 100%;
     position: relative;
+    h1 {
+        font-size: 36px;
+        margin-bottom: 0;
+    }
+
+    .tab-content {
+    border: 1px solid #ccc;
+    // pading-top:5px;
+    }
 
     .sub-title {
         display: flex;

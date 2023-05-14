@@ -4,7 +4,7 @@
             <h1>Deposit</h1>
             <h2>Online banking</h2>
             <div>You need to transfer to account number 108875750229 Viettinbank account owner is Duong Nguyen Viet Anh with the content of your username then wait for us to add virtual money to your account</div>
-            <div>Example: </div>
+            <div class="example">Example: </div>
             <img src="https://scontent.fhph1-2.fna.fbcdn.net/v/t1.15752-9/344305526_1352843661962399_2674289858324245203_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=ae9488&_nc_ohc=L9TLcS1S4LsAX9CWE5b&_nc_ht=scontent.fhph1-2.fna&oh=03_AdSToaJSScenf-ayXsJvcSRGGbJjbP7Dft7Lalsr_cZUZg&oe=64772DC4" alt="">
         </div>
     </div>
@@ -42,11 +42,19 @@ export default {
         // }
         h1, h2 {
             text-align: center;
-            margin: 10px 0;
+            margin: 10px 0;   
+            font-weight: 700;  
+            color: rgb(52, 73, 94);
         }
         div {
             margin: 10px 0;
+            font-size: 18.5px;
+            
         }
+        .example {
+                font-size: 20px;
+                font-weight: 500;
+            }
         img {
             width: 100%;
         }
