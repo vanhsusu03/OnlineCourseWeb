@@ -1,7 +1,19 @@
 const sequelize = require('sequelize');
-const {models: {Course, Course_category, Category, Instructor, Enrollment, Student, Feedback}} = require('../models');
+const {
+    models: {
+        Course,
+        Course_category,
+        Category,
+        Instructor,
+        Enrollment,
+        Student,
+        Feedback,
+        Cart
+    }
+} = require('../models');
 const {where, Op} = require("sequelize");
 const student = require('../models/student');
+const db = require("../models");
 
 class CourseController {
 
@@ -78,8 +90,14 @@ class CourseController {
 
 //POST /courses/create
     async addCourse(req, res, next) {
-        let instructorId = req.session.instructorId;
-        if (instructorId) {
+        let instructorId = req.session.studentId;
+        const today = await db.sequelize.query("SELECT DATE(NOW()) as today", {type: db.sequelize.QueryTypes.SELECT});
+        let instructor = await Instructor.findOne({
+            where: {
+                instructor_id: instructorId,
+            }
+        })
+        if (instructor) {
             let instructor = await Student.findOne({
                     include: {
                         model: Instructor,
@@ -92,11 +110,12 @@ class CourseController {
             let instructorFirstName = instructor.first_name;
             let instructorLastName = instructor.last_name;
             await Course.create({
-                instructorId: instructorId,
-                title: req.body.title,
-                description: req.body.description,
-                image: req.body.description,
-                courseFee: req.body.courseFee,
+                instructor_id: instructorId,
+                title: req.body.courseTitle,
+                description: req.body.courseDescription,
+                image: req.body.courseImage,
+                course_fee: req.body.courseFee,
+                release_date: today,
             })
             return res.status(200).json({msg: 'Add course successfully!'})
         } else {
@@ -444,7 +463,7 @@ class CourseController {
         return res.status(200).json(courses);
     }
 
-    async getContents(req,res,next){
+    async getContents(req, res, next) {
 
     }
 }
