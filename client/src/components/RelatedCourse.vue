@@ -1,1 +1,0 @@
-<!-- rcm course in a course info -->

@@ -469,7 +469,7 @@ export default {
             this.openingPayment = false;
         },
         addCourse() {
-            if (this.course.courseDescription && this.course.courseTitle && this.course.courseImage && this.course.courseTitle) {
+            if (this.course.courseDescription && this.course.courseTitle && this.course.courseImage && this.course.instructorId) {
                 axios.post('courses/create', this.course, { withCredentials: true })
                 .then(res => {
                     alert(res.data.msg);

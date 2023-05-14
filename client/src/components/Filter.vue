@@ -1,1 +1,0 @@
-<!--  lojc course -->

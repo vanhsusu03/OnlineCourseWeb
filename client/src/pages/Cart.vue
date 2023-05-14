@@ -167,7 +167,7 @@ export default {
             }
         },
         async removeCourse(id) {
-            await axios.post(`/students/cart/${id}/delete`, {}, {
+            await axios.delete(`/students/cart/${id}/delete`, {
                 withCredentials: true
             });
             this.setMiniCartChange("change");
