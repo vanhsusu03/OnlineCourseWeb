@@ -140,6 +140,9 @@ export default {
             this.send();
         }
     }
+},
+created() {
+    this.scrollToTop();
 }
 }
 

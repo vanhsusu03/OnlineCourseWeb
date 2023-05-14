@@ -66,7 +66,7 @@ class StudentController {
                 } else {
                     req.session.isLogin = true;
                     req.session.studentId = student.student_id;
-                    if(student.username == 'admin') {
+                    if (student.username == 'admin') {
                         req.session.role = 1;
                     }
                     console.log(req.session);
@@ -149,31 +149,45 @@ class StudentController {
     }
 
     async updateInfo(req, res, next) {
-        const {firstname, lastname, phonee } = req.body;
-        try {
-            await Student.update(
-                {
-                    first_name: firstname,
-                    last_name: lastname,
-                    phone: req.body.phone,
-                },
-                {
-                    where: { student_id: req.session.studentId },
+        const { firstname, lastname, phone } = req.body;
+        const checkPhone = await Student.findOne({
+            where: {
+                phone: phone,
+                student_id: {
+                    [Op.ne]: req.session.studentId,
                 }
-            )
-                .then((data) => {
-                    console.log(data);
-                })
-                .catch((err) => {
-                    console.log(err);
-                    next(err);
-                });
+            }
+        })
+        if (!checkPhone) {
+            try {
+                await Student.update(
+                    {
+                        first_name: firstname,
+                        last_name: lastname,
+                        phone: phone,
+                    },
+                    {
+                        where: { student_id: req.session.studentId },
+                    }
+                )
+                    .then((data) => {
+                        console.log(data);
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        next(err);
+                    });
 
-            return res.status(200).json({
-                msg: 'Update info successful',
+                return res.status(200).json({
+                    msg: 'Update info successful',
+                })
+            } catch (err) {
+                next(err);
+            }
+        } else {
+            return res.status(201).json({
+                msg: 'Duplicated phone number',
             })
-        } catch (err) {
-            next(err);
         }
     }
 
