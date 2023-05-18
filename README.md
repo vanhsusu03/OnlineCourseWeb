@@ -1,4 +1,4 @@
-# [Software Engineering Project] Online Course Website
+# DNA Online Course Website
 
 ### Using in this project ✌️
 
@@ -8,3 +8,4 @@
 * [VueX](http://https://vuex.vuejs.org/)
 * [VueCLI](http://https://cli.vuejs.org/)
 * [MySQL](http://https://www.mysql.com/)
+* [Sequelize](https://sequelize.org/)
