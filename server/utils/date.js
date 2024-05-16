@@ -1,3 +1,5 @@
+const { func } = require("joi");
+
 function formatDate(dateString) {
   const date = new Date(dateString);
 
@@ -20,4 +22,9 @@ function formatDate(dateString) {
 
   return `${hours}h${minutes} ${day}/${month}/${year}`;
 }
-module.exports = formatDate;
+function getMonth(dateString) {
+  let date = new Date(dateString);
+  let month = date.getMonth() + 1;
+  return month;
+}
+module.exports = { formatDate, getMonth };

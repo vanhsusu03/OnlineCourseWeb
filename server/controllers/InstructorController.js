@@ -10,7 +10,7 @@ const {
   },
 } = require("../models");
 const sequelize = require("sequelize");
-const formatDate = require("../utils/date");
+const date = require("../utils/date");
 
 class InstructorController {
   async createInstructor(req, res, next) {
@@ -167,6 +167,8 @@ class InstructorController {
   async getRevenueReport(req, res, next) {
     const instructorID = +req.params.instructorID;
     let total = 0;
+    let monthlyTransactionsCount = new Array(12).fill(0);
+
     if (+instructorID) {
       Instructor.findByPk(instructorID, {
         include: [
@@ -192,13 +194,18 @@ class InstructorController {
             course.order_details.forEach((orderDetail) => {
               transactions.push({
                 courseFee: course.course_fee,
-                orderTime: formatDate(orderDetail.order.order_time),
+                orderTime: date.formatDate(orderDetail.order.order_time),
                 email: orderDetail.order.student.email,
               });
+              monthlyTransactionsCount[
+                date.getMonth(orderDetail.order.order_time) - 1
+              ]++;
               total += course.course_fee;
             });
           });
-          res.status(200).json({ total, transactions });
+          res
+            .status(200)
+            .json({ total, transactions, monthlyTransactionsCount });
         })
         .catch((error) => {
           console.log(error);
@@ -207,5 +214,4 @@ class InstructorController {
     }
   }
 }
-
 module.exports = new InstructorController();

@@ -14,15 +14,16 @@
   <div class="tabcontent" id="course">
     <div class="sub-report-title">Revenue report</div>
     <div class="sub-report-content">
-      <div class="earning">$1,232,121,232.00</div>
-      <BarChart
-        :data-chart="[40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]"
-      />
+      <div class="earning">{{ totalEarning }}$</div>
+      <div v-if="!loading">
+        <BarChart :data-chart="monthlyTransactionsCount" />
+      </div>
       <div
         style="
           padding-top: 20px;
           padding-bottom: 20px;
           display: flex;
+          flex-direction: column;
           width: 100%;
         "
       >
@@ -34,6 +35,24 @@
           <div class="sub-report-earning-table-col">Time period</div>
           <div class="sub-report-earning-table-col">Earning</div>
           <div class="sub-report-earning-table-col">User</div>
+        </div>
+        <div
+          style="display: flex; width: 100%"
+          v-for="(transaction, index) in transactions"
+          :key="index"
+        >
+          <div class="sub-report-earning-table-row">
+            <div class="sub-report-earning-table-col">{{ index + 1 }}</div>
+            <div class="sub-report-earning-table-col">
+              {{ transaction.orderTime }}
+            </div>
+            <div class="sub-report-earning-table-col">
+              {{ transaction.courseFee }}
+            </div>
+            <div class="sub-report-earning-table-col">
+              {{ transaction.email }}
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -424,6 +443,10 @@ export default {
       orders: [],
       changeCoin: [],
       IdsOfChapter: [],
+      transactions: [],
+      monthlyTransactionsCount: [],
+      totalEarning: 0,
+      loading: true,
       course: {
         courseTitle: "",
         courseDescription: "",
@@ -458,10 +481,29 @@ export default {
       .catch((e) => {
         this.errors.push(e);
       });
+    axios
+      .get("/revenue-report/" + this.student.id, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        this.transactions = response.data.transactions;
+        this.totalEarning = response.data.total;
+        this.monthlyTransactionsCount = response.data.monthlyTransactionsCount;
+        this.loading = false;
+      })
+      .catch((e) => {
+        this.errors.push(e);
+      });
+
     this.resetCourse();
   },
   computed: {
     ...mapState(["student"]),
+  },
+  watch: {
+    monthlyTransactionsCount(newVal, oldVal) {
+      console.log(`The value changed from ${oldVal} to ${newVal}`);
+    },
   },
 };
 </script>
