@@ -59,7 +59,9 @@
     <div class="sub-report-title">Course report</div>
 
     <div class="sub-report-content">
-      <div class="earning">23 courses</div>
+      <div class="earning">
+        {{ courses.length }} {{ courses < 2 ? "course" : "courses" }}
+      </div>
       <div
         style="
           padding-top: 20px;
