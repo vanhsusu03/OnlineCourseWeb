@@ -15,6 +15,7 @@ INSERT INTO category (name) VALUES
 ('Physics');
 
 INSERT INTO student (first_name, last_name, email, phone, birthday, image, username, password, registration_date, is_instructor) VALUES
+('Admin DNA', 'System','dnateam@gmail.com','0333544588', '2023-05-15','','admin', '$2b$10$K4KAp/UKOVh/1WTV5uSJZeklPvy/RGwXmvk8GB.eJ1WdoE8l8qL2','2023-05-15', 0),
 ('Krista', 'King', 'kristaking@gmail.com', '0148275819', '1999-12-12', 'https://img-c.udemycdn.com/user/200_H/633228_a6b9_12.jpg', 'kristaking', 'f32o2rraf21', '2019-03-02', 1),
 ('Miran', 'Fattah', 'miranfattah@gmail.com', '0687174819', '2000-11-02', 'https://img-c.udemycdn.com/user/200_H/15805898_6330_6.jpg', 'miranfattah', 'fwemkfopwe113f', '2021-11-02', 1),
 ('Kody', 'Amour', 'kodyamour@gmail.com', '0515294124', '1998-04-02', 'https://img-c.udemycdn.com/user/200_H/6631300_0550_4.jpg', 'kodyamour', '1231bnd9u1da', '2020-01-12', 1),

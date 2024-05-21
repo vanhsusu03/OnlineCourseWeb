@@ -14,7 +14,7 @@
   <div class="tabcontent" id="course">
     <div class="sub-report-title">Revenue report</div>
     <div class="sub-report-content">
-      <div class="earning">{{ totalEarning }}$</div>
+      <div class="earning">{{ totalEarning }} <img src="../assets/img/_logo.png"></div>
       <div v-if="!loading">
         <BarChart :data-chart="monthlyTransactionsCount" />
       </div>
