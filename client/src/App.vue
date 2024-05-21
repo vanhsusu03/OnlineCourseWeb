@@ -1,8 +1,8 @@
 <template>
-  <div v-if="loading">
+  <!-- <div v-if="loading">
     <Loading ></Loading>
-  </div>
-  <div v-else id="app">
+  </div> -->
+  <div id="app">
     <Header />
     <router-view></router-view>
     <Footer />
@@ -20,7 +20,7 @@ export default {
   components: {
     Header,
     Footer,
-    Loading,
+    // Loading,
   },
   data() {
     return {

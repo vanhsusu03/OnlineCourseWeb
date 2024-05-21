@@ -29,7 +29,8 @@
             <div class="body">
                 <span id="logo"><img src="../assets/img/logo.png" alt=""></span>
                 <span id="intro">We are <strong>DNA team</strong>, the authors of the online courses website you're in.
-                    Learning is so interesting, it can help you know more about the world around, discover your ability on
+                    Learning is so interesting, it can help you know more about the world around, discover your ability
+                    on
                     learning and find out your own lovely course here.
                     <br>
                     <br>
@@ -139,8 +140,8 @@
                         <div id="title"> {{ course.courseTitle }}</div>
                         <div id="descr">{{ course.courseDescription }}</div>
                         <div id="ins">Created by: <span id="name"> {{ course.instructorFirstName + ' ' +
-                            course.instructorLastName
-                        }}</span></div>
+                        course.instructorLastName
+                                }}</span></div>
                         <div class="fee">
                             <div> {{ course.courseFee }} </div>
                             <div id="image"> <img src="../assets/img/logo.png" alt="" id="img-coin"> </div>
@@ -159,7 +160,8 @@
                     <div>Instructors from around the world teach millions of students on DNA. We provide the tools and
                         skills to teach what you love. Wanna join with us?</div>
                     <button id="sign-up" @click.prevent="redirectSignUp" v-if="!student.id">Sign Up</button>
-                    <button id="become-instructor" @click.prevent="redirectBecomeInstructor" v-else>Become Instructor</button>
+                    <button id="become-instructor" @click.prevent="redirectBecomeInstructor" v-else>Become
+                        Instructor</button>
                 </span>
                 <span id="img"><img src="../assets/img/ins.png"></span>
             </div>
@@ -174,7 +176,7 @@
 <script>
 import _ from 'lodash';
 import axios from 'axios';
-import { mapMutations, mapState } from 'vuex';
+import { mapMutations, mapState, mapGetters } from 'vuex';
 export default {
     // eslint-disable-next-line vue/multi-word-component-names
     name: 'Home',
@@ -185,7 +187,15 @@ export default {
         }
     },
     methods: {
-        ...mapMutations(['scrollToTop']),
+        ...mapMutations(['scrollToTop', 'setStudent']),
+        async getStudentCoin() {
+            await axios.get('/students/coin', { withCredentials: true })
+                .then(respone => {
+                    this.student.coin = respone.data.coinOfStudent;
+                    alert(this.student.coin)
+                })
+
+        },
         getText(event) {
             const clickedElement = event.target;
             const subDiv = clickedElement.closest(".sub");
@@ -228,9 +238,27 @@ export default {
                 this.$router.push(`/study/${id}`);
             }
         },
+        changeAccount(id, accCoin) {
+            axios.post(`admin/change/${id}/${accCoin}`, {}, {
+                withCredentials: true
+            })
+            this.getStudentCoin()
+        },
+        async afterRedirect() {
+            if (this.$route.query.status == 'CANCELLED') {
+                alert("Deposit is cancelled");
+            } else if (this.$route.query.status == 'PAID') {
+                this.getStudentCoin()
+                alert(`Deposit successfully + hdfjhd + ${this.student.id}`);
+                await axios.get(`/deposit/getlink/${this.$route.query.id}`, { withCredentials: true })
+                    .then(res => {
+                        this.changeAccount(this.student.id, Number(this.student.coin + res.data.data.amount))
+                    })
+            }
+        }
     },
     computed: {
-        ...mapState(['student'])
+        ...mapState(['student']), ...mapGetters(['getStudent']),
     },
     created() {
         axios.get('/courses', { withCredentials: true })
@@ -241,12 +269,17 @@ export default {
             .catch(e => {
                 this.errors.push(e)
             });
-            this.scrollToTop();
+        axios.get('/account/info', { withCredentials: true })
+            .then(res => {
+                this.setStudent(res.data);
+                this.afterRedirect()
+            });
+
     }
 }
 </script>
 
-<style lang = "scss" scoped>
+<style lang="scss" scoped>
 @font-face {
     font-family: fontt;
     src: url(../assets/font/Novecento\ WideDemiBold.ttf);
@@ -403,7 +436,8 @@ export default {
                     }
                 }
 
-                #sign-up, #about-us {
+                #sign-up,
+                #about-us {
                     background-color: transparent;
                     color: #fff;
                     font-size: 1.1rem;
@@ -668,7 +702,8 @@ export default {
             color: rgb(52, 73, 94);
             display: block;
 
-            #sign-up, #become-instructor {
+            #sign-up,
+            #become-instructor {
                 margin-left: 50%;
                 transform: translateX(-60%);
                 margin-top: 10%;
